@@ -1,0 +1,40 @@
+/* ==========================================================================
+Estilos Personalizados - Tari's Firma Digital
+========================================================================== */
+
+/* Gradiente radial corporativo para la sección principal (Hero) */
+.bg-taris-hero {
+background: radial-gradient(circle at 80% 20%, #0E376E 0%, #061A3A 50%, #030B18 100%);
+}
+
+/* Gradiente dorado metálico para botones y encabezados */
+.gold-gradient {
+background: linear-gradient(90deg, #C9982E 0%, #F5D276 50%, #C9982E 100%);
+}
+
+/* Texto con degradado dorado brillante */
+.gold-text-gradient {
+background: linear-gradient(90deg, #E5B94C 0%, #FFF0B8 50%, #D9A32B 100%);
+-webkit-background-clip: text;
+background-clip: text;
+-webkit-text-fill-color: transparent;
+}
+
+/* Fondo azul vibrante para el banner de promociones vigentes */
+.promo-banner-bg {
+background: linear-gradient(135deg, #072554 0%, #0D47A1 55%, #04132B 100%);
+}
+
+/* Animación de pulso dorado en el borde de la promoción */
+@keyframes pulse-border {
+0%, 100% {
+box-shadow: 0 0 0 0 rgba(229, 185, 76, 0.6);
+}
+50% {
+box-shadow: 0 0 0 10px rgba(229, 185, 76, 0);
+}
+}
+
+.animate-pulse-gold {
+animation: pulse-border 2.5s infinite;
+}
