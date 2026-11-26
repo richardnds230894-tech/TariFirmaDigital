@@ -9,7 +9,7 @@
 ## 1. Pruebas automatizadas
 
 ```bash
-node --test tests/
+node --test
 ```
 
 Esperado: todas las pruebas pasan. Cubren `formatPrice`, `formatPhone`, `buildWhatsAppUrl`,

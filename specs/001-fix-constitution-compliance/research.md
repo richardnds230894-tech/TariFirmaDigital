@@ -38,7 +38,7 @@ aviso que pide activarlo, sin números duplicados.
 - **Decision**: `script.js` sigue siendo un script clásico (no módulo ES). Al final expone sus
   funciones puras con `if (typeof module !== 'undefined') module.exports = { … }`, y el código que
   toca el DOM se ejecuta solo si existe `window`. Las pruebas viven en `tests/` y se corren con
-  `node --test tests/`, sin `package.json` ni dependencias.
+  `node --test`, sin `package.json` ni dependencias.
 - **Rationale**: los módulos ES (`type="module"`) no cargan desde `file://` en Chrome/Edge por
   CORS, y la constitución exige que `index.html` se pueda abrir directamente. `node --test` es la
   herramienta preferida por el Principio IV.

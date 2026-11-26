@@ -10,7 +10,7 @@ description: "Task list for 001-fix-constitution-compliance"
 **Prerequisites**: plan.md, spec.md, research.md, data-model.md, contracts/, quickstart.md
 
 **Tests**: se incluyen. El Principio IV de la constitución exige pruebas automatizadas para la
-lógica nueva de cálculo y transformación, y el plan fija `node --test tests/`. Cada prueba se
+lógica nueva de cálculo y transformación, y el plan fija `node --test`. Cada prueba se
 escribe antes que su implementación y debe fallar primero.
 
 **Organization**: tareas agrupadas por historia de usuario (spec.md US1–US6).
@@ -36,8 +36,8 @@ en las pruebas (archivos separados en `tests/`) y en US3 (`.gitignore`).
 
 **Purpose**: línea base visual y carpeta de pruebas
 
-- [ ] T001 Capturar la línea base visual del sitio actual (antes de cualquier cambio) en 375 px y 1024 px: sección principal, promoción, catálogo de firma, comprobantes en Natural y en Jurídica, requisitos, pie y modal abierto. Guardar las capturas en `specs/001-fix-constitution-compliance/baseline/` para comparar después (FR-021)
-- [ ] T002 [P] Crear `tests/load.test.js`: prueba de humo con `node:test` y `node:assert/strict` que haga `require('../script.js')` y compruebe que carga en Node sin lanzar errores y exporta un objeto. Ejecutar `node --test tests/` y confirmar que FALLA (hoy `script.js` usa `window` al cargar)
+- [X] T001 Capturar la línea base visual del sitio actual (antes de cualquier cambio) en 375 px y 1024 px: sección principal, promoción, catálogo de firma, comprobantes en Natural y en Jurídica, requisitos, pie y modal abierto. Guardar las capturas fuera del repositorio (≈4 MB de PNG; no se versionan) para comparar después (FR-021)
+- [X] T002 [P] Crear `tests/load.test.js`: prueba de humo con `node:test` y `node:assert/strict` que haga `require('../script.js')` y compruebe que carga en Node sin lanzar errores y exporta un objeto. Ejecutar `node --test` y confirmar que FALLA (hoy `script.js` usa `window` al cargar)
 
 ---
 
@@ -47,14 +47,14 @@ en las pruebas (archivos separados en `tests/`) y en US3 (`.gitignore`).
 
 **⚠️ CRITICAL**: ninguna historia puede empezar hasta terminar esta fase
 
-- [ ] T003 Reorganizar `script.js` en las secciones del plan.md (1. DATOS DEL NEGOCIO, 2. Funciones puras, 3. Renderizado y DOM, 4. Arranque, 5. Exportación), con un comentario de cabecera por sección. Envolver el registro de `DOMContentLoaded` en `if (typeof window !== 'undefined')` y añadir al final `if (typeof module !== 'undefined' && module.exports) { module.exports = { … } }`. Debe seguir siendo un script clásico, no un módulo ES (research.md R2). T002 debe pasar
-- [ ] T004 Definir en la sección DATOS DEL NEGOCIO de `script.js` un único objeto `siteData` con `asesores`, `negocio`, `firmaPlans`, `comprobantesPlans` y `promociones`, según data-model.md: Asesor.id, Asesor.nombre, Asesor.whatsapp; Datos del negocio.nombre, Datos del negocio.facebookUrl, Datos del negocio.horario.semana, Datos del negocio.horario.sabado, Datos del negocio.mensajes.info, Datos del negocio.mensajes.ayuda, Datos del negocio.mensajes.producto; Plan de Firma Electrónica.duracion, Plan de Firma Electrónica.precio, Plan de Firma Electrónica.etiqueta, Plan de Firma Electrónica.popular; Plan de Comprobantes.cantidad, Plan de Comprobantes.precioNatural, Plan de Comprobantes.precioJuridica, Plan de Comprobantes.descripcion; Promoción.id, Promoción.titulo, Promoción.precio, Promoción.inicio, Promoción.fin. Los precios pasan de cadenas a números (`"15,00"` → `15.00`); ningún valor comercial cambia. Eliminar los arreglos `firmaPlans` y `comprobantesPlans` antiguos. Exportar `siteData`
-- [ ] T005 [P] Crear `tests/format.test.js` con pruebas que fallen para `formatPrice` (`14.99` → `"14,99"`, `15` → `"15,00"`, `8.5` → `"8,50"`) y `escapeHtml` (`<`, `>`, `&`, `"`, `'` escapados; texto normal sin cambios)
-- [ ] T006 [P] Crear `tests/data.test.js` que valide `siteData` contra las reglas de data-model.md: Asesor.whatsapp (12 dígitos, empieza por `593`), Asesor.id único, Plan de Firma Electrónica.precio > 0 con 2 decimales como máximo, Plan de Firma Electrónica.popular en `true` como máximo en un plan, Plan de Comprobantes.precioNatural y Plan de Comprobantes.precioJuridica > 0, Promoción.inicio ≤ Promoción.fin en formato `AAAA-MM-DD`, Datos del negocio.facebookUrl empieza por `https://`, y que los valores sean exactamente los listados en data-model.md
-- [ ] T007 Implementar en `script.js` (sección 2) `formatPrice(n)` como `n.toFixed(2).replace('.', ',')` (research.md R3) y `escapeHtml(texto)`, con JSDoc en español. Exportarlas. T005 y T006 deben pasar
-- [ ] T008 Actualizar `renderFirmaCards` y `renderComprobantesCards` en `script.js` para que lean `siteData.firmaPlans` / `siteData.comprobantesPlans` y muestren los precios con `formatPrice`. Abrir `index.html`: las tarjetas se ven igual que en la línea base de T001
+- [X] T003 Reorganizar `script.js` en las secciones del plan.md (1. DATOS DEL NEGOCIO, 2. Funciones puras, 3. Renderizado y DOM, 4. Arranque, 5. Exportación), con un comentario de cabecera por sección. Envolver el registro de `DOMContentLoaded` en `if (typeof window !== 'undefined')` y añadir al final `if (typeof module !== 'undefined' && module.exports) { module.exports = { … } }`. Debe seguir siendo un script clásico, no un módulo ES (research.md R2). T002 debe pasar
+- [X] T004 Definir en la sección DATOS DEL NEGOCIO de `script.js` un único objeto `siteData` con `asesores`, `negocio`, `firmaPlans`, `comprobantesPlans` y `promociones`, según data-model.md: Asesor.id, Asesor.nombre, Asesor.whatsapp; Datos del negocio.nombre, Datos del negocio.facebookUrl, Datos del negocio.horario.semana, Datos del negocio.horario.sabado, Datos del negocio.mensajes.info, Datos del negocio.mensajes.ayuda, Datos del negocio.mensajes.producto; Plan de Firma Electrónica.duracion, Plan de Firma Electrónica.precio, Plan de Firma Electrónica.etiqueta, Plan de Firma Electrónica.popular; Plan de Comprobantes.cantidad, Plan de Comprobantes.precioNatural, Plan de Comprobantes.precioJuridica, Plan de Comprobantes.descripcion; Promoción.id, Promoción.titulo, Promoción.precio, Promoción.inicio, Promoción.fin. Los precios pasan de cadenas a números (`"15,00"` → `15.00`); ningún valor comercial cambia. Eliminar los arreglos `firmaPlans` y `comprobantesPlans` antiguos. Exportar `siteData`
+- [X] T005 [P] Crear `tests/format.test.js` con pruebas que fallen para `formatPrice` (`14.99` → `"14,99"`, `15` → `"15,00"`, `8.5` → `"8,50"`) y `escapeHtml` (`<`, `>`, `&`, `"`, `'` escapados; texto normal sin cambios)
+- [X] T006 [P] Crear `tests/data.test.js` que valide `siteData` contra las reglas de data-model.md: Asesor.whatsapp (12 dígitos, empieza por `593`), Asesor.id único, Plan de Firma Electrónica.precio > 0 con 2 decimales como máximo, Plan de Firma Electrónica.popular en `true` como máximo en un plan, Plan de Comprobantes.precioNatural y Plan de Comprobantes.precioJuridica > 0, Promoción.inicio ≤ Promoción.fin en formato `AAAA-MM-DD`, Datos del negocio.facebookUrl empieza por `https://`, y que los valores sean exactamente los listados en data-model.md
+- [X] T007 Implementar en `script.js` (sección 2) `formatPrice(n)` como `n.toFixed(2).replace('.', ',')` (research.md R3) y `escapeHtml(texto)`, con JSDoc en español. Exportarlas. T005 y T006 deben pasar
+- [X] T008 Actualizar `renderFirmaCards` y `renderComprobantesCards` en `script.js` para que lean `siteData.firmaPlans` / `siteData.comprobantesPlans` y muestren los precios con `formatPrice`. Abrir `index.html`: las tarjetas se ven igual que en la línea base de T001
 
-**Checkpoint**: `node --test tests/` pasa, el sitio se ve igual y todos los datos viven en `siteData`
+**Checkpoint**: `node --test` pasa, el sitio se ve igual y todos los datos viven en `siteData`
 
 ---
 
@@ -102,7 +102,7 @@ en las pruebas (archivos separados en `tests/`) y en US3 (`.gitignore`).
 - [ ] T023 [US2] En `index.html`, sustituir las 5 URLs literales de Facebook (barra superior, menú móvil, tarjeta de la sección principal, pie y botón flotante) por `href="#"` + `data-facebook`, conservando `target="_blank"` y `rel="noopener noreferrer"`
 - [ ] T024 [US2] En `index.html`, sustituir los horarios literales de la barra superior y del pie por `<strong data-horario="semana">` / `<strong data-horario="sabado">` (o `<span>`, según el elemento actual), sin cambiar las clases
 - [ ] T025 [US2] Añadir en `index.html`, justo después de `<body>`, un `<noscript>` con un aviso visible, con las clases de marca, que pida activar JavaScript para ver los planes y contactar a un asesor (FR-008). Sin números ni enlaces de contacto
-- [ ] T026 [US2] Ejecutar `node --test tests/` (T017 debe pasar) y verificar a mano quickstart.md §3 punto 4 y §5
+- [ ] T026 [US2] Ejecutar `node --test` (T017 debe pasar) y verificar a mano quickstart.md §3 punto 4 y §5
 
 **Checkpoint**: US1 y US2 funcionan. `index.html` no contiene números ni URLs de contacto
 
@@ -116,8 +116,8 @@ en las pruebas (archivos separados en `tests/`) y en US3 (`.gitignore`).
 
 ### Implementation for User Story 3
 
-- [ ] T027 [P] [US3] Crear `.gitignore` en la raíz según research.md R9, agrupado y comentado en español: certificados y claves (`*.[pP]12`, `*.[pP][fF][xX]`, `*.[kK][eE][yY]`, `*.[pP][eE][mM]`, `*.[cC][rR][tT]`, `*.[cC][eE][rR]`); entorno (`.env`, `.env.*`, `!.env.example`); documentos de clientes (`documentos-clientes/`); SO/editor (`Thumbs.db`, `Desktop.ini`, `.DS_Store`, `.vscode/`, `.idea/`, `*.swp`); y `.claude/settings.local.json`. No tocar `.specify/.gitignore`
-- [ ] T028 [US3] Ejecutar quickstart.md §2: crear los archivos de muestra (incluidos `PRUEBA.PFX` y `documentos-clientes/cedula.jpg`), confirmar que `git status --short` no los muestra y borrarlos. Repetir el escaneo del historial (FR-011) y confirmar que no hay resultados; si los hubiera, detenerse e informar al responsable
+- [X] T027 [P] [US3] Crear `.gitignore` en la raíz según research.md R9, agrupado y comentado en español: certificados y claves (`*.[pP]12`, `*.[pP][fF][xX]`, `*.[kK][eE][yY]`, `*.[pP][eE][mM]`, `*.[cC][rR][tT]`, `*.[cC][eE][rR]`); entorno (`.env`, `.env.*`, `!.env.example`); documentos de clientes (`documentos-clientes/`); SO/editor (`Thumbs.db`, `Desktop.ini`, `.DS_Store`, `.vscode/`, `.idea/`, `*.swp`); y `.claude/settings.local.json`. No tocar `.specify/.gitignore`
+- [X] T028 [US3] Ejecutar quickstart.md §2: crear los archivos de muestra (incluidos `PRUEBA.PFX` y `documentos-clientes/cedula.jpg`), confirmar que `git status --short` no los muestra y borrarlos. Repetir el escaneo del historial (FR-011) y confirmar que no hay resultados; si los hubiera, detenerse e informar al responsable
 
 **Checkpoint**: US3 completa. Es independiente de las demás historias y puede hacerse primero
 
@@ -195,10 +195,10 @@ en las pruebas (archivos separados en `tests/`) y en US3 (`.gitignore`).
 **Purpose**: calidad, documentación y validación final contra la constitución
 
 - [ ] T048 [P] Revisar `script.js` según el Principio II: JSDoc en español en cada función, camelCase, verbo al inicio, 4 espacios, sin `var`, sin `console.log` y sin código muerto (incluidos restos de los arreglos y del `onclick` antiguos)
-- [ ] T049 [P] Ampliar `README.md` con: dónde editar precios, asesores, horarios y promociones (`siteData` en `script.js`), cómo correr las pruebas (`node --test tests/`) y la carpeta `documentos-clientes/` ignorada por git
-- [ ] T050 Ejecutar `node --test tests/` y confirmar que todas las pruebas pasan
+- [ ] T049 [P] Ampliar `README.md` con: dónde editar precios, asesores, horarios y promociones (`siteData` en `script.js`), cómo correr las pruebas (`node --test`) y la carpeta `documentos-clientes/` ignorada por git
+- [ ] T050 Ejecutar `node --test` y confirmar que todas las pruebas pasan
 - [ ] T051 Validar `index.html` en el validador W3C (https://validator.w3.org/#validate_by_input) y corregir los errores introducidos por esta feature
-- [ ] T052 Comparar el sitio con las capturas de `specs/001-fix-constitution-compliance/baseline/` en 375 px y 1024 px (FR-021). Las únicas diferencias aceptadas son el formato `+593 …` en la sección principal, `$14,99` en la promoción y la promoción oculta fuera de vigencia
+- [ ] T052 Comparar el sitio con las capturas de línea base de T001 en 375 px y 1024 px (FR-021). Las únicas diferencias aceptadas son el formato `+593 …` en la sección principal, `$14,99` en la promoción y la promoción oculta fuera de vigencia
 - [ ] T053 Ejecutar la verificación manual completa de quickstart.md §3 (puntos 1–7) y registrar el resultado en la descripción del PR, como exige la sección "Flujo de Desarrollo" de la constitución
 
 ---

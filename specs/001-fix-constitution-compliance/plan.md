@@ -23,7 +23,7 @@ Fonts Inter. Sin dependencias nuevas.
 
 **Storage**: N/A (datos estáticos en `script.js`)
 
-**Testing**: `node --test tests/` (Node ≥ 18, probado con v24.21.0) + verificación manual del
+**Testing**: `node --test` (Node ≥ 18, probado con v24.21.0) + verificación manual del
 Principio IV ([quickstart.md](quickstart.md))
 
 **Target Platform**: navegadores actuales (2 últimas versiones de Chrome, Edge, Firefox,
