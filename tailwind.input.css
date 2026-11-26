@@ -1,0 +1,17 @@
+/* ==========================================================================
+   Entrada de Tailwind (solo desarrollo). La salida es tailwind.css, que se versiona.
+   Regenerar: npx tailwindcss@3.4 -c tailwind.config.js -i tailwind.input.css -o tailwind.css --minify
+   ========================================================================== */
+
+/* Inter variable, subconjunto latino, servida localmente (research R2; licencia en fonts/OFL.txt) */
+@font-face {
+    font-family: 'Inter';
+    font-style: normal;
+    font-weight: 400 900;
+    font-display: swap;
+    src: url('fonts/inter-latin-var.woff2') format('woff2');
+}
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;

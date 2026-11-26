@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" fill="none">
+    <title>Tari's Firma Digital</title>
+    <rect width="100" height="100" rx="22" fill="#040F22"/>
+    <g transform="translate(8 8) scale(0.84)">
+        <path d="M18 20 C35 16, 68 18, 86 24 L76 38 C60 33, 35 32, 14 35 Z" fill="url(#skyGrad)"/>
+        <path d="M44 28 L60 29 C55 50, 48 68, 36 82 L22 76 C32 62, 39 45, 44 28 Z" fill="#FFFFFF"/>
+        <path d="M44 28 L53 28.5 C48 48, 41 65, 30 79 L22 76 C32 62, 39 45, 44 28 Z" fill="url(#blueGrad)"/>
+        <path d="M18 85 C38 82, 58 70, 74 52" stroke="#E5B94C" stroke-width="4.5" stroke-linecap="round"/>
+        <rect x="70" y="42" width="12" height="14" rx="2" transform="rotate(38 70 42)" fill="#E5B94C"/>
+        <rect x="78" y="37" width="6" height="8" rx="1" transform="rotate(38 78 37)" fill="#FFF2C2"/>
+    </g>
+    <defs>
+        <linearGradient id="skyGrad" x1="14" y1="20" x2="86" y2="35" gradientUnits="userSpaceOnUse">
+            <stop stop-color="#E0F2FE"/>
+            <stop offset="0.5" stop-color="#38BDF8"/>
+            <stop offset="1" stop-color="#0284C7"/>
+        </linearGradient>
+        <linearGradient id="blueGrad" x1="22" y1="28" x2="53" y2="79" gradientUnits="userSpaceOnUse">
+            <stop stop-color="#7DD3FC"/>
+            <stop offset="1" stop-color="#0369A1"/>
+        </linearGradient>
+    </defs>
+</svg>
