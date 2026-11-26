@@ -131,17 +131,17 @@ en las pruebas (archivos separados en `tests/`) y en US3 (`.gitignore`).
 
 ### Tests for User Story 4 ⚠️
 
-- [ ] T029 [P] [US4] Añadir a `tests/description.test.js` pruebas que fallen para las claves `general`, `flotante` y `banco` (textos de data-model.md → Descripción del producto) y para un plan de firma de prueba con `duracion` `1 AÑO 'Tari's' "especial"`, cuya descripción debe conservar todos los caracteres
-- [ ] T030 [US4] Añadir a `tests/html.test.js` la invariante 1 de contracts/dom-hooks.md (no aparece `onclick=` en `index.html`) y comprobar que todo `data-open-advisor` del HTML es una clave válida (`general`, `flotante`, `banco`, `promo:<Promoción.id>` según data-model.md Promoción.id). Añadir a `tests/load.test.js` una lectura de `script.js` como texto que verifique que no contiene `onclick`
+- [X] T029 [P] [US4] Añadir a `tests/description.test.js` pruebas que fallen para las claves `general`, `flotante` y `banco` (textos de data-model.md → Descripción del producto) y para un plan de firma de prueba con `duracion` `1 AÑO 'Tari's' "especial"`, cuya descripción debe conservar todos los caracteres
+- [X] T030 [US4] Añadir a `tests/html.test.js` la invariante 1 de contracts/dom-hooks.md (no aparece `onclick=` en `index.html`) y comprobar que todo `data-open-advisor` del HTML es una clave válida (`general`, `flotante`, `banco`, `promo:<Promoción.id>` según data-model.md Promoción.id). Añadir a `tests/load.test.js` una lectura de `script.js` como texto que verifique que no contiene `onclick`
 
 ### Implementation for User Story 4
 
-- [ ] T031 [US4] Extender `buildProductDescription` en `script.js` con las claves `general`, `flotante` y `banco`, usando Datos del negocio.nombre (data-model.md). T029 debe pasar
-- [ ] T032 [US4] En `index.html`, reemplazar los `onclick` del botón "Contáctanos" (`data-open-advisor="general"`), del botón flotante de WhatsApp (`flotante`) y del botón "Solicitar número de cuenta" (`banco`)
-- [ ] T033 [US4] En `index.html`, reemplazar el `onclick` de `#btn-natural` y `#btn-juridica` por `data-taxpayer="natural|juridica"`, y en `script.js` atender `[data-taxpayer]` dentro del listener delegado de T012, que llama a `setTaxpayerType`
-- [ ] T034 [US4] En `index.html`, reemplazar el `onclick` del botón X del modal por `data-modal-close` y quitar los `onclick` de `#link-asesor-1` y `#link-asesor-2`. En `script.js`, el listener delegado cierra el modal al pulsar `[data-modal-close]` o un enlace de asesor (sin `preventDefault`, para que se abra WhatsApp)
-- [ ] T035 [US4] En `script.js`, pasar por `escapeHtml` cada valor interpolado en las plantillas de `renderFirmaCards` y `renderComprobantesCards` (research.md R6) y confirmar que `openAdvisorModal` sigue usando `textContent`. T030 debe pasar
-- [ ] T036 [US4] Verificar a mano quickstart.md §3 punto 6 y que todos los botones (cabecera, flotante, banco, selector Natural/Jurídica, tarjetas, promoción, X del modal) siguen funcionando
+- [X] T031 [US4] Extender `buildProductDescription` en `script.js` con las claves `general`, `flotante` y `banco`, usando Datos del negocio.nombre (data-model.md). T029 debe pasar
+- [X] T032 [US4] En `index.html`, reemplazar los `onclick` del botón "Contáctanos" (`data-open-advisor="general"`), del botón flotante de WhatsApp (`flotante`) y del botón "Solicitar número de cuenta" (`banco`)
+- [X] T033 [US4] En `index.html`, reemplazar el `onclick` de `#btn-natural` y `#btn-juridica` por `data-taxpayer="natural|juridica"`, y en `script.js` atender `[data-taxpayer]` dentro del listener delegado de T012, que llama a `setTaxpayerType`
+- [X] T034 [US4] En `index.html`, reemplazar el `onclick` del botón X del modal por `data-modal-close` y quitar los `onclick` de `#link-asesor-1` y `#link-asesor-2`. En `script.js`, el listener delegado cierra el modal al pulsar `[data-modal-close]` o un enlace de asesor (sin `preventDefault`, para que se abra WhatsApp)
+- [X] T035 [US4] En `script.js`, pasar por `escapeHtml` cada valor interpolado en las plantillas de `renderFirmaCards` y `renderComprobantesCards` (research.md R6) y confirmar que `openAdvisorModal` sigue usando `textContent`. T030 debe pasar
+- [X] T036 [US4] Verificar a mano quickstart.md §3 punto 6 y que todos los botones (cabecera, flotante, banco, selector Natural/Jurídica, tarjetas, promoción, X del modal) siguen funcionando
 
 **Checkpoint**: no queda ningún `onclick` en el proyecto. US1–US4 funcionan
 

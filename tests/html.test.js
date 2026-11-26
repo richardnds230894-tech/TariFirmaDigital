@@ -47,3 +47,16 @@ test('todo enlace target="_blank" lleva rel="noopener noreferrer"', () => {
         assert.ok(enlace.includes('rel="noopener noreferrer"'), enlace);
     }
 });
+
+test('invariante 1: index.html no contiene onclick', () => {
+    assert.ok(!/onclick\s*=/i.test(html), 'contiene onclick');
+});
+
+test('todo data-open-advisor es una clave válida', () => {
+    const validas = ['general', 'flotante', 'banco', ...siteData.promociones.map(p => `promo:${p.id}`)];
+    const usadas = valoresDe('data-open-advisor');
+    assert.ok(usadas.length > 0);
+    for (const clave of usadas) {
+        assert.ok(validas.includes(clave), `clave desconocida: ${clave}`);
+    }
+});

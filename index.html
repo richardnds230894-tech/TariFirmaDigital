@@ -126,7 +126,7 @@
 
                 <!-- Botón Directo Asesores + Menú Móvil -->
                 <div class="flex items-center gap-2 sm:gap-3">
-                    <button onclick="openAdvisorModal('Asesoría General - Tari\'s Firma Digital')" 
+                    <button type="button" data-open-advisor="general"
                             class="gold-gradient text-taris-dark font-extrabold text-xs sm:text-sm px-4 py-2.5 rounded-xl shadow-gold hover:brightness-110 transition flex items-center gap-2 cursor-pointer">
                         <i class="fa-brands fa-whatsapp text-lg text-emerald-950"></i>
                         <span>Contáctanos</span>
@@ -406,11 +406,11 @@
                             <p class="text-xs sm:text-sm text-slate-400">Cada plan tiene vigencia de 1 año tiempo calendario desde su activación.</p>
                         </div>
                         <div class="inline-flex rounded-xl bg-[#040911] p-1.5 border border-white/10 w-full sm:w-auto">
-                            <button id="btn-natural" onclick="setTaxpayerType('natural')" 
+                            <button id="btn-natural" type="button" data-taxpayer="natural"
                                     class="flex-1 sm:flex-initial px-5 py-2.5 rounded-lg text-xs sm:text-sm font-extrabold transition flex items-center justify-center gap-2 bg-taris-emerald text-white shadow cursor-pointer">
                                 <i class="fa-regular fa-user"></i> Persona Natural
                             </button>
-                            <button id="btn-juridica" onclick="setTaxpayerType('juridica')" 
+                            <button id="btn-juridica" type="button" data-taxpayer="juridica"
                                     class="flex-1 sm:flex-initial px-5 py-2.5 rounded-lg text-xs sm:text-sm font-extrabold transition flex items-center justify-center gap-2 text-slate-400 hover:text-white cursor-pointer">
                                 <i class="fa-solid fa-briefcase"></i> Persona Jurídica
                             </button>
@@ -571,7 +571,7 @@
                     </div>
 
                     <div class="mt-6 pt-5 border-t border-white/10">
-                        <button onclick="openAdvisorModal('Solicito los datos bancarios para realizar el pago por transferencia')" 
+                        <button type="button" data-open-advisor="banco"
                                 class="w-full py-3.5 px-5 rounded-2xl bg-emerald-600 hover:bg-emerald-500 text-white font-extrabold text-sm transition flex items-center justify-center gap-2 shadow-lg cursor-pointer">
                             <i class="fa-brands fa-whatsapp text-lg"></i>
                             <span>Solicitar número de cuenta a un Asesor</span>
@@ -687,7 +687,7 @@
            class="w-12 h-12 rounded-full bg-[#1877F2] text-white shadow-lg hover:scale-110 transition flex items-center justify-center text-xl">
             <i class="fa-brands fa-facebook-f"></i>
         </a>
-        <button onclick="openAdvisorModal('Consulta general desde la web de Tari\'s Firma Digital')" 
+        <button type="button" data-open-advisor="flotante"
                 class="bg-[#16A34A] hover:bg-[#15803D] text-white font-extrabold px-5 py-3.5 rounded-full shadow-2xl hover:scale-105 transition flex items-center gap-2.5 cursor-pointer">
             <i class="fa-brands fa-whatsapp text-2xl"></i>
             <span class="text-sm">WhatsApp</span>
@@ -697,7 +697,7 @@
     <!-- MODAL SELECTOR DE ASESOR (ASESOR 1 O ASESOR 2) -->
     <div id="advisor-modal" class="fixed inset-0 z-50 hidden items-center justify-center p-4 bg-black/80 backdrop-blur-sm">
         <div class="bg-[#0C1624] border-2 border-taris-gold/60 rounded-3xl max-w-md w-full p-6 sm:p-7 shadow-2xl transform transition-all relative">
-            <button onclick="closeAdvisorModal()" aria-label="Cerrar ventana"
+            <button type="button" data-modal-close aria-label="Cerrar ventana"
                     class="absolute top-4 right-4 w-9 h-9 rounded-full bg-white/10 hover:bg-white/20 text-slate-300 flex items-center justify-center transition cursor-pointer">
                 <i class="fa-solid fa-xmark"></i>
             </button>
@@ -715,7 +715,7 @@
             </div>
 
             <div class="space-y-3">
-                <a id="link-asesor-1" href="#" target="_blank" rel="noopener noreferrer" onclick="closeAdvisorModal()"
+                <a id="link-asesor-1" href="#" target="_blank" rel="noopener noreferrer"
                    class="w-full gold-gradient text-taris-dark font-extrabold p-4 rounded-2xl shadow-gold hover:brightness-110 transition flex items-center justify-between">
                     <div class="flex items-center gap-3">
                         <span class="w-10 h-10 rounded-full bg-[#16A34A] text-white flex items-center justify-center text-xl shadow">
@@ -729,7 +729,7 @@
                     <span class="text-xs font-extrabold bg-taris-dark/15 px-3 py-1.5 rounded-lg">Enviar →</span>
                 </a>
 
-                <a id="link-asesor-2" href="#" target="_blank" rel="noopener noreferrer" onclick="closeAdvisorModal()"
+                <a id="link-asesor-2" href="#" target="_blank" rel="noopener noreferrer"
                    class="w-full bg-[#112442] border border-taris-gold/50 hover:bg-[#173159] text-white font-extrabold p-4 rounded-2xl transition flex items-center justify-between">
                     <div class="flex items-center gap-3">
                         <span class="w-10 h-10 rounded-full bg-[#16A34A] text-white flex items-center justify-center text-xl shadow">

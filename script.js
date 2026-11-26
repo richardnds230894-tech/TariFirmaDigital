@@ -157,7 +157,7 @@ function formatShortDateRange(inicio, fin) {
 /**
  * Construye la descripción del producto que se muestra en el modal y se envía al asesor.
  * Es la única fuente de ese texto, para que tarjeta, modal y mensaje coincidan.
- * @param {string} clave - "firma:<i>", "comprobantes:<i>" o "promo:<id>".
+ * @param {string} clave - "firma:<i>", "comprobantes:<i>", "promo:<id>", "general", "flotante" o "banco".
  * @param {string} tipoContribuyente - "natural" o "juridica" (solo para comprobantes).
  * @returns {string|null} Descripción, o null si la clave no existe.
  */
@@ -184,6 +184,15 @@ function buildProductDescription(clave, tipoContribuyente) {
         if (!promo) return null;
         return `PROMOCIÓN VIGENTE (${formatShortDateRange(promo.inicio, promo.fin)}): ${promo.titulo} a $${formatPrice(promo.precio)}`;
     }
+    if (clave === 'general') {
+        return `Asesoría General - ${siteData.negocio.nombre}`;
+    }
+    if (clave === 'flotante') {
+        return `Consulta general desde la web de ${siteData.negocio.nombre}`;
+    }
+    if (clave === 'banco') {
+        return 'Solicito los datos bancarios para realizar el pago por transferencia';
+    }
     return null;
 }
 
@@ -209,16 +218,16 @@ function renderFirmaCards() {
                     <span class="w-10 h-10 rounded-xl bg-taris-emerald/40 border border-emerald-500/30 text-emerald-400 flex items-center justify-center">
                         <i class="fa-regular fa-calendar-check text-lg"></i>
                     </span>
-                    <span class="text-[11px] font-semibold text-slate-400 bg-white/5 px-2.5 py-1 rounded-md">${plan.etiqueta}</span>
+                    <span class="text-[11px] font-semibold text-slate-400 bg-white/5 px-2.5 py-1 rounded-md">${escapeHtml(plan.etiqueta)}</span>
                 </div>
-                <h3 class="text-xl font-black text-white tracking-tight">${plan.duracion}</h3>
+                <h3 class="text-xl font-black text-white tracking-tight">${escapeHtml(plan.duracion)}</h3>
                 <p class="text-xs text-slate-400 mt-0.5">Firma Electrónica Archivo P12</p>
 
                 <div class="my-5 pt-4 border-t border-white/10 flex items-baseline justify-between">
                     <span class="text-xs font-bold text-slate-400 uppercase">Cliente Final</span>
                     <div class="text-right">
                         <span class="text-emerald-400 font-black text-xl mr-0.5">$</span>
-                        <span class="text-3xl font-black text-white">${formatPrice(plan.precio)}</span>
+                        <span class="text-3xl font-black text-white">${escapeHtml(formatPrice(plan.precio))}</span>
                         <span class="block text-[10px] text-emerald-400 font-semibold">IVA incluido</span>
                     </div>
                 </div>
@@ -276,18 +285,18 @@ function renderComprobantesCards() {
                         <i class="fa-regular fa-file-lines text-lg"></i>
                     </span>
                     <span class="text-[11px] font-bold uppercase px-2.5 py-1 rounded-md ${isNatural ? 'bg-taris-emerald/40 text-emerald-300' : 'bg-taris-royal/60 text-sky-300'}">
-                        ${labelType}
+                        ${escapeHtml(labelType)}
                     </span>
                 </div>
 
-                <h3 class="text-xl font-black text-white">${plan.cantidad}</h3>
-                <p class="text-xs text-slate-400 mt-1">${plan.descripcion}</p>
+                <h3 class="text-xl font-black text-white">${escapeHtml(plan.cantidad)}</h3>
+                <p class="text-xs text-slate-400 mt-1">${escapeHtml(plan.descripcion)}</p>
 
                 <div class="my-5 pt-4 border-t border-white/10 flex items-baseline justify-between">
                     <span class="text-xs font-bold text-slate-400 uppercase">Vigencia 1 Año</span>
                     <div class="text-right">
                         <span class="text-emerald-400 font-black text-xl mr-0.5">$</span>
-                        <span class="text-3xl font-black ${accentColor}">${activePrice}</span>
+                        <span class="text-3xl font-black ${accentColor}">${escapeHtml(activePrice)}</span>
                         <span class="block text-[10px] text-emerald-400 font-semibold">IVA incluido</span>
                     </div>
                 </div>
@@ -344,6 +353,18 @@ function closeAdvisorModal() {
  * @param {MouseEvent} evento - Clic en cualquier parte del documento.
  */
 function handleDocumentClick(evento) {
+    const selectorTipo = evento.target.closest('[data-taxpayer]');
+    if (selectorTipo) {
+        setTaxpayerType(selectorTipo.dataset.taxpayer);
+        return;
+    }
+
+    // Cerrar con la X o al elegir asesor (sin preventDefault: el enlace abre WhatsApp)
+    if (evento.target.closest('[data-modal-close], #link-asesor-1, #link-asesor-2')) {
+        closeAdvisorModal();
+        return;
+    }
+
     const disparador = evento.target.closest('[data-plan], [data-open-advisor]');
     if (!disparador) return;
 

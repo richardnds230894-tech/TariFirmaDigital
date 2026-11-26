@@ -47,3 +47,21 @@ test('formatShortDateRange: mismo mes y meses distintos', () => {
     assert.equal(formatShortDateRange('2026-11-09', '2026-11-30'), '9 al 30 Nov');
     assert.equal(formatShortDateRange('2026-11-25', '2026-12-05'), '25 Nov al 5 Dic');
 });
+
+test('claves fijas: general, flotante y banco', () => {
+    assert.equal(buildProductDescription('general', 'natural'), "Asesoría General - Tari's Firma Digital");
+    assert.equal(buildProductDescription('flotante', 'natural'), "Consulta general desde la web de Tari's Firma Digital");
+    assert.equal(buildProductDescription('banco', 'natural'), 'Solicito los datos bancarios para realizar el pago por transferencia');
+});
+
+test('un plan con apóstrofes y comillas conserva todos sus caracteres', () => {
+    const planDePrueba = { duracion: `1 AÑO 'Tari's' "especial"`, precio: 15, etiqueta: 'Prueba', popular: false };
+    siteData.firmaPlans.push(planDePrueba);
+    try {
+        const indice = siteData.firmaPlans.length - 1;
+        assert.equal(buildProductDescription(`firma:${indice}`, 'natural'),
+            `Firma Electrónica (1 AÑO 'Tari's' "especial") - Valor: $15,00 inc. IVA`);
+    } finally {
+        siteData.firmaPlans.pop();
+    }
+});
