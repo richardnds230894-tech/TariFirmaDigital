@@ -96,6 +96,56 @@ function escapeHtml(valor) {
         .replace(/'/g, '&#39;');
 }
 
+const MESES_CORTOS = ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'];
+
+/**
+ * Genera un rango de fechas corto (ej. "9 al 30 Nov" o "25 Nov al 5 Dic").
+ * @param {string} inicio - Fecha AAAA-MM-DD.
+ * @param {string} fin - Fecha AAAA-MM-DD.
+ * @returns {string} Rango legible en español.
+ */
+function formatShortDateRange(inicio, fin) {
+    const [, mesInicio, diaInicio] = inicio.split('-').map(Number);
+    const [, mesFin, diaFin] = fin.split('-').map(Number);
+    if (mesInicio === mesFin) {
+        return `${diaInicio} al ${diaFin} ${MESES_CORTOS[mesFin - 1]}`;
+    }
+    return `${diaInicio} ${MESES_CORTOS[mesInicio - 1]} al ${diaFin} ${MESES_CORTOS[mesFin - 1]}`;
+}
+
+/**
+ * Construye la descripción del producto que se muestra en el modal y se envía al asesor.
+ * Es la única fuente de ese texto, para que tarjeta, modal y mensaje coincidan.
+ * @param {string} clave - "firma:<i>", "comprobantes:<i>" o "promo:<id>".
+ * @param {string} tipoContribuyente - "natural" o "juridica" (solo para comprobantes).
+ * @returns {string|null} Descripción, o null si la clave no existe.
+ */
+function buildProductDescription(clave, tipoContribuyente) {
+    const separador = clave.indexOf(':');
+    const tipo = separador === -1 ? clave : clave.slice(0, separador);
+    const valor = separador === -1 ? '' : clave.slice(separador + 1);
+
+    if (tipo === 'firma') {
+        const plan = siteData.firmaPlans[Number(valor)];
+        if (!plan) return null;
+        return `Firma Electrónica (${plan.duracion}) - Valor: $${formatPrice(plan.precio)} inc. IVA`;
+    }
+    if (tipo === 'comprobantes') {
+        const plan = siteData.comprobantesPlans[Number(valor)];
+        if (!plan) return null;
+        const esNatural = tipoContribuyente !== 'juridica';
+        const etiqueta = esNatural ? 'Persona Natural' : 'Persona Jurídica';
+        const precio = esNatural ? plan.precioNatural : plan.precioJuridica;
+        return `Plan de Facturación: ${plan.cantidad} (${etiqueta}) - Valor: $${formatPrice(precio)} inc. IVA`;
+    }
+    if (tipo === 'promo') {
+        const promo = siteData.promociones.find(p => p.id === valor);
+        if (!promo) return null;
+        return `PROMOCIÓN VIGENTE (${formatShortDateRange(promo.inicio, promo.fin)}): ${promo.titulo} a $${formatPrice(promo.precio)}`;
+    }
+    return null;
+}
+
 /* ==========================================================================
    3. RENDERIZADO Y DOM
    ========================================================================== */
@@ -110,7 +160,7 @@ function renderFirmaCards() {
     const container = document.getElementById('firma-cards-container');
     if (!container) return;
 
-    container.innerHTML = siteData.firmaPlans.map(plan => `
+    container.innerHTML = siteData.firmaPlans.map((plan, indice) => `
         <div class="bg-[#081018] rounded-2xl border ${plan.popular ? 'border-taris-gold shadow-gold' : 'border-white/10 hover:border-taris-gold/50'} p-5 flex flex-col justify-between transition group relative">
             ${plan.popular ? `<span class="absolute -top-3 right-4 gold-gradient text-taris-dark text-[10px] font-black uppercase px-3 py-0.5 rounded-full shadow">Popular</span>` : ''}
             <div>
@@ -133,7 +183,7 @@ function renderFirmaCards() {
                 </div>
             </div>
 
-            <button onclick="openAdvisorModal('Firma Electrónica (${plan.duracion}) - Valor: $${formatPrice(plan.precio)} inc. IVA')"
+            <button type="button" data-plan="firma:${indice}"
                     class="w-full py-3 px-4 rounded-xl bg-taris-emerald hover:bg-taris-emeraldHover text-white font-extrabold text-sm transition flex items-center justify-center gap-2 cursor-pointer border border-emerald-400/20">
                 <i class="fa-brands fa-whatsapp text-base"></i>
                 <span>Comprar Plan</span>
@@ -170,7 +220,7 @@ function renderComprobantesCards() {
     const isNatural = currentTaxpayerType === 'natural';
     const labelType = isNatural ? 'Persona Natural' : 'Persona Jurídica';
 
-    container.innerHTML = siteData.comprobantesPlans.map(plan => {
+    container.innerHTML = siteData.comprobantesPlans.map((plan, indice) => {
         const activePrice = formatPrice(isNatural ? plan.precioNatural : plan.precioJuridica);
         const accentColor = isNatural ? 'text-taris-gold' : 'text-sky-400';
         const btnStyle = isNatural
@@ -202,7 +252,7 @@ function renderComprobantesCards() {
                 </div>
             </div>
 
-            <button onclick="openAdvisorModal('Plan de Facturación: ${plan.cantidad} (${labelType}) - Valor: $${activePrice} inc. IVA')"
+            <button type="button" data-plan="comprobantes:${indice}"
                     class="w-full py-3 px-4 rounded-xl ${btnStyle} text-white font-extrabold text-sm transition flex items-center justify-center gap-2 cursor-pointer border">
                 <i class="fa-brands fa-whatsapp text-base"></i>
                 <span>Solicitar Plan</span>
@@ -242,6 +292,35 @@ function closeAdvisorModal() {
     modal.classList.remove('flex');
 }
 
+/**
+ * Atiende todos los clics del sitio con un único listener (delegación de eventos).
+ * Los botones indican qué producto abren con data-plan o data-open-advisor;
+ * el texto del producto nunca viaja dentro del botón.
+ * @param {MouseEvent} evento - Clic en cualquier parte del documento.
+ */
+function handleDocumentClick(evento) {
+    const disparador = evento.target.closest('[data-plan], [data-open-advisor]');
+    if (!disparador) return;
+
+    const clave = disparador.dataset.plan || disparador.dataset.openAdvisor;
+    const descripcion = buildProductDescription(clave, currentTaxpayerType);
+    if (descripcion) {
+        openAdvisorModal(descripcion);
+    }
+}
+
+/**
+ * Muestra el precio de cada promoción en los elementos marcados con data-promo-precio.
+ */
+function renderPromotionPrices() {
+    document.querySelectorAll('[data-promo-precio]').forEach(elemento => {
+        const promo = siteData.promociones.find(p => p.id === elemento.dataset.promoPrecio);
+        if (promo) {
+            elemento.textContent = formatPrice(promo.precio);
+        }
+    });
+}
+
 /* ==========================================================================
    4. ARRANQUE (solo en el navegador)
    ========================================================================== */
@@ -250,6 +329,8 @@ if (typeof window !== 'undefined') {
     window.addEventListener('DOMContentLoaded', () => {
         renderFirmaCards();
         renderComprobantesCards();
+        renderPromotionPrices();
+        document.addEventListener('click', handleDocumentClick);
 
         // Cerrar modal al hacer clic fuera de la tarjeta
         const modal = document.getElementById('advisor-modal');
@@ -280,6 +361,8 @@ if (typeof module !== 'undefined' && module.exports) {
     module.exports = {
         siteData,
         formatPrice,
-        escapeHtml
+        escapeHtml,
+        formatShortDateRange,
+        buildProductDescription
     };
 }
