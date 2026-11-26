@@ -3,7 +3,28 @@
  */
 const { test } = require('node:test');
 const assert = require('node:assert/strict');
-const { formatPrice, escapeHtml } = require('../script.js');
+const { formatPrice, escapeHtml, formatSchedule, formatDeliveryCondition, getEcuadorYear } = require('../script.js');
+
+test('getEcuadorYear usa el año en hora de Ecuador (FR-036)', () => {
+    assert.equal(getEcuadorYear(new Date('2027-01-01T04:00:00Z')), '2026', '31 dic. 23:00 en Ecuador');
+    assert.equal(getEcuadorYear(new Date('2027-01-01T05:00:00Z')), '2027');
+});
+
+test('formatDeliveryCondition indica la condición de la entrega el mismo día (FR-003)', () => {
+    assert.equal(formatDeliveryCondition({ horaLimiteSemana: '16:00', horaLimiteSabado: '12:00' }),
+        'Mismo día si envías requisitos y pago antes de las 16:00 (sábados, 12:00)');
+    assert.equal(formatDeliveryCondition({ horaLimiteSemana: '16:00', horaLimiteSabado: null }),
+        'Mismo día si envías requisitos y pago antes de las 16:00 (lunes a viernes)');
+    assert.equal(formatDeliveryCondition({ horaLimiteSemana: null, horaLimiteSabado: '11:30' }),
+        'Mismo día los sábados si envías requisitos y pago antes de las 11:30');
+    assert.equal(formatDeliveryCondition({ horaLimiteSemana: null, horaLimiteSabado: null }), 'Entrega ágil');
+});
+
+test('formatSchedule muestra el tramo sin cero inicial en la hora', () => {
+    assert.equal(formatSchedule({ inicio: '09:00', fin: '18:00' }), '9:00 a 18:00');
+    assert.equal(formatSchedule({ inicio: '10:00', fin: '14:00' }), '10:00 a 14:00');
+    assert.equal(formatSchedule({ inicio: '08:30', fin: '12:05' }), '8:30 a 12:05');
+});
 
 test('formatPrice usa coma decimal y siempre dos decimales', () => {
     assert.equal(formatPrice(14.99), '14,99');

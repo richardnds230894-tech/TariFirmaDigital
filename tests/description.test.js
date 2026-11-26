@@ -18,9 +18,21 @@ test('comprobantes:0 según el tipo de contribuyente', () => {
         'Plan de Facturación: 50 COMPROBANTES (Persona Jurídica) - Valor: $7,50 inc. IVA');
 });
 
-test('promo: usa el formato de precio del catálogo ($14,99)', () => {
+test('promo:<id> equivale a la variante 0, con el sufijo de IVA del catálogo', () => {
     assert.equal(buildProductDescription('promo:firma-2-anios-nov-2026', 'natural'),
-        'PROMOCIÓN VIGENTE (9 al 30 Nov): Firma Electrónica por 2 años a $14,99');
+        'PROMOCIÓN VIGENTE (9 al 30 Nov): Firma Electrónica por 2 años (pagas 1) - Valor: $14,99 inc. IVA');
+});
+
+test('promo:<id>:<v> describe cada variante con su precio', () => {
+    assert.equal(buildProductDescription('promo:firma-2-anios-nov-2026:1', 'natural'),
+        'PROMOCIÓN VIGENTE (9 al 30 Nov): Firma Electrónica por 3 años (pagas 2) - Valor: $21,00 inc. IVA');
+    assert.equal(buildProductDescription('promo:firma-2-anios-nov-2026:2', 'natural'),
+        'PROMOCIÓN VIGENTE (9 al 30 Nov): Firma Electrónica por 4 años (pagas 3) - Valor: $30,00 inc. IVA');
+});
+
+test('promo con un índice de variante inexistente devuelve null', () => {
+    assert.equal(buildProductDescription('promo:firma-2-anios-nov-2026:7', 'natural'), null);
+    assert.equal(buildProductDescription('promo:firma-2-anios-nov-2026:x', 'natural'), null);
 });
 
 test('cada plan genera una descripción con su propio precio formateado', () => {
@@ -64,4 +76,8 @@ test('un plan con apóstrofes y comillas conserva todos sus caracteres', () => {
     } finally {
         siteData.firmaPlans.pop();
     }
+});
+
+test('renovacion → Renovación de Firma Electrónica (FR-028)', () => {
+    assert.equal(buildProductDescription('renovacion', 'natural'), 'Renovación de Firma Electrónica');
 });
