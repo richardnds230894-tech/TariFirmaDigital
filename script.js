@@ -154,6 +154,46 @@ function formatShortDateRange(inicio, fin) {
     return `${diaInicio} ${MESES_CORTOS[mesInicio - 1]} al ${diaFin} ${MESES_CORTOS[mesFin - 1]}`;
 }
 
+const MESES_LARGOS = ['enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio', 'julio',
+    'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre'];
+
+// Ecuador continental usa UTC−5 todo el año (sin horario de verano)
+const DESFASE_ECUADOR_MS = 5 * 60 * 60 * 1000;
+
+/**
+ * Devuelve la fecha (AAAA-MM-DD) que corresponde a un instante en hora de Ecuador continental.
+ * @param {Date} ahora - Instante a convertir.
+ * @returns {string} Fecha en Ecuador.
+ */
+function getEcuadorDateString(ahora) {
+    return new Date(ahora.getTime() - DESFASE_ECUADOR_MS).toISOString().slice(0, 10);
+}
+
+/**
+ * Indica si una promoción está vigente; el día de fin cuenta completo.
+ * @param {{inicio: string, fin: string}} promo - Fechas AAAA-MM-DD.
+ * @param {Date} ahora - Instante a evaluar.
+ * @returns {boolean} true si inicio ≤ hoy (Ecuador) ≤ fin.
+ */
+function isPromotionActive(promo, ahora) {
+    const hoy = getEcuadorDateString(ahora);
+    return promo.inicio <= hoy && hoy <= promo.fin;
+}
+
+/**
+ * Genera el texto de vigencia (ej. "Del 9 de noviembre al 30 de noviembre").
+ * @param {string} inicio - Fecha AAAA-MM-DD.
+ * @param {string} fin - Fecha AAAA-MM-DD.
+ * @returns {string} Rango legible en español.
+ */
+function formatDateRange(inicio, fin) {
+    const texto = (fecha) => {
+        const [, mes, dia] = fecha.split('-').map(Number);
+        return `${dia} de ${MESES_LARGOS[mes - 1]}`;
+    };
+    return `Del ${texto(inicio)} al ${texto(fin)}`;
+}
+
 /**
  * Construye la descripción del producto que se muestra en el modal y se envía al asesor.
  * Es la única fuente de ese texto, para que tarjeta, modal y mensaje coincidan.
@@ -466,6 +506,22 @@ function hydrateContactData() {
 }
 
 /**
+ * Muestra u oculta cada promoción y sus enlaces de menú según su vigencia,
+ * y escribe su texto de vigencia. Se puede llamar desde la consola con otra
+ * fecha para probar, por ejemplo: applyPromotions(new Date('2026-12-01T00:00:00-05:00')).
+ * @param {Date} [ahora=new Date()] - Instante a evaluar.
+ */
+function applyPromotions(ahora = new Date()) {
+    siteData.promociones.forEach(promo => {
+        const vigente = isPromotionActive(promo, ahora);
+        document.querySelectorAll(`[data-promo="${promo.id}"], [data-promo-link="${promo.id}"]`)
+            .forEach(elemento => elemento.classList.toggle('hidden', !vigente));
+        document.querySelectorAll(`[data-promo-vigencia="${promo.id}"]`)
+            .forEach(elemento => { elemento.textContent = formatDateRange(promo.inicio, promo.fin); });
+    });
+}
+
+/**
  * Muestra el precio de cada promoción en los elementos marcados con data-promo-precio.
  */
 function renderPromotionPrices() {
@@ -486,6 +542,7 @@ if (typeof window !== 'undefined') {
         renderFirmaCards();
         renderComprobantesCards();
         renderPromotionPrices();
+        applyPromotions();
         hydrateContactData();
         document.addEventListener('click', handleDocumentClick);
         document.addEventListener('keydown', handleModalKeydown);
@@ -524,6 +581,9 @@ if (typeof module !== 'undefined' && module.exports) {
         fillTemplate,
         buildWhatsAppUrl,
         formatShortDateRange,
-        buildProductDescription
+        buildProductDescription,
+        getEcuadorDateString,
+        isPromotionActive,
+        formatDateRange
     };
 }

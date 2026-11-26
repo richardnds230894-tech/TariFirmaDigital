@@ -69,3 +69,18 @@ test('el modal es un diálogo accesible con su título', () => {
     assert.ok(modal[0].includes('aria-labelledby="advisor-modal-title"'), 'falta aria-labelledby');
     assert.match(html, /id="advisor-modal-title"/);
 });
+
+test('invariante 4: la promoción y sus enlaces de menú están ocultos por defecto', () => {
+    const seccion = html.match(/<section\b[^>]*id="promociones"[^>]*>/);
+    assert.ok(seccion, 'no existe section#promociones');
+    assert.match(seccion[0], /data-promo="[^"]+"/);
+    assert.match(seccion[0], /class="[^"]*\bhidden\b/);
+
+    const enlaces = [...html.matchAll(/<a\b[^>]*data-promo-link="[^"]+"[^>]*>/g)].map(m => m[0]);
+    assert.equal(enlaces.length, 2, 'se esperaban 2 enlaces de menú (escritorio y móvil)');
+    for (const enlace of enlaces) {
+        assert.match(enlace, /class="[^"]*\bhidden\b/, enlace);
+    }
+    assert.match(html, /data-promo-vigencia="[^"]+"/);
+    assert.ok(!html.includes('Del 9 de noviembre al 30 de noviembre'), 'la vigencia sigue escrita a mano');
+});
