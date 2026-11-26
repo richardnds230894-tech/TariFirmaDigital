@@ -127,7 +127,7 @@ muestran su aviso de promoción.
 | Campo | Tipo | Regla | Valor |
 |-------|------|-------|-------|
 | `medicion.websiteId` | cadena UUID o `null` | sin él no se mide | `null` (pendiente) |
-| `medicion.endpoint` | cadena HTTPS | URL de envío de Umami Cloud (a verificar, R3) | `https://cloud.umami.is/api/send` |
+| `medicion.endpoint` | cadena HTTPS | URL de envío de Umami Cloud (verificada el 2026-11-26 en docs.umami.is, R3) | `https://gateway.umami.is/api/send` |
 | `medicion.dominio` | cadena o `null` | host público; solo se mide en ese host | `null` (pendiente) |
 
 El evento de uso no se guarda en el sitio: se arma y se envía (ver

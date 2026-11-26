@@ -80,12 +80,12 @@ script**. `script.js` envía los eventos directamente a la API pública de Umami
 - Las condiciones de dominio y `websiteId` evitan medir al abrir el archivo localmente o en las
   pruebas.
 
-**A verificar al implementar** (tarea explícita): antes de codificar, confirmar en
-docs.umami.is ("Sending stats") la URL del endpoint de Cloud (se espera
-`https://cloud.umami.is/api/send`), la forma del cuerpo (`{ type, payload: { website, hostname,
-url, title, language, screen, referrer, name?, data? } }`) y el límite mensual vigente del plan
-Hobby. Las fuentes de terceros citan 100 000 eventos al mes, cifra que no está confirmada en la
-página oficial. Con el tráfico de una página de un negocio local, el margen es amplio.
+**Verificado el 2026-11-26** en docs.umami.is ("Sending stats"): el endpoint de Umami Cloud es
+`https://gateway.umami.is/api/send` (no `cloud.umami.is`, como se suponía); la forma del cuerpo
+(`{ type, payload: { website, hostname, url, title, language, screen, referrer, name?, data? } }`)
+coincide; no hace falta token, pero sí un User-Agent válido. El límite mensual del plan Hobby sigue sin
+confirmarse en la página oficial (terceros citan 100 000 eventos al mes); con el tráfico de un
+negocio local el margen es amplio, y debe revisarse al crear la cuenta.
 
 **Alternativas**:
 - Script oficial de Umami o Plausible desde su CDN: no tienen versión fija ni SRI posible.
@@ -215,7 +215,7 @@ desfase fijo ya probado.
 - `pickSuggestedAdvisor(asesores, aleatorio)` elige un asesor con `aleatorio()` inyectable para
   las pruebas. Se llama **una vez por carga de página** y el resultado queda en memoria, así que
   la sugerencia es la misma durante la visita.
-- En el modal, el enlace del asesor sugerido lleva el estilo dorado, va primero (clases `order-*`)
+- En el modal, el enlace del asesor sugerido lleva el estilo dorado, va primero (se mueve al inicio del DOM, para que también sea el primero con Tab)
   y muestra la etiqueta "Sugerido". Los IDs `link-asesor-1` y `link-asesor-2` se conservan.
 - Las plantillas de mensaje dejan de usar `{asesor}`, por ejemplo: "Hola, equipo de {negocio},
   estoy interesado en adquirir: …".
@@ -317,9 +317,9 @@ accesibilidad de la constitución.
 **Decisión**: una etiqueta `<meta http-equiv="Content-Security-Policy">` en cada página:
 
 ```text
-default-src 'self'; script-src 'self'; style-src 'self' https://cdnjs.cloudflare.com;
-font-src 'self' https://cdnjs.cloudflare.com; img-src 'self' data:;
-connect-src <endpoint de Umami>; base-uri 'self'; form-action 'none'; object-src 'none'
+default-src 'self' file:; script-src 'self' file:; style-src 'self' file: https://cdnjs.cloudflare.com;
+font-src 'self' file: https://cdnjs.cloudflare.com; img-src 'self' file: data:;
+connect-src 'self' https://gateway.umami.is; base-uri 'self'; form-action 'none'; object-src 'none'
 ```
 
 **Justificación**:
@@ -335,6 +335,11 @@ connect-src <endpoint de Umami>; base-uri 'self'; form-action 'none'; object-src
   o las fuentes. Al implementar se prueba en Chrome, Firefox y Safari. Si alguno bloquea, se
   quita el `<meta>` y la CSP pasa a ser una cabecera del hosting documentada en el README; el
   resultado se anota aquí.
+  **Resultado (2026-11-26)**: Chrome y Edge cargan `script.js`, `tailwind.css` y las fuentes
+  por `file://` sin violaciones de CSP; se mantiene el `<meta>`. Firefox y Safari quedan para la
+  verificación del PR. El validador W3C (vnu) advierte que `'self'` no cubre archivos `file:`,
+  así que se agregó la fuente de esquema `file:` (según CSP3 coincide con cualquier URL `file:`;
+  en producción no tiene efecto, porque una página HTTPS no puede cargar recursos `file:`).
 
 **Alternativa**: no definir CSP. Pierde una defensa barata frente a XSS en la página de venta.
 Rechazada.

@@ -3,8 +3,10 @@
 Interfaz saliente nueva del sitio (FR-037, FR-037a, research R3). `script.js` la implementa con
 `fetch`. Ningún código de terceros se carga en la página.
 
-> **Verificar antes de implementar**: el endpoint y la forma del cuerpo contra la documentación
-> oficial "Sending stats" de Umami. Si difieren, se corrige este contrato primero.
+> **Verificado el 2026-11-26** en docs.umami.is ("Sending stats"): para Umami Cloud el endpoint es
+> `https://gateway.umami.is/api/send` (no `cloud.umami.is`); el cuerpo `{ type, payload }` coincide con
+> este contrato; no requiere token, pero sí un User-Agent válido (el navegador lo envía). La página
+> no documenta CORS ni el límite mensual del plan Hobby.
 
 ## Cuándo se envía
 

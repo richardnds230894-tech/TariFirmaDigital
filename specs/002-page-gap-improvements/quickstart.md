@@ -125,7 +125,7 @@ En la consola, sin recargar, simula horas con `renderAttentionStatus(new Date(�
 |----------------|----------|
 | miércoles 10:00 | "Atendiendo ahora" |
 | miércoles 18:00 | "Fuera de horario · Te respondemos mañana desde las 9:00" |
-| viernes 20:00 | "… el sábado desde las 10:00" |
+| viernes 20:00 | "… mañana desde las 10:00" (sábado; regla: hoy → mañana → "el <día>") |
 | sábado 14:30 | "… el lunes desde las 9:00" |
 | domingo 12:00 | "… mañana desde las 9:00" |
 
