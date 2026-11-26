@@ -39,9 +39,9 @@ const siteData = {
         // Identidad legal (FR-012, FR-013). null = pendiente del responsable: el dato no se
         // muestra hasta tenerlo y `PUBLICAR=1 node --test` impide publicar sin él.
         legal: {
-            razonSocial: null,
-            ruc: null,
-            ciudad: null,
+            razonSocial: 'Richard Nixon Dueñas Salvatierra',
+            ruc: '0950463232001',
+            ciudad: 'Guayaquil',
             entidadCertificadora: null
         },
         mensajes: {
