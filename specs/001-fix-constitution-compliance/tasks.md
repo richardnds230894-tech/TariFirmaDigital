@@ -194,12 +194,12 @@ en las pruebas (archivos separados en `tests/`) y en US3 (`.gitignore`).
 
 **Purpose**: calidad, documentación y validación final contra la constitución
 
-- [ ] T048 [P] Revisar `script.js` según el Principio II: JSDoc en español en cada función, camelCase, verbo al inicio, 4 espacios, sin `var`, sin `console.log` y sin código muerto (incluidos restos de los arreglos y del `onclick` antiguos)
-- [ ] T049 [P] Ampliar `README.md` con: dónde editar precios, asesores, horarios y promociones (`siteData` en `script.js`), cómo correr las pruebas (`node --test`) y la carpeta `documentos-clientes/` ignorada por git
-- [ ] T050 Ejecutar `node --test` y confirmar que todas las pruebas pasan
-- [ ] T051 Validar `index.html` en el validador W3C (https://validator.w3.org/#validate_by_input) y corregir los errores introducidos por esta feature
-- [ ] T052 Comparar el sitio con las capturas de línea base de T001 en 375 px y 1024 px (FR-021). Las únicas diferencias aceptadas son el formato `+593 …` en la sección principal, `$14,99` en la promoción y la promoción oculta fuera de vigencia
-- [ ] T053 Ejecutar la verificación manual completa de quickstart.md §3 (puntos 1–7) y registrar el resultado en la descripción del PR, como exige la sección "Flujo de Desarrollo" de la constitución
+- [X] T048 [P] Revisar `script.js` según el Principio II: JSDoc en español en cada función, camelCase, verbo al inicio, 4 espacios, sin `var`, sin `console.log` y sin código muerto (incluidos restos de los arreglos y del `onclick` antiguos)
+- [X] T049 [P] Ampliar `README.md` con: dónde editar precios, asesores, horarios y promociones (`siteData` en `script.js`), cómo correr las pruebas (`node --test`) y la carpeta `documentos-clientes/` ignorada por git
+- [X] T050 Ejecutar `node --test` y confirmar que todas las pruebas pasan
+- [ ] T051 Validar `index.html` en el validador W3C (https://validator.w3.org/#validate_by_input) y corregir los errores introducidos por esta feature. **Pendiente (2026-11-25)**: no se envió el HTML al servicio externo sin autorización. Revisión local hecha: 17 IDs sin duplicados, etiquetas balanceadas, `aria-labelledby` válido
+- [X] T052 Comparar el sitio con las capturas de línea base de T001 en 375 px y 1024 px (FR-021). Las únicas diferencias aceptadas son el formato `+593 …` en la sección principal, `$14,99` en la promoción y la promoción oculta fuera de vigencia
+- [ ] T053 Ejecutar la verificación manual completa de quickstart.md §3 (puntos 1–7) y registrar el resultado en la descripción del PR, como exige la sección "Flujo de Desarrollo" de la constitución. **Ejecutada (2026-11-25)** en Chrome headless (puntos 1–7 OK; consola solo con el aviso del CDN de Tailwind, fuera de alcance). Pendiente: copiar el resultado a la descripción del PR al abrirlo
 
 ---
 

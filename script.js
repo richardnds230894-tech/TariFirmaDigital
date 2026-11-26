@@ -287,6 +287,7 @@ function renderFirmaCards() {
 
 /**
  * Cambia entre Persona Natural y Persona Jurídica y actualiza los precios
+ * @param {string} type - "natural" o "juridica".
  */
 function setTaxpayerType(type) {
     currentTaxpayerType = type;
