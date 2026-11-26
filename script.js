@@ -99,7 +99,7 @@ const siteData = {
     medicion: {
         websiteId: null,
         endpoint: 'https://gateway.umami.is/api/send',
-        dominio: null
+        dominio: 'tari-firma-digital.vercel.app'
     }
 };
 
