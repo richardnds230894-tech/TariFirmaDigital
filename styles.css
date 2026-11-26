@@ -40,7 +40,7 @@ animation: pulse-border 2.5s infinite;
 }
 
 /* Aviso visible solo cuando el navegador no ejecuta JavaScript (ver <noscript> en index.html).
-   No usa Tailwind porque Tailwind se carga con JavaScript. */
+   Se mantiene en esta hoja porque es un estilo propio del aviso, independiente de Tailwind. */
 .aviso-sin-js {
 background: #E5B94C;
 color: #040F22;
@@ -48,4 +48,9 @@ font-family: 'Inter', sans-serif;
 font-weight: 800;
 text-align: center;
 padding: 14px 16px;
+}
+
+/* Sin animación continua para quien pide reducir el movimiento (FR-032) */
+@media (prefers-reduced-motion: reduce) {
+.animate-pulse-gold { animation: none; }
 }
