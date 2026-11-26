@@ -435,8 +435,8 @@ los eventos llegan a Umami.
   - cómo completar los pendientes (`todo`) de `node --test`;
   - funciones de consola `applyPromotions(…)` y `renderAttentionStatus(…)`
 - [X] T095 Validar `index.html`, `privacidad.html` y `terminos.html` en el validador W3C con 0 errores (Principio IV; quickstart §10.6)
-- [ ] T096 Ejecutar quickstart.md de punta a punta y la verificación manual del Principio IV (pasos 1–5), incluida la medición Lighthouse de quickstart.md §2.3 (SC-007: LCP < 3 s en móvil "Slow 4G"); tomar capturas en 375 px y 1280 px para el PR
-- [ ] T097 Ejecutar `node --test` (0 fail), copiar al PR la lista de `todo` de `tests/publicacion.test.js` como checklist de datos que debe entregar el responsable (research R14) y, cuando estén todos, confirmar que `PUBLICAR=1 node --test` termina con 0 fail
+- [ ] T096 Ejecutar quickstart.md de punta a punta y la verificación manual del Principio IV (pasos 1–5), incluida la medición Lighthouse de quickstart.md §2.3 (SC-007: LCP < 3 s en móvil "Slow 4G"); tomar capturas en 375 px y 1280 px para el PR. **Avance 2026-11-26**: medición Lighthouse hecha por el responsable; pendiente la prueba manual en Firefox, Safari y con lector de pantalla
+- [X] T097 Ejecutar `node --test` (0 fail), copiar al PR la lista de `todo` de `tests/publicacion.test.js` como checklist de datos que debe entregar el responsable (research R14) y, cuando estén todos, confirmar que `PUBLICAR=1 node --test` termina con 0 fail
 - [ ] T098 Abrir el PR desde `002-page-gap-improvements`, siguiendo `specs/002-page-gap-improvements/quickstart.md`, con:
   - descripción del cambio y resultado de la verificación del Principio IV;
   - capturas;
