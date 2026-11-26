@@ -157,8 +157,8 @@ que se muestran.
 - La fecha del dispositivo del visitante es incorrecta: la promoción se rige por esa fecha; se
   acepta ese riesgo (ver Assumptions).
 - El visitante abre el modal y cambia el tipo de contribuyente antes de elegir asesor.
-- El navegador tiene JavaScript desactivado: los enlaces directos a WhatsApp de la sección
-  principal y del pie de página siguen funcionando.
+- El navegador tiene JavaScript desactivado: el sitio muestra un aviso para activarlo (hoy el
+  catálogo y el modal ya dependen de JavaScript).
 - Archivos sensibles con extensión en mayúsculas (`.P12`, `.PFX`).
 - Ya existía algún archivo sensible en el historial del repositorio antes de esta corrección.
 
@@ -184,8 +184,9 @@ que se muestran.
   (`+593 96 017 8652`, `+593 96 979 0890`).
 - **FR-007**: Todos los enlaces a WhatsApp y Facebook MUST conservar su comportamiento actual:
   abrir en pestaña nueva, de forma segura, con el mensaje prellenado que corresponda.
-- **FR-008**: Los enlaces directos a WhatsApp de la sección principal y del pie de página MUST
-  seguir funcionando aunque el navegador no ejecute scripts.
+- **FR-008**: Si el navegador no ejecuta scripts, el sitio MUST mostrar un aviso visible que pida
+  activarlos para ver planes y contactar a un asesor. Los datos de contacto no se duplican para
+  este caso (decisión de plan 2026-11-25, ver research.md R1).
 
 **Archivos sensibles (Principio III)**
 
