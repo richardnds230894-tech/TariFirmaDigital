@@ -173,5 +173,5 @@ publicidad engañosa según la normativa de defensa del consumidor.
 <!-- Enmienda 1.1.0 (MINOR, 2026-11-26, feature 002): el Principio I y "Stack" admiten Tailwind
 precompilado con su configuración en tailwind.config.js e Inter servida localmente, como ya
 permitía "Restricciones → Producción". Sin impacto en el código existente hasta que se
-implemente la feature 002. -->
+implemente la feature 002. Aprobada por el responsable del proyecto el 2026-11-26 (PR #2). -->
 
