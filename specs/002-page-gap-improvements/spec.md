@@ -43,7 +43,8 @@ v1.0.0. Cada hueco se resuelve en una historia de usuario más abajo.
 - Q: ¿Cómo se presentan los asesores en el modal? → A: Siguen anónimos; la página sugiere uno de
   los dos, repartiendo las consultas, y permite elegir el otro.
 - Q: ¿Cómo se mide qué plan o botón genera consultas? → A: Con una analítica sin cookies que
-  respete la privacidad; como es un script de terceros, se justifica en el plan (Principio III).
+  respete la privacidad, sin cargar su script; la justificación del Principio III está en
+  FR-037a.
 
 ## User Scenarios & Testing *(mandatory)*
 
@@ -217,8 +218,9 @@ el estado correcto, y el modal permite contactar en un solo clic.
 3. **Given** el modal de contacto, **When** se abre, **Then** un asesor aparece destacado como
    sugerido y el otro sigue disponible; los asesores no muestran nombre propio y el saludo del
    mensaje no dice "Hola Asesor 1".
-4. **Given** 100 aperturas del modal por visitantes distintos, **When** se cuentan las
-   sugerencias, **Then** cada asesor fue sugerido entre el 40 % y el 60 % de las veces.
+4. **Given** una visita nueva, **When** la página elige el asesor sugerido, **Then** cada
+   asesor tiene la misma probabilidad (1/2) de ser elegido, y la elección no depende de la hora
+   ni del plan. El reparto real se mide como indicador en SC-010.
 
 ---
 
@@ -262,7 +264,7 @@ visible bajo la cabecera, y un lector de pantalla anuncia el estado del menú y 
 4. **Given** un visitante con la preferencia de "reducir movimiento", **When** ve la promoción,
    **Then** el borde no pulsa de forma continua.
 5. **Given** la página, **When** se revisa la estructura de títulos, **Then** sigue un orden
-   lógico (h1 → h2 → h3) y ningún texto informativo (precios, "IVA incluido") es menor de 12 px.
+   lógico (h1 → h2 → h3) y ningún texto de la página es menor de 12 px.
 
 ---
 
@@ -300,8 +302,8 @@ externos se verifican, y el responsable puede saber qué plan originó cada cons
   Assumptions).
 - Dos promociones vigentes a la vez: ambas deben mostrarse y el menú debe llevar a la sección de
   promociones una sola vez.
-- Una promoción que afecta a un plan que ya no existe en el catálogo: la promoción se muestra,
-  pero ninguna tarjeta enlaza a ella.
+- Una variante de promoción cuyo plan de firma ya no existe en el catálogo: los datos se
+  consideran inválidos y las pruebas automáticas lo rechazan antes de publicar.
 - Una pregunta frecuente con una respuesta larga en móvil de 375 px: el texto no se desborda.
 - El visitante abre la página sin scripts: el aviso actual sigue apareciendo y el contenido
   estático nuevo (proceso, requisitos, preguntas frecuentes, aviso de privacidad) se puede leer.
@@ -372,8 +374,8 @@ externos se verifican, y el responsable puede saber qué plan originó cada cons
 
 - **FR-017**: Cada variante de una promoción vigente MUST poder pedirse con un clic, con su propio
   texto y precio con IVA en el modal y en el mensaje de WhatsApp.
-- **FR-018**: El texto de cada variante (años que paga, años que recibe y precio) MUST salir de un
-  único dato, igual que el resto del catálogo (Principio V).
+- **FR-018**: El texto de cada variante (años que paga, años que recibe y precio) MUST cumplir la
+  regla de fuente única de FR-039 (Principio V).
 - **FR-019**: Mientras una promoción esté vigente, la tarjeta del plan del catálogo al que afecta
   MUST indicarlo y llevar a la promoción.
 - **FR-020**: El responsable MUST poder publicar, cambiar o retirar una promoción editando solo
@@ -416,8 +418,8 @@ externos se verifican, y el responsable puede saber qué plan originó cada cons
 - **FR-031**: El selector Persona Natural / Persona Jurídica MUST anunciar la opción seleccionada.
 - **FR-032**: Las animaciones continuas MUST detenerse cuando el visitante pide reducir el
   movimiento.
-- **FR-033**: Los títulos MUST seguir un orden jerárquico sin saltos, y el texto informativo MUST
-  tener al menos 12 px.
+- **FR-033**: Los títulos MUST seguir un orden jerárquico sin saltos, y ningún texto de la página
+  MUST ser menor de 12 px.
 
 **Producción y medición (US10)**
 
@@ -427,9 +429,10 @@ externos se verifican, y el responsable puede saber qué plan originó cada cons
 - **FR-037**: El responsable MUST poder ver cuántas veces se pulsó cada botón de plan, promoción,
   renovación y contacto, mediante una medición que no use cookies, no guarde datos personales
   ni identifique al visitante, y que no agregue nada a los mensajes de WhatsApp.
-- **FR-037a**: La herramienta de medición MUST justificarse en el plan y cargarse con versión
-  fija y verificación de integridad (Principio III); si falla, la página MUST seguir
-  funcionando igual.
+- **FR-037a**: La medición MUST NOT cargar scripts de terceros: los eventos se envían desde el
+  código propio del sitio, versionado en el repositorio. Justificación según el Principio III:
+  se necesita para SC-009, no usa cookies ni datos personales y se desactiva dejando vacío el
+  identificador del sitio. Si el envío falla, la página MUST seguir funcionando igual.
 
 **Generales**
 
@@ -474,7 +477,8 @@ externos se verifican, y el responsable puede saber qué plan originó cada cons
 - **SC-006**: El indicador de atención es correcto en el 100 % de las horas de prueba dentro y
   fuera del horario (incluidos sábado por la tarde y domingo).
 - **SC-007**: La página abre sin errores ni advertencias en la consola y su contenido principal es
-  visible y con estilo en menos de 3 segundos en un móvil con conexión 4G típica.
+  visible y con estilo en menos de 3 segundos en un móvil con conexión 4G lenta (≈ 1,6 Mbps de
+  bajada y 150 ms de latencia).
 - **SC-008**: La revisión de accesibilidad con teclado y lector de pantalla no encuentra ningún
   control sin nombre o sin estado anunciado.
 - **SC-009**: Tras un mes, el responsable puede ver en su panel de medición los clics de cada plan
