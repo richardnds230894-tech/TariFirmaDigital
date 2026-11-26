@@ -36,8 +36,10 @@ dom-hooks).
 
 ## Imagen para compartir
 
-`img/og-tari.jpg`: JPEG de 1200×630 px y menos de 300 KB. Muestra el logo, "Firma Electrónica P12
-y Facturación SRI" y "Ecuador". No lleva precios, para que no quede desactualizada.
+`img/og-tari.jpg`: JPEG de 1200×630 px y menos de 300 KB. Muestra el logo, el eslogan "Firma y
+Facturación Electrónica al instante" (aprobado por el responsable el 2026-11-26) y las etiquetas
+"100% en línea", "Todo Ecuador" y "Atención por WhatsApp". No lleva precios, para que no quede
+desactualizada.
 
 ## Datos estructurados (generados por `script.js`)
 
