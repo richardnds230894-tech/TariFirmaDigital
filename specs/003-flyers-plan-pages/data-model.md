@@ -9,20 +9,23 @@ Solo los **cambios** sobre el modelo de la
 | Campo | Tipo | Regla |
 |-------|------|-------|
 | `id` | cadena | único; solo `a-z`, `0-9` y `-`; se usa en `flyer:<id>` y en la medición |
+| `tipo` | cadena | obligatorio; `'promocion'` o `'informativo'` (D1 del análisis; Principio V) |
 | `imagen` | cadena | ruta relativa que empieza por `img/flyers/` y termina en `.webp`, `.avif` o `.svg`; el archivo MUST existir y pesar ≤ 250 KB |
 | `imagenMovil` | cadena u omitido | misma regla que `imagen`; se usa en pantallas de 640 px o menos |
 | `alt` | cadena | obligatorio, entre 10 y 200 caracteres; transmite el mensaje del flyer (FR-005) |
 | `destino` | objeto u omitido | ver "Destino de flyer" |
-| `inicio` | cadena `AAAA-MM-DD` u omitido | si existe `fin`, `inicio ≤ fin` |
-| `fin` | cadena `AAAA-MM-DD` u omitido | día de fin completo, en hora de Ecuador |
+| `inicio` | cadena `AAAA-MM-DD` u omitido | **obligatorio si `tipo` es `promocion`**; si existe `fin`, `inicio ≤ fin` |
+| `fin` | cadena `AAAA-MM-DD` u omitido | **obligatorio si `tipo` es `promocion`**; día de fin completo, en hora de Ecuador |
 
-**Orden**: el del arreglo. **Vigencia**: sin fechas es permanente; con fechas usa la misma regla
+**Imagen**: MUST NOT contener precios ni montos (FR-009a). **Orden**: el del arreglo.
+**Vigencia**: un flyer informativo sin fechas es permanente; con fechas usa la misma regla
 de `isPromotionActive` (Ecuador, UTC−5).
 
 Valor inicial (FR-008):
 
 ```text
 { id: 'recomendacion-clave',
+  tipo: 'informativo',
   imagen: 'img/flyers/recomendacion-clave.webp',
   imagenMovil: 'img/flyers/recomendacion-clave-movil.webp',
   alt: 'Tu firma es personal: nunca compartas tu archivo P12 ni tu contraseña. Tari’s Firma Digital.',
@@ -86,7 +89,7 @@ Texto nuevo derivado: `formatValidityLabel(plan)` → `Vigencia 10 días`, `Vige
 |-------|------------------|
 | `flyer:<id>` | el `mensaje` del destino de contacto de ese flyer; `null` si el flyer no existe o no es de contacto |
 | `facturacion:natural` | `Sistema de Facturación Electrónica (Persona Natural) - Consulta de requisitos` |
-| `facturacion:juridica` | `Sistema de Facturación Electrónica (Persona Jurídica) - Consulta de requisitos` |
+| `facturacion:juridica` | `Sistema de Facturación Electrónica (Persona Jurídica) - Consulta de requisitos`; la tarjeta se titula "Persona Jurídica (Representante Legal)" para coincidir |
 
 Las demás claves (`firma:<i>`, `comprobantes:<i>`, `promo:<id>[:<v>]`, `general`, `flotante`,
 `banco` y `renovacion`) no cambian.

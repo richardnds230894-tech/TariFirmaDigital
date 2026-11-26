@@ -64,7 +64,8 @@ permanente (`recomendacion-clave`), y `script.js` lo reemplaza al iniciar.
     "solo personas naturales", y **no** contiene selector de tipo de cliente (`data-taxpayer`) ni
     la palabra "token".
 17. `facturacion.html` contiene `comprobantes-cards-container`, `btn-natural`, `btn-juridica`,
-    `#requisitos` con exactamente dos tarjetas ("Persona Natural" y "Representante Legal") y
+    `#requisitos` con exactamente dos tarjetas ("Persona Natural" y "Persona Jurídica (Representante
+    Legal)") y
     `[data-bancos]`, y **no** contiene "Miembro de Empresa".
 18. Ninguna página contiene los textos ni las cifras de los sitios de referencia ("Security Data",
     "millones de firmas", "App móvil", "usuarios activos").

@@ -97,8 +97,9 @@ README; aparece en el carrusel entre sus fechas y desaparece solo al vencer.
    responsable copia la imagen a la carpeta de flyers del sitio y registra sus datos en el
    archivo de datos, siguiendo los pasos del README, **Then** el flyer aparece en el carrusel en
    el orden indicado al publicarse el cambio.
-2. **Given** un flyer con fecha de fin, **When** esa fecha pasa (hora de Ecuador), **Then** el
-   flyer deja de mostrarse sin intervención.
+2. **Given** un flyer de promoción (siempre lleva fecha de inicio y de fin) o un flyer informativo
+   con fecha de fin, **When** esa fecha pasa (hora de Ecuador), **Then** el flyer deja de
+   mostrarse sin intervención.
 3. **Given** un flyer sin destino, **When** el visitante lo pulsa, **Then** no ocurre nada
    inesperado; un flyer con destino abre WhatsApp con su mensaje o lleva a la página indicada.
 
@@ -175,10 +176,10 @@ precios, el pedido llega al asesor con el plan exacto y se ven los requisitos de
    Jurídica, **Then** los precios cambian como hoy, con "IVA incluido" y el promedio de comprobantes
    por mes.
 3. **Given** la sección "Requisitos para obtener tu Sistema de Facturación Electrónica", **When** se
-   lee, **Then** muestra una tarjeta por tipo de cliente: Persona Natural y Representante Legal
-   (empresa), sin "Miembro de Empresa", cada una con su vigencia, sus documentos y un botón
+   lee, **Then** muestra una tarjeta por tipo de cliente: Persona Natural y Persona Jurídica
+   (Representante Legal), sin "Miembro de Empresa", cada una con su vigencia, sus documentos y un botón
    "Solicítalo aquí" que abre el contacto.
-4. **Given** la tarjeta de Representante Legal, **When** se lee, **Then** muestra los requisitos
+4. **Given** la tarjeta de Persona Jurídica (Representante Legal), **When** se lee, **Then** muestra los requisitos
    confirmados en noviembre: certificado de RUC de la empresa y una firma electrónica vigente de
    la empresa o de su representante legal, gestionada por su cuenta, junto al aviso de que en
    este sitio la firma se emite solo a personas naturales.
@@ -218,9 +219,11 @@ planes.
   planes muestran sus textos y requisitos.
 - Flyer con una fecha de fin anterior a la de inicio: es un dato inválido que las pruebas
   automáticas rechazan antes de publicar.
+- Flyer de promoción sin fecha de inicio o de fin: es un dato inválido que las pruebas rechazan
+  antes de publicar (Principio V).
 - Varias promociones vigentes a la vez: cada una tiene su flyer.
-- Flyer con precio dentro de la imagen: el precio no sale del dato único; se permite solo si el
-  responsable lo confirma, y se recomienda no hacerlo.
+- Las imágenes de flyers MUST NOT contener precios. Una promoción con precio se publica en los
+  datos de promociones, que generan su propia diapositiva con los precios del sitio (Principio V).
 - Pantalla de 375 px: el flyer se ve completo, sin texto cortado, y sus controles se pueden tocar.
 
 ## Requirements *(mandatory)*
@@ -229,8 +232,8 @@ planes.
 
 **Carrusel de flyers (US1, US2)**
 
-- **FR-001**: La página principal MUST mostrar un carrusel de flyers como primer contenido debajo de
-  la cabecera.
+- **FR-001**: La página principal MUST mostrar un carrusel de flyers, en la posición que fija
+  FR-011.
 - **FR-002**: El carrusel MUST mostrar solo los flyers vigentes en hora de Ecuador, en el orden
   definido por el responsable.
 - **FR-003**: El carrusel MUST permitir avanzar y retroceder con flechas, indicadores, teclado y
@@ -248,9 +251,11 @@ planes.
 - **FR-008**: El sitio MUST incluir un flyer inicial con una recomendación sobre el uso seguro de la
   firma electrónica, sin precios.
 - **FR-009**: El responsable MUST poder agregar, cambiar o retirar flyers copiando la imagen a la
-  carpeta de flyers y editando solo sus datos (imagen, texto alternativo, orden, destino opcional
-  y fechas opcionales), sin servidor ni panel de administración, con pasos documentados en el
-  README.
+  carpeta de flyers y editando solo sus datos (tipo, imagen, texto alternativo, orden, destino
+  opcional y fechas), sin servidor ni panel de administración, con pasos documentados en el
+  README. Cada flyer es de **promoción** o **informativo**; un flyer de promoción MUST tener fecha
+  de inicio y de fin (Principio V), y uno informativo las tiene opcionales.
+- **FR-009a**: Las imágenes de los flyers MUST NOT contener precios ni montos (Principio V).
 - **FR-010**: Debajo del carrusel MUST haber una barra "Preguntas frecuentes" con colores de la
   marca que lleve a la sección de preguntas.
 
@@ -293,9 +298,9 @@ planes.
   Persona Jurídica, los precios con "IVA incluido", el promedio por mes, los tipos de comprobante y
   el recordatorio de firma vigente (feature 002).
 - **FR-024**: La página MUST mostrar los requisitos para obtener el sistema de facturación en una
-  tarjeta por tipo de cliente, Persona Natural y Representante Legal, sin "Miembro de Empresa",
+  tarjeta por tipo de cliente, Persona Natural y Persona Jurídica (Representante Legal), sin "Miembro de Empresa",
   cada una con su vigencia, sus documentos y un botón "Solicítalo aquí".
-- **FR-025**: La tarjeta de Representante Legal MUST mostrar los requisitos confirmados en
+- **FR-025**: La tarjeta de Persona Jurídica (Representante Legal) MUST mostrar los requisitos confirmados en
   noviembre (US5, escenario 4) y MUST NOT agregar documentos no confirmados por el responsable.
 
 **Navegación y consistencia (US6)**
@@ -328,8 +333,8 @@ planes.
 - **Servicio**: nombre, icono, descripción corta y página de destino (Firma Electrónica, Facturación
   Electrónica).
 - **Beneficio**: icono y texto, asociado a la página de firma o a la de facturación.
-- **Requisito por tipo de cliente** (facturación): tipo de cliente (Persona Natural, Representante
-  Legal), vigencia y lista de documentos.
+- **Requisito por tipo de cliente** (facturación): tipo de cliente (Persona Natural, Persona Jurídica /
+  Representante Legal), vigencia y lista de documentos.
 - **Promoción, Plan de firma y Plan de comprobantes** (existentes): sin cambios en sus reglas; se
   muestran en sus páginas nuevas.
 

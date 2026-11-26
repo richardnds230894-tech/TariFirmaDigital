@@ -52,6 +52,8 @@ ampliadas:
 - `metadata.test.js`
 - `data.test.js`
 - `description.test.js`
+- `choice.test.js`
+- `whatsapp.test.js`
 - `analytics.test.js`
 
 **Target Platform**: sin cambios (2 últimas versiones de Chrome, Edge, Firefox y Safari; `file://`
@@ -163,6 +165,8 @@ tests/
 ├── metadata.test.js    # AMPLIADO: firma.html y facturacion.html
 ├── data.test.js        # AMPLIADO: reglas de Flyer, Destino y Banco
 ├── description.test.js # AMPLIADO: flyer:<id>, facturacion:<tipo>
+├── choice.test.js      # AMPLIADO: formatValidityLabel
+├── whatsapp.test.js    # AMPLIADO: ejemplos de facturacion:<tipo>
 └── analytics.test.js   # AMPLIADO: clic-flyer
 ```
 

@@ -66,7 +66,8 @@ Revierte el cambio al terminar.
 
 1. `facturacion.html`: banner de beneficios con "¡Empieza ahora!".
 2. El selector Natural/Jurídica cambia precios y avisos como hoy.
-3. **Requisitos**: dos tarjetas, Persona Natural y Representante Legal, sin "Miembro de Empresa";
+3. **Requisitos**: dos tarjetas, Persona Natural y Persona Jurídica (Representante Legal), sin
+   "Miembro de Empresa";
    "Solicítalo aquí" abre el modal con `Sistema de Facturación Electrónica (Persona …) - Consulta de
    requisitos`.
 4. Las formas de pago muestran los mismos 4 bancos que en `firma.html`.

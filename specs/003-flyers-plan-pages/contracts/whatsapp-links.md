@@ -9,7 +9,7 @@ formato del enlace y las plantillas no cambian.
 | Entrada | `text` decodificado esperado |
 |---------|------------------------------|
 | asesor1, producto `facturacion:natural` | `Hola, equipo de Tari's Firma Digital, estoy interesado en adquirir:\n*Sistema de Facturación Electrónica (Persona Natural) - Consulta de requisitos*\n\nPor favor ayúdeme con el proceso.` |
-| asesor2, producto `facturacion:juridica` | igual, con `(Persona Jurídica)` |
+| asesor2, producto `facturacion:juridica` | igual, con `(Persona Jurídica)`; la tarjeta se titula "Persona Jurídica (Representante Legal)" |
 | asesor1, producto `flyer:<id>` con `mensaje: 'Consulta por el flyer de feriados de diciembre'` | `Hola, equipo de Tari's Firma Digital, estoy interesado en adquirir:\n*Consulta por el flyer de feriados de diciembre*\n\nPor favor ayúdeme con el proceso.` |
 
 ## Reglas

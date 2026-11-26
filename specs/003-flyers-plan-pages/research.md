@@ -183,7 +183,8 @@ estilos.
 ## R8. Requisitos de facturación por tipo de cliente (FR-024, FR-025)
 
 **Decisión**:
-- Dos tarjetas estáticas en `facturacion.html`, "Persona Natural" y "Representante Legal", con
+- Dos tarjetas estáticas en `facturacion.html`, "Persona Natural" y "Persona Jurídica
+  (Representante Legal)", con
   los textos confirmados en noviembre (aclaración Q2 = A). Cada una indica "Vigencia: 1 año" y
   lleva el botón "Solicítalo aquí".
 - Los botones usan claves nuevas, `facturacion:natural` y `facturacion:juridica`.
