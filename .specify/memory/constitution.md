@@ -16,10 +16,12 @@ repositorio.
   (datos del catálogo y lógica), `styles.css` (estilos que Tailwind no cubre: gradientes,
   keyframes). Nuevos archivos MUST justificarse en el plan de la feature.
 - Estilos MUST usar utilidades de Tailwind y los tokens de marca `taris-*` definidos en
-  `tailwind.config` dentro de `index.html` (navy, dark, card, gold, goldLight, goldDark,
+  `tailwind.config.js` (o en la configuración en línea de `index.html` mientras se use el CDN)
+  (navy, dark, card, gold, goldLight, goldDark,
   emerald, emeraldHover, royal, sky) y las sombras `shadow-gold` / `shadow-card`. Un color de
   marca nuevo MUST añadirse como token, no como valor hexadecimal suelto repetido.
-- Dependencias externas permitidas: Tailwind CSS, Google Fonts (Inter), Font Awesome 6.x.
+- Dependencias permitidas: Tailwind CSS (CDN, o precompilado y versionado en el repositorio),
+  la fuente Inter (desde Google Fonts o servida localmente) y Font Awesome 6.x.
   Añadir un framework (React, Vue, etc.), un backend, una base de datos o un empaquetador
   requiere una enmienda MAJOR de esta constitución.
 - Los IDs que `script.js` usa (`firma-cards-container`, `comprobantes-cards-container`,
@@ -119,8 +121,10 @@ publicidad engañosa según la normativa de defensa del consumidor.
 
 ## Restricciones Técnicas y Estándares
 
-- **Stack**: HTML5, Tailwind CSS (configuración en línea en `index.html`), CSS propio en
-  `styles.css`, JavaScript vanilla en `script.js`, Font Awesome 6.5.1, Google Fonts Inter.
+- **Stack**: HTML5, Tailwind CSS 3.4 precompilado en `tailwind.css` (configuración en
+  `tailwind.config.js`; la hoja generada se versiona y regenerarla solo hace falta al agregar
+  clases), CSS propio en `styles.css`, JavaScript vanilla en `script.js`, Font Awesome 6.5.1,
+  Inter servida desde `fonts/`.
 - **Idioma y localización**: `lang="es"`, moneda USD, números de teléfono en formato Ecuador
   (`+593`), contenido orientado a contribuyentes ecuatorianos (Persona Natural / Jurídica).
 - **Producción**: el Play CDN de Tailwind (`cdn.tailwindcss.com`) no está pensado para
@@ -164,4 +168,10 @@ publicidad engañosa según la normativa de defensa del consumidor.
   principios, y cada revisión de PR MUST verificar los Principios III y V. Una vez al trimestre
   se revisa la deuda pendiente frente a la constitución.
 
-**Version**: 1.0.0 | **Ratified**: 2026-11-25 | **Last Amended**: 2026-11-25
+**Version**: 1.1.0 | **Ratified**: 2026-11-25 | **Last Amended**: 2026-11-26
+
+<!-- Enmienda 1.1.0 (MINOR, 2026-11-26, feature 002): el Principio I y "Stack" admiten Tailwind
+precompilado con su configuración en tailwind.config.js e Inter servida localmente, como ya
+permitía "Restricciones → Producción". Sin impacto en el código existente hasta que se
+implemente la feature 002. -->
+
