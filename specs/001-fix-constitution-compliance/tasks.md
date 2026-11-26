@@ -199,7 +199,7 @@ en las pruebas (archivos separados en `tests/`) y en US3 (`.gitignore`).
 - [X] T050 Ejecutar `node --test` y confirmar que todas las pruebas pasan
 - [ ] T051 Validar `index.html` en el validador W3C (https://validator.w3.org/#validate_by_input) y corregir los errores introducidos por esta feature. **Pendiente (2026-11-25)**: no se envió el HTML al servicio externo sin autorización. Revisión local hecha: 17 IDs sin duplicados, etiquetas balanceadas, `aria-labelledby` válido
 - [X] T052 Comparar el sitio con las capturas de línea base de T001 en 375 px y 1024 px (FR-021). Las únicas diferencias aceptadas son el formato `+593 …` en la sección principal, `$14,99` en la promoción y la promoción oculta fuera de vigencia
-- [ ] T053 Ejecutar la verificación manual completa de quickstart.md §3 (puntos 1–7) y registrar el resultado en la descripción del PR, como exige la sección "Flujo de Desarrollo" de la constitución. **Ejecutada (2026-11-25)** en Chrome headless (puntos 1–7 OK; consola solo con el aviso del CDN de Tailwind, fuera de alcance). Pendiente: copiar el resultado a la descripción del PR al abrirlo
+- [X] T053 Ejecutar la verificación manual completa de quickstart.md §3 (puntos 1–7) y registrar el resultado en la descripción del PR, como exige la sección "Flujo de Desarrollo" de la constitución. **Ejecutada (2026-11-25)** en Chrome headless (puntos 1–7 OK; consola solo con el aviso del CDN de Tailwind, fuera de alcance). Resultado registrado en la descripción del PR #1
 
 ---
 
