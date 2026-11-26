@@ -52,6 +52,13 @@
 </head>
 <body class="bg-[#050C17] text-white font-sans antialiased selection:bg-taris-gold selection:text-taris-dark">
 
+    <!-- AVISO SIN JAVASCRIPT (sus estilos viven en styles.css porque Tailwind también requiere JavaScript) -->
+    <noscript>
+        <div class="aviso-sin-js">
+            Para ver nuestros planes y contactar a un asesor por WhatsApp, activa JavaScript en tu navegador.
+        </div>
+    </noscript>
+
     <!-- BARRA SUPERIOR DE INFORMACIÓN Y HORARIOS -->
     <div class="bg-[#030811] border-b border-white/10 text-xs sm:text-sm py-2.5 px-4">
         <div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-2 text-slate-300">
@@ -62,11 +69,11 @@
                 <span class="hidden sm:inline text-white/20">|</span>
                 <span class="flex items-center gap-1.5">
                     <i class="fa-regular fa-clock text-taris-gold"></i>
-                    <span>Lun - Vie: <strong>9:00 a 18:00</strong> | Sáb: <strong>10:00 a 14:00</strong></span>
+                    <span>Lun - Vie: <strong data-horario="semana"></strong> | Sáb: <strong data-horario="sabado"></strong></span>
                 </span>
             </div>
             <div class="flex items-center gap-4">
-                <a href="https://www.facebook.com/profile.php?id=61595452224986" target="_blank" rel="noopener noreferrer" 
+                <a href="#" data-facebook target="_blank" rel="noopener noreferrer" 
                    class="flex items-center gap-1.5 text-sky-400 hover:text-sky-300 transition font-medium">
                     <i class="fa-brands fa-facebook text-base"></i> Síguenos en Facebook
                 </a>
@@ -139,7 +146,7 @@
             <a href="#firma-electronica" class="block px-3 py-2.5 rounded-lg text-slate-200 hover:bg-white/5 font-medium">Firma Electrónica (P12)</a>
             <a href="#facturacion" class="block px-3 py-2.5 rounded-lg text-slate-200 hover:bg-white/5 font-medium">Planes de Comprobantes</a>
             <a href="#requisitos" class="block px-3 py-2.5 rounded-lg text-slate-200 hover:bg-white/5 font-medium">Requisitos y Bancos</a>
-            <a href="https://www.facebook.com/profile.php?id=61595452224986" target="_blank" rel="noopener noreferrer" 
+            <a href="#" data-facebook target="_blank" rel="noopener noreferrer" 
                class="block px-3 py-2.5 rounded-lg text-sky-400 hover:bg-white/5 font-medium">
                 <i class="fa-brands fa-facebook mr-2"></i> Página Oficial en Facebook
             </a>
@@ -184,7 +191,7 @@
 
                     <!-- Botones de Acción Rápida a los 2 Asesores -->
                     <div class="pt-2 flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-3.5">
-                        <a href="https://wa.me/593960178652?text=Hola%20Tari's%20Firma%20Digital,%20deseo%20informaci%C3%B3n%20sobre%20Firma%20y%20Facturaci%C3%B3n%20Electr%C3%B3nica." 
+                        <a href="#" data-whatsapp="asesor1" data-mensaje="info"
                            target="_blank" rel="noopener noreferrer"
                            class="w-full sm:w-auto gold-gradient text-taris-dark font-extrabold px-6 py-3.5 rounded-2xl shadow-gold hover:scale-[1.02] transition flex items-center justify-center gap-3">
                             <span class="w-8 h-8 rounded-full bg-[#16A34A] text-white flex items-center justify-center shadow">
@@ -192,11 +199,11 @@
                             </span>
                             <div class="text-left">
                                 <span class="block text-[11px] uppercase tracking-wider font-bold text-taris-navy/80">Asesor 1</span>
-                                <span class="block text-sm sm:text-base font-black leading-none">0960178652</span>
+                                <span class="block text-sm sm:text-base font-black leading-none" data-phone="asesor1"></span>
                             </div>
                         </a>
 
-                        <a href="https://wa.me/593969790890?text=Hola%20Tari's%20Firma%20Digital,%20deseo%20informaci%C3%B3n%20sobre%20Firma%20y%20Facturaci%C3%B3n%20Electr%C3%B3nica." 
+                        <a href="#" data-whatsapp="asesor2" data-mensaje="info"
                            target="_blank" rel="noopener noreferrer"
                            class="w-full sm:w-auto bg-[#0D254C] border-2 border-taris-gold/70 text-white font-extrabold px-6 py-3.5 rounded-2xl hover:bg-[#133366] hover:scale-[1.02] transition flex items-center justify-center gap-3">
                             <span class="w-8 h-8 rounded-full bg-[#16A34A] text-white flex items-center justify-center shadow">
@@ -204,7 +211,7 @@
                             </span>
                             <div class="text-left">
                                 <span class="block text-[11px] uppercase tracking-wider font-bold text-taris-gold">Asesor 2</span>
-                                <span class="block text-sm sm:text-base font-black leading-none">0969790890</span>
+                                <span class="block text-sm sm:text-base font-black leading-none" data-phone="asesor2"></span>
                             </div>
                         </a>
                     </div>
@@ -245,7 +252,7 @@
                                 <span class="text-sm text-slate-300 flex items-center gap-2.5">
                                     <i class="fa-brands fa-facebook text-sky-400"></i> Comunidad oficial
                                 </span>
-                                <a href="https://www.facebook.com/profile.php?id=61595452224986" target="_blank" rel="noopener noreferrer" 
+                                <a href="#" data-facebook target="_blank" rel="noopener noreferrer" 
                                    class="text-xs font-bold text-sky-400 hover:underline">Visitar Facebook →</a>
                             </div>
                         </div>
@@ -596,7 +603,7 @@
                     <p class="text-slate-400 text-sm leading-relaxed">
                         Soluciones ágiles y seguras en Firma Electrónica (archivo P12) y Sistemas de Facturación Electrónica para todo el Ecuador.
                     </p>
-                    <a href="https://www.facebook.com/profile.php?id=61595452224986" target="_blank" rel="noopener noreferrer"
+                    <a href="#" data-facebook target="_blank" rel="noopener noreferrer"
                        class="inline-flex items-center gap-2.5 px-4 py-2.5 rounded-xl bg-[#1877F2]/15 border border-[#1877F2]/40 text-sky-400 hover:bg-[#1877F2] hover:text-white transition text-sm font-bold">
                         <i class="fa-brands fa-facebook text-lg"></i>
                         <span>Visitar Página de Facebook</span>
@@ -610,14 +617,14 @@
                             <i class="fa-regular fa-clock text-taris-gold mt-1"></i>
                             <div>
                                 <strong class="block text-white">Lunes a Viernes</strong>
-                                <span>9:00 a 18:00</span>
+                                <span data-horario="semana"></span>
                             </div>
                         </li>
                         <li class="flex items-start gap-3">
                             <i class="fa-regular fa-clock text-taris-gold mt-1"></i>
                             <div>
                                 <strong class="block text-white">Sábados</strong>
-                                <span>10:00 a 14:00</span>
+                                <span data-horario="sabado"></span>
                             </div>
                         </li>
                         <li class="flex items-start gap-3">
@@ -633,7 +640,7 @@
                 <div class="space-y-4">
                     <h4 class="text-base font-extrabold text-white uppercase tracking-wider">Líneas Directas WhatsApp</h4>
                     <div class="space-y-3">
-                        <a href="https://wa.me/593960178652?text=Hola%20Asesor%201%20de%20Tari's%20Firma%20Digital,%20necesito%20ayuda." 
+                        <a href="#" data-whatsapp="asesor1" data-mensaje="ayuda"
                            target="_blank" rel="noopener noreferrer"
                            class="flex items-center justify-between p-3.5 rounded-2xl bg-[#0C141D] border border-white/10 hover:border-emerald-500/50 transition group">
                             <div class="flex items-center gap-3">
@@ -642,13 +649,13 @@
                                 </span>
                                 <div>
                                     <span class="block text-xs font-bold text-taris-gold uppercase">Asesor 1</span>
-                                    <span class="block text-sm font-extrabold text-white">+593 96 017 8652</span>
+                                    <span class="block text-sm font-extrabold text-white" data-phone="asesor1"></span>
                                 </div>
                             </div>
                             <i class="fa-solid fa-arrow-up-right-from-square text-slate-500 group-hover:text-white text-xs"></i>
                         </a>
 
-                        <a href="https://wa.me/593969790890?text=Hola%20Asesor%202%20de%20Tari's%20Firma%20Digital,%20necesito%20ayuda." 
+                        <a href="#" data-whatsapp="asesor2" data-mensaje="ayuda"
                            target="_blank" rel="noopener noreferrer"
                            class="flex items-center justify-between p-3.5 rounded-2xl bg-[#0C141D] border border-white/10 hover:border-emerald-500/50 transition group">
                             <div class="flex items-center gap-3">
@@ -657,7 +664,7 @@
                                 </span>
                                 <div>
                                     <span class="block text-xs font-bold text-taris-gold uppercase">Asesor 2</span>
-                                    <span class="block text-sm font-extrabold text-white">+593 96 979 0890</span>
+                                    <span class="block text-sm font-extrabold text-white" data-phone="asesor2"></span>
                                 </div>
                             </div>
                             <i class="fa-solid fa-arrow-up-right-from-square text-slate-500 group-hover:text-white text-xs"></i>
@@ -675,7 +682,7 @@
 
     <!-- BOTÓN FLOTANTE DE WHATSAPP Y FACEBOOK -->
     <div class="fixed bottom-5 right-5 z-40 flex items-center gap-2.5">
-        <a href="https://www.facebook.com/profile.php?id=61595452224986" target="_blank" rel="noopener noreferrer"
+        <a href="#" data-facebook target="_blank" rel="noopener noreferrer"
            aria-label="Facebook Tari's"
            class="w-12 h-12 rounded-full bg-[#1877F2] text-white shadow-lg hover:scale-110 transition flex items-center justify-center text-xl">
             <i class="fa-brands fa-facebook-f"></i>
@@ -716,7 +723,7 @@
                         </span>
                         <div class="text-left">
                             <span class="block text-xs uppercase font-black tracking-wider text-taris-navy">Asesor 1</span>
-                            <span class="block text-base font-black">+593 96 017 8652</span>
+                            <span class="block text-base font-black" data-phone="asesor1"></span>
                         </div>
                     </div>
                     <span class="text-xs font-extrabold bg-taris-dark/15 px-3 py-1.5 rounded-lg">Enviar →</span>
@@ -730,7 +737,7 @@
                         </span>
                         <div class="text-left">
                             <span class="block text-xs uppercase font-black tracking-wider text-taris-gold">Asesor 2</span>
-                            <span class="block text-base font-black">+593 96 979 0890</span>
+                            <span class="block text-base font-black" data-phone="asesor2"></span>
                         </div>
                     </div>
                     <span class="text-xs font-extrabold bg-white/10 px-3 py-1.5 rounded-lg">Enviar →</span>

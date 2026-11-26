@@ -96,7 +96,48 @@ function escapeHtml(valor) {
         .replace(/'/g, '&#39;');
 }
 
-const MESES_CORTOS = ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'];
+/**
+ * Da formato visible a un número de WhatsApp (ej. "593960178652" → "+593 96 017 8652").
+ * @param {string} whatsapp - 12 dígitos sin "+" ni espacios.
+ * @returns {string} Número con prefijo y grupos 3-2-3-4.
+ */
+function formatPhone(whatsapp) {
+    return `+${whatsapp.slice(0, 3)} ${whatsapp.slice(3, 5)} ${whatsapp.slice(5, 8)} ${whatsapp.slice(8)}`;
+}
+
+/**
+ * Sustituye {negocio}, {asesor} y {producto} en una plantilla de mensaje.
+ * @param {string} plantilla - Texto con marcadores entre llaves.
+ * @param {Object<string, string>} valores - Valor de cada marcador.
+ * @returns {string} Texto final.
+ */
+function fillTemplate(plantilla, valores) {
+    return plantilla.replace(/\{(\w+)\}/g, (marcador, nombre) =>
+        Object.prototype.hasOwnProperty.call(valores, nombre) ? valores[nombre] : marcador);
+}
+
+/**
+ * Busca un asesor por su identificador.
+ * @param {string} asesorId - Ej. "asesor1".
+ * @returns {Object|undefined} Asesor encontrado.
+ */
+function findAdvisor(asesorId) {
+    return siteData.asesores.find(a => a.id === asesorId);
+}
+
+/**
+ * Construye el enlace de WhatsApp con el mensaje prellenado (contracts/whatsapp-links.md).
+ * @param {string} asesorId - Ej. "asesor1".
+ * @param {string} mensaje - Texto final, sin codificar.
+ * @returns {string|null} URL https://wa.me/…, o null si el asesor no existe.
+ */
+function buildWhatsAppUrl(asesorId, mensaje) {
+    const asesor = findAdvisor(asesorId);
+    if (!asesor) return null;
+    return `https://wa.me/${asesor.whatsapp}?text=${encodeURIComponent(mensaje)}`;
+}
+
+const MESES_CORTOS =['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'];
 
 /**
  * Genera un rango de fechas corto (ej. "9 al 30 Nov" o "25 Nov al 5 Dic").
@@ -273,11 +314,15 @@ function openAdvisorModal(productDescription) {
 
     productText.textContent = productDescription;
 
-    const message1 = encodeURIComponent(`Hola Asesor 1 de Tari's Firma Digital, estoy interesado en adquirir:\n*${productDescription}*\n\nPor favor ayúdeme con el proceso.`);
-    const message2 = encodeURIComponent(`Hola Asesor 2 de Tari's Firma Digital, estoy interesado en adquirir:\n*${productDescription}*\n\nPor favor ayúdeme con el proceso.`);
-
-    link1.href = `https://wa.me/593960178652?text=${message1}`;
-    link2.href = `https://wa.me/593969790890?text=${message2}`;
+    [[link1, 'asesor1'], [link2, 'asesor2']].forEach(([enlace, asesorId]) => {
+        const asesor = findAdvisor(asesorId);
+        const mensaje = fillTemplate(siteData.negocio.mensajes.producto, {
+            negocio: siteData.negocio.nombre,
+            asesor: asesor.nombre,
+            producto: productDescription
+        });
+        enlace.href = buildWhatsAppUrl(asesorId, mensaje);
+    });
 
     modal.classList.remove('hidden');
     modal.classList.add('flex');
@@ -310,6 +355,40 @@ function handleDocumentClick(evento) {
 }
 
 /**
+ * Rellena los datos de contacto del HTML desde siteData (contracts/dom-hooks.md):
+ * enlaces de WhatsApp y Facebook, números visibles y horarios.
+ */
+function hydrateContactData() {
+    const negocio = siteData.negocio;
+
+    document.querySelectorAll('[data-whatsapp]').forEach(enlace => {
+        const asesor = findAdvisor(enlace.dataset.whatsapp);
+        if (!asesor) return;
+        const plantilla = negocio.mensajes[enlace.dataset.mensaje || 'info'] || negocio.mensajes.info;
+        const mensaje = fillTemplate(plantilla, { negocio: negocio.nombre, asesor: asesor.nombre });
+        enlace.href = buildWhatsAppUrl(asesor.id, mensaje);
+    });
+
+    document.querySelectorAll('[data-phone]').forEach(elemento => {
+        const asesor = findAdvisor(elemento.dataset.phone);
+        if (asesor) {
+            elemento.textContent = formatPhone(asesor.whatsapp);
+        }
+    });
+
+    document.querySelectorAll('[data-facebook]').forEach(enlace => {
+        enlace.href = negocio.facebookUrl;
+    });
+
+    document.querySelectorAll('[data-horario]').forEach(elemento => {
+        const horario = negocio.horario[elemento.dataset.horario];
+        if (horario) {
+            elemento.textContent = horario;
+        }
+    });
+}
+
+/**
  * Muestra el precio de cada promoción en los elementos marcados con data-promo-precio.
  */
 function renderPromotionPrices() {
@@ -330,6 +409,7 @@ if (typeof window !== 'undefined') {
         renderFirmaCards();
         renderComprobantesCards();
         renderPromotionPrices();
+        hydrateContactData();
         document.addEventListener('click', handleDocumentClick);
 
         // Cerrar modal al hacer clic fuera de la tarjeta
@@ -362,6 +442,9 @@ if (typeof module !== 'undefined' && module.exports) {
         siteData,
         formatPrice,
         escapeHtml,
+        formatPhone,
+        fillTemplate,
+        buildWhatsAppUrl,
         formatShortDateRange,
         buildProductDescription
     };

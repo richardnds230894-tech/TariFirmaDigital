@@ -38,3 +38,14 @@ box-shadow: 0 0 0 10px rgba(229, 185, 76, 0);
 .animate-pulse-gold {
 animation: pulse-border 2.5s infinite;
 }
+
+/* Aviso visible solo cuando el navegador no ejecuta JavaScript (ver <noscript> en index.html).
+   No usa Tailwind porque Tailwind se carga con JavaScript. */
+.aviso-sin-js {
+background: #E5B94C;
+color: #040F22;
+font-family: 'Inter', sans-serif;
+font-weight: 800;
+text-align: center;
+padding: 14px 16px;
+}
