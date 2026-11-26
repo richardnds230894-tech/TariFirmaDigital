@@ -340,6 +340,7 @@ connect-src 'self' https://gateway.umami.is; base-uri 'self'; form-action 'none'
   verificación del PR. El validador W3C (vnu) advierte que `'self'` no cubre archivos `file:`,
   así que se agregó la fuente de esquema `file:` (según CSP3 coincide con cualquier URL `file:`;
   en producción no tiene efecto, porque una página HTTPS no puede cargar recursos `file:`).
+  **Firefox (2026-11-26)**: el responsable confirmó que funciona bien. Safari sigue pendiente.
 
 **Alternativa**: no definir CSP. Pierde una defensa barata frente a XSS en la página de venta.
 Rechazada.
