@@ -203,6 +203,9 @@ function buildProductDescription(clave, tipoContribuyente) {
 // Estado actual del tipo de RUC seleccionado
 let currentTaxpayerType = 'natural';
 
+// Elemento que abrió el modal, para devolverle el foco al cerrarlo
+let modalTrigger = null;
+
 /**
  * Genera las tarjetas individuales de Firma Electrónica en el DOM
  */
@@ -313,7 +316,18 @@ function renderComprobantesCards() {
 }
 
 /**
- * Abre la ventana modal para elegir entre Asesor 1 o Asesor 2 con mensaje prellenado
+ * Indica si el modal de selección de asesor está abierto.
+ * @returns {boolean} true si está visible.
+ */
+function isModalOpen() {
+    const modal = document.getElementById('advisor-modal');
+    return Boolean(modal) && !modal.classList.contains('hidden');
+}
+
+/**
+ * Abre la ventana modal para elegir entre Asesor 1 o Asesor 2 con mensaje prellenado.
+ * Guarda el elemento que lo abrió y mueve el foco dentro del modal.
+ * @param {string} productDescription - Texto del producto (ver buildProductDescription).
  */
 function openAdvisorModal(productDescription) {
     const modal = document.getElementById('advisor-modal');
@@ -333,17 +347,59 @@ function openAdvisorModal(productDescription) {
         enlace.href = buildWhatsAppUrl(asesorId, mensaje);
     });
 
+    if (!isModalOpen()) {
+        modalTrigger = document.activeElement;
+    }
     modal.classList.remove('hidden');
     modal.classList.add('flex');
+    link1.focus();
 }
 
 /**
- * Cierra la ventana modal de selección de asesor
+ * Cierra la ventana modal de selección de asesor y devuelve el foco a quien la abrió.
  */
 function closeAdvisorModal() {
+    if (!isModalOpen()) return;
     const modal = document.getElementById('advisor-modal');
     modal.classList.add('hidden');
     modal.classList.remove('flex');
+
+    if (modalTrigger && document.contains(modalTrigger)) {
+        modalTrigger.focus();
+    }
+    modalTrigger = null;
+}
+
+/**
+ * Teclado dentro del modal: Escape lo cierra y Tab / Shift+Tab hacen ciclo
+ * entre sus elementos enfocables sin salir de él.
+ * @param {KeyboardEvent} evento - Tecla pulsada en el documento.
+ */
+function handleModalKeydown(evento) {
+    if (!isModalOpen()) return;
+
+    if (evento.key === 'Escape') {
+        evento.preventDefault();
+        closeAdvisorModal();
+        return;
+    }
+    if (evento.key !== 'Tab') return;
+
+    const modal = document.getElementById('advisor-modal');
+    const enfocables = [...modal.querySelectorAll('a[href], button:not([disabled])')];
+    if (enfocables.length === 0) return;
+
+    const primero = enfocables[0];
+    const ultimo = enfocables[enfocables.length - 1];
+    const dentro = modal.contains(document.activeElement);
+
+    if (evento.shiftKey && (document.activeElement === primero || !dentro)) {
+        evento.preventDefault();
+        ultimo.focus();
+    } else if (!evento.shiftKey && (document.activeElement === ultimo || !dentro)) {
+        evento.preventDefault();
+        primero.focus();
+    }
 }
 
 /**
@@ -432,6 +488,7 @@ if (typeof window !== 'undefined') {
         renderPromotionPrices();
         hydrateContactData();
         document.addEventListener('click', handleDocumentClick);
+        document.addEventListener('keydown', handleModalKeydown);
 
         // Cerrar modal al hacer clic fuera de la tarjeta
         const modal = document.getElementById('advisor-modal');

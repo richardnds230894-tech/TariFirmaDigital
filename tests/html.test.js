@@ -60,3 +60,12 @@ test('todo data-open-advisor es una clave válida', () => {
         assert.ok(validas.includes(clave), `clave desconocida: ${clave}`);
     }
 });
+
+test('el modal es un diálogo accesible con su título', () => {
+    const modal = html.match(/<div\b[^>]*id="advisor-modal"[^>]*>/);
+    assert.ok(modal, 'no existe #advisor-modal');
+    assert.ok(modal[0].includes('role="dialog"'), 'falta role="dialog"');
+    assert.ok(modal[0].includes('aria-modal="true"'), 'falta aria-modal="true"');
+    assert.ok(modal[0].includes('aria-labelledby="advisor-modal-title"'), 'falta aria-labelledby');
+    assert.match(html, /id="advisor-modal-title"/);
+});

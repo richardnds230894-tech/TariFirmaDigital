@@ -155,14 +155,14 @@ en las pruebas (archivos separados en `tests/`) y en US3 (`.gitignore`).
 
 ### Tests for User Story 5 ⚠️
 
-- [ ] T037 [P] [US5] Añadir a `tests/html.test.js` una prueba que falle y que verifique que `#advisor-modal` tiene `role="dialog"`, `aria-modal="true"` y `aria-labelledby="advisor-modal-title"`, y que existe un elemento con `id="advisor-modal-title"` (contracts/dom-hooks.md → Atributos del modal)
+- [X] T037 [P] [US5] Añadir a `tests/html.test.js` una prueba que falle y que verifique que `#advisor-modal` tiene `role="dialog"`, `aria-modal="true"` y `aria-labelledby="advisor-modal-title"`, y que existe un elemento con `id="advisor-modal-title"` (contracts/dom-hooks.md → Atributos del modal)
 
 ### Implementation for User Story 5
 
-- [ ] T038 [US5] En `index.html`, añadir a `#advisor-modal` los atributos `role="dialog"`, `aria-modal="true"` y `aria-labelledby="advisor-modal-title"`, y poner `id="advisor-modal-title"` en el `<h3>` "Elige tu Asesor en Línea". T037 debe pasar
-- [ ] T039 [US5] En `script.js`, `openAdvisorModal` guarda `document.activeElement` como disparador y mueve el foco a `#link-asesor-1`. `closeAdvisorModal` devuelve el foco al disparador si sigue en el documento (research.md R7, FR-016)
-- [ ] T040 [US5] En `script.js`, añadir un listener `keydown` activo solo con el modal abierto: Escape cierra (FR-015), y Tab / Shift+Tab hacen ciclo entre los elementos enfocables de `#advisor-modal` (X, Asesor 1, Asesor 2) sin salir del modal (FR-016)
-- [ ] T041 [US5] Verificar a mano quickstart.md §3 punto 5 en Chrome y Firefox, y con el lector de pantalla del sistema (Narrador de Windows) que el modal se anuncia como diálogo con su título (FR-017)
+- [X] T038 [US5] En `index.html`, añadir a `#advisor-modal` los atributos `role="dialog"`, `aria-modal="true"` y `aria-labelledby="advisor-modal-title"`, y poner `id="advisor-modal-title"` en el `<h3>` "Elige tu Asesor en Línea". T037 debe pasar
+- [X] T039 [US5] En `script.js`, `openAdvisorModal` guarda `document.activeElement` como disparador y mueve el foco a `#link-asesor-1`. `closeAdvisorModal` devuelve el foco al disparador si sigue en el documento (research.md R7, FR-016)
+- [X] T040 [US5] En `script.js`, añadir un listener `keydown` activo solo con el modal abierto: Escape cierra (FR-015), y Tab / Shift+Tab hacen ciclo entre los elementos enfocables de `#advisor-modal` (X, Asesor 1, Asesor 2) sin salir del modal (FR-016)
+- [ ] T041 [US5] Verificar a mano quickstart.md §3 punto 5 en Chrome y Firefox, y con el lector de pantalla del sistema (Narrador de Windows) que el modal se anuncia como diálogo con su título (FR-017). **Parcial (2026-11-25)**: verificado en Chrome con teclado real vía CDP (Tab/Shift+Tab atrapados, Escape, foco devuelto, 9 pulsaciones) y árbol de accesibilidad (`dialog`, "Elige tu Asesor en Línea"). Pendiente: Firefox y Narrador de Windows, a mano
 
 **Checkpoint**: US5 completa; el modal se usa entero con teclado
 
