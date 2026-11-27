@@ -81,3 +81,26 @@ test('un plan con apóstrofes y comillas conserva todos sus caracteres', () => {
 test('renovacion → Renovación de Firma Electrónica (FR-028)', () => {
     assert.equal(buildProductDescription('renovacion', 'natural'), 'Renovación de Firma Electrónica');
 });
+
+test('flyer:<id> devuelve el mensaje de un flyer de contacto vigente (contracts/whatsapp-links.md 003)', () => {
+    const deContacto = { id: 'prueba-contacto', tipo: 'informativo', imagen: 'img/flyers/x.webp', alt: 'Flyer de prueba',
+        destino: { tipo: 'contacto', mensaje: 'Consulta por el flyer de feriados de diciembre' } };
+    const vencido = { ...deContacto, id: 'prueba-vencido', tipo: 'promocion', inicio: '2020-01-01', fin: '2020-01-31' };
+    const dePagina = { ...deContacto, id: 'prueba-pagina', destino: { tipo: 'pagina', pagina: 'firma.html' } };
+    siteData.flyers.push(deContacto, vencido, dePagina);
+    try {
+        assert.equal(buildProductDescription('flyer:prueba-contacto', 'natural'), 'Consulta por el flyer de feriados de diciembre');
+        assert.equal(buildProductDescription('flyer:prueba-vencido', 'natural'), null, 'no vigente');
+        assert.equal(buildProductDescription('flyer:prueba-pagina', 'natural'), null, 'destino de página');
+        assert.equal(buildProductDescription('flyer:no-existe', 'natural'), null, 'no existe');
+    } finally {
+        siteData.flyers.splice(-3, 3);
+    }
+});
+
+test('facturacion:natural y facturacion:juridica (contracts/whatsapp-links.md 003)', () => {
+    assert.equal(buildProductDescription('facturacion:natural', 'natural'),
+        'Sistema de Facturación Electrónica (Persona Natural) - Consulta de requisitos');
+    assert.equal(buildProductDescription('facturacion:juridica', 'natural'),
+        'Sistema de Facturación Electrónica (Persona Jurídica) - Consulta de requisitos');
+});

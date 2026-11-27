@@ -71,3 +71,16 @@ test('buildEventOrigin identifica los planes por su etiqueta, no por el índice'
         assert.equal(buildEventOrigin(clave, 'natural'), clave);
     }
 });
+
+test('003: buildEventOrigin deja pasar flyer:<id> y facturacion:<tipo>', () => {
+    assert.equal(buildEventOrigin('flyer:recomendacion-clave', 'natural'), 'flyer:recomendacion-clave');
+    assert.equal(buildEventOrigin('facturacion:natural', 'natural'), 'facturacion:natural');
+    assert.equal(buildEventOrigin('facturacion:juridica', 'natural'), 'facturacion:juridica');
+});
+
+test('003: clic-flyer lleva solo el id del flyer (contracts/analytics-events.md)', () => {
+    const cuerpo = buildAnalyticsPayload('evento', 'clic-flyer', { flyer: 'promo:firma-2-anios-nov-2026' },
+        { ...entorno, websiteId: configurada.websiteId });
+    assert.equal(cuerpo.payload.name, 'clic-flyer');
+    assert.deepEqual(cuerpo.payload.data, { flyer: 'promo:firma-2-anios-nov-2026' });
+});

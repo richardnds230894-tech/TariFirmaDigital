@@ -43,6 +43,7 @@
 </head>
 <body class="bg-[#050C17] text-white font-sans antialiased selection:bg-taris-gold selection:text-taris-dark">
 
+    <!-- COMPARTIDO: INICIO CABECERA (idéntico en todas las páginas; lo vigila tests/layout.test.js) -->
     <!-- AVISO SIN JAVASCRIPT (los planes y los botones de WhatsApp los genera script.js) -->
     <noscript>
         <div class="aviso-sin-js">
@@ -66,7 +67,7 @@
                 </span>
             </div>
             <div class="flex items-center gap-4">
-                <a href="#" data-facebook target="_blank" rel="noopener noreferrer" 
+                <a href="#" data-facebook target="_blank" rel="noopener noreferrer"
                    class="flex items-center gap-1.5 text-sky-400 hover:text-sky-300 transition font-medium">
                     <i class="fa-brands fa-facebook text-base"></i> Síguenos en Facebook
                 </a>
@@ -79,9 +80,9 @@
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between items-center h-20">
                 <!-- Logo Tari's Recreación Vectorial -->
-                <a href="#" class="flex items-center gap-3 group">
+                <a href="index.html" class="flex items-center gap-3 group" aria-label="Tari’s Firma Digital, ir al inicio">
                     <div class="w-12 h-12 rounded-xl bg-[#040F22] border border-taris-gold/30 flex items-center justify-center p-1.5 shadow-inner group-hover:border-taris-gold transition">
-                        <svg viewBox="0 0 100 100" class="w-full h-full" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <svg viewBox="0 0 100 100" class="w-full h-full" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
                             <path d="M18 20 C35 16, 68 18, 86 24 L76 38 C60 33, 35 32, 14 35 Z" fill="url(#skyGrad)"/>
                             <path d="M44 28 L60 29 C55 50, 48 68, 36 82 L22 76 C32 62, 39 45, 44 28 Z" fill="#FFFFFF"/>
                             <path d="M44 28 L53 28.5 C48 48, 41 65, 30 79 L22 76 C32 62, 39 45, 44 28 Z" fill="url(#blueGrad)"/>
@@ -107,16 +108,16 @@
                     </div>
                 </a>
 
-                <!-- Menú Desktop -->
-                <nav class="hidden xl:flex items-center gap-6 whitespace-nowrap text-sm font-semibold text-slate-200">
-                    <a href="#promociones" data-promo-any data-ver-promocion="menu" class="hidden text-taris-gold hover:text-taris-goldLight transition flex items-center gap-1.5">
+                <!-- Menú Desktop (el enlace de la página actual recibe aria-current desde script.js) -->
+                <nav class="hidden xl:flex items-center gap-6 whitespace-nowrap text-sm font-semibold text-slate-200" aria-label="Menú principal">
+                    <a href="index.html#promociones" data-promo-any data-ver-promocion="menu" class="hidden text-taris-gold hover:text-taris-goldLight transition flex items-center gap-1.5">
                         <i class="fa-solid fa-fire text-red-500"></i> Promociones
                     </a>
-                    <a href="#como-funciona" class="hover:text-taris-gold transition">Cómo funciona</a>
-                    <a href="#firma-electronica" class="hover:text-taris-gold transition">Firma Electrónica</a>
-                    <a href="#facturacion" class="hover:text-taris-gold transition">Facturación</a>
-                    <a href="#requisitos" class="hover:text-taris-gold transition">Requisitos y Pagos</a>
-                    <a href="#preguntas" class="hover:text-taris-gold transition">Preguntas</a>
+                    <a href="index.html" data-nav="index" class="hover:text-taris-gold transition aria-[current=page]:text-taris-gold">Inicio</a>
+                    <a href="firma.html" data-nav="firma" class="hover:text-taris-gold transition aria-[current=page]:text-taris-gold">Firma Electrónica</a>
+                    <a href="facturacion.html" data-nav="facturacion" class="hover:text-taris-gold transition aria-[current=page]:text-taris-gold">Facturación Electrónica</a>
+                    <a href="index.html#como-funciona" class="hover:text-taris-gold transition">Cómo funciona</a>
+                    <a href="index.html#preguntas" class="hover:text-taris-gold transition">Preguntas</a>
                 </nav>
 
                 <!-- Botón Directo Asesores + Menú Móvil -->
@@ -126,7 +127,7 @@
                         <i class="fa-brands fa-whatsapp text-lg text-emerald-950"></i>
                         <span>Contáctanos</span>
                     </button>
-                    <button id="mobile-menu-btn" aria-controls="mobile-menu" aria-expanded="false" class="xl:hidden p-2.5 rounded-xl bg-white/10 text-white hover:bg-white/20 transition" aria-label="Abrir menú">
+                    <button id="mobile-menu-btn" type="button" aria-controls="mobile-menu" aria-expanded="false" class="xl:hidden p-2.5 rounded-xl bg-white/10 text-white hover:bg-white/20 transition" aria-label="Abrir menú">
                         <i class="fa-solid fa-bars text-lg"></i>
                     </button>
                 </div>
@@ -135,20 +136,66 @@
 
         <!-- Menú Móvil Desplegable -->
         <div id="mobile-menu" class="hidden xl:hidden bg-[#040F22] border-t border-white/10 px-4 pt-3 pb-5 space-y-2">
-            <a href="#promociones" data-promo-any data-ver-promocion="menu" class="hidden block px-3 py-2.5 rounded-lg text-taris-gold font-bold bg-white/5">
+            <a href="index.html#promociones" data-promo-any data-ver-promocion="menu" class="hidden block px-3 py-2.5 rounded-lg text-taris-gold font-bold bg-white/5">
                 <i class="fa-solid fa-fire text-red-500 mr-2"></i> Promociones Vigentes
             </a>
-            <a href="#como-funciona" class="block px-3 py-2.5 rounded-lg text-slate-200 hover:bg-white/5 font-medium">Cómo funciona</a>
-            <a href="#firma-electronica" class="block px-3 py-2.5 rounded-lg text-slate-200 hover:bg-white/5 font-medium">Firma Electrónica (P12)</a>
-            <a href="#facturacion" class="block px-3 py-2.5 rounded-lg text-slate-200 hover:bg-white/5 font-medium">Planes de Comprobantes</a>
-            <a href="#requisitos" class="block px-3 py-2.5 rounded-lg text-slate-200 hover:bg-white/5 font-medium">Requisitos y Bancos</a>
-            <a href="#preguntas" class="block px-3 py-2.5 rounded-lg text-slate-200 hover:bg-white/5 font-medium">Preguntas frecuentes</a>
-            <a href="#" data-facebook target="_blank" rel="noopener noreferrer" 
+            <a href="index.html" data-nav="index" class="block px-3 py-2.5 rounded-lg text-slate-200 hover:bg-white/5 font-medium aria-[current=page]:text-taris-gold">Inicio</a>
+            <a href="firma.html" data-nav="firma" class="block px-3 py-2.5 rounded-lg text-slate-200 hover:bg-white/5 font-medium aria-[current=page]:text-taris-gold">Firma Electrónica (P12)</a>
+            <a href="facturacion.html" data-nav="facturacion" class="block px-3 py-2.5 rounded-lg text-slate-200 hover:bg-white/5 font-medium aria-[current=page]:text-taris-gold">Facturación Electrónica</a>
+            <a href="index.html#como-funciona" class="block px-3 py-2.5 rounded-lg text-slate-200 hover:bg-white/5 font-medium">Cómo funciona</a>
+            <a href="index.html#preguntas" class="block px-3 py-2.5 rounded-lg text-slate-200 hover:bg-white/5 font-medium">Preguntas frecuentes</a>
+            <a href="#" data-facebook target="_blank" rel="noopener noreferrer"
                class="block px-3 py-2.5 rounded-lg text-sky-400 hover:bg-white/5 font-medium">
                 <i class="fa-brands fa-facebook mr-2"></i> Página Oficial en Facebook
             </a>
         </div>
     </header>
+    <!-- COMPARTIDO: FIN CABECERA -->
+
+    <!-- SECCIÓN: CARRUSEL DE FLYERS Y PROMOCIONES (US1 de 003). script.js reemplaza el respaldo estático
+         con las diapositivas de buildCarouselSlides: primero las promociones vigentes y luego los flyers. -->
+    <section id="promociones" data-carousel aria-roledescription="carrusel" aria-label="Promociones y novedades"
+             class="scroll-mt-28 relative bg-[#061A3A] border-b border-taris-gold/20">
+        <div data-carousel-track class="grid grid-cols-1">
+            <!-- Respaldo sin JavaScript: el primer flyer informativo permanente de siteData.flyers -->
+            <div role="group" aria-roledescription="diapositiva" aria-label="1 de 1" class="[grid-area:1/1] min-w-0">
+                <a href="firma.html" class="block">
+                    <picture>
+                        <source media="(max-width: 640px)" srcset="img/flyers/recomendacion-clave-movil.webp">
+                        <img src="img/flyers/recomendacion-clave.webp" alt="Tu firma es personal: nunca compartas tu archivo P12 ni tu contraseña. Guárdalos en un lugar seguro. Tari’s Firma Digital."
+                             width="1920" height="600" fetchpriority="high" class="block w-full h-auto">
+                    </picture>
+                </a>
+            </div>
+        </div>
+
+        <!-- Controles: script.js los muestra solo si hay dos o más diapositivas -->
+        <button type="button" data-carousel-prev aria-label="Diapositiva anterior"
+                class="hidden max-sm:hidden absolute left-3 top-1/2 -translate-y-1/2 w-11 h-11 rounded-full bg-[#040F22]/80 hover:bg-[#040F22] text-white border border-white/20 items-center justify-center cursor-pointer">
+            <i class="fa-solid fa-chevron-left" aria-hidden="true"></i>
+        </button>
+        <button type="button" data-carousel-next aria-label="Diapositiva siguiente"
+                class="hidden max-sm:hidden absolute right-3 top-1/2 -translate-y-1/2 w-11 h-11 rounded-full bg-[#040F22]/80 hover:bg-[#040F22] text-white border border-white/20 items-center justify-center cursor-pointer">
+            <i class="fa-solid fa-chevron-right" aria-hidden="true"></i>
+        </button>
+        <div class="absolute bottom-3 left-0 right-0 flex items-center justify-center gap-3 pointer-events-none">
+            <div data-carousel-dots class="hidden items-center gap-2 pointer-events-auto"></div>
+            <button type="button" data-carousel-pause aria-label="Pausar el carrusel" aria-pressed="false"
+                    class="hidden pointer-events-auto w-8 h-8 rounded-full bg-[#040F22]/80 hover:bg-[#040F22] text-white border border-white/20 items-center justify-center text-xs cursor-pointer">
+                <i class="fa-solid fa-pause" aria-hidden="true"></i>
+            </button>
+        </div>
+        <div data-carousel-live class="sr-only" aria-live="off" aria-atomic="true"></div>
+    </section>
+
+    <!-- SECCIÓN: BARRA DE PREGUNTAS FRECUENTES (FR-010 de 003) -->
+    <a href="#preguntas" class="block gold-gradient text-taris-dark hover:brightness-110 transition">
+        <span class="max-w-7xl mx-auto px-4 py-4 flex items-center justify-center gap-4 font-extrabold text-base sm:text-lg">
+            <i class="fa-regular fa-comments text-2xl" aria-hidden="true"></i>
+            <span>Preguntas frecuentes</span>
+            <i class="fa-solid fa-chevron-right" aria-hidden="true"></i>
+        </span>
+    </a>
 
     <!-- HERO SECTION -->
     <section class="bg-taris-hero relative overflow-hidden pt-10 pb-16 lg:py-20 border-b border-taris-gold/20">
@@ -256,8 +303,8 @@
                             </div>
                         </div>
 
-                        <a href="#firma-electronica" class="block w-full text-center py-3.5 rounded-xl bg-white/10 hover:bg-white/15 text-white font-bold text-sm transition border border-white/10">
-                            Ver todos los planes y precios <i class="fa-solid fa-arrow-down ml-1.5 text-taris-gold"></i>
+                        <a href="firma.html" class="block w-full text-center py-3.5 rounded-xl bg-white/10 hover:bg-white/15 text-white font-bold text-sm transition border border-white/10">
+                            Ver todos los planes y precios <i class="fa-solid fa-arrow-right ml-1.5 text-taris-gold"></i>
                         </a>
                     </div>
                 </div>
@@ -265,21 +312,37 @@
         </div>
     </section>
 
-    <!-- SECCIÓN DE PROMOCIONES CON VIGENCIA (las tarjetas las genera renderPromotions desde siteData.promociones) -->
-    <section id="promociones" data-promo-any class="scroll-mt-28 hidden py-14 px-4 sm:px-6 lg:px-8 relative">
-        <div class="max-w-7xl mx-auto">
-            <div class="text-center mb-8">
-                <span class="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-red-600/20 border border-red-500/40 text-red-400 text-xs font-extrabold uppercase tracking-wider mb-2">
-                    <i class="fa-solid fa-stopwatch"></i> Ofertas por Tiempo Limitado
-                </span>
-                <h2 class="text-3xl sm:text-4xl font-black text-white">Promociones Vigentes</h2>
-                <p class="text-slate-400 text-sm sm:text-base mt-1">Aprovecha nuestros descuentos especiales antes de que finalice su fecha de vigencia.</p>
-            </div>
+    <!-- SECCIÓN: NUESTROS SERVICIOS (FR-012 de 003) -->
+    <section id="servicios" class="scroll-mt-28 py-16 px-4 sm:px-6 lg:px-8 bg-taris-hero border-y border-taris-gold/20">
+        <div class="max-w-4xl mx-auto text-center">
+            <span class="text-taris-gold font-bold text-sm sm:text-base">Nuestros servicios</span>
+            <h2 class="text-3xl sm:text-4xl font-black text-white mt-1">Conoce lo que ofrecemos para ti</h2>
 
-            <!-- Contenedor donde script.js genera una tarjeta por promoción vigente -->
-            <div id="promociones-container" class="space-y-8"></div>
+            <div class="mt-10 grid sm:grid-cols-2 gap-4 bg-white/5 border border-white/15 rounded-3xl p-5 sm:p-8 backdrop-blur-sm">
+                <a href="firma.html" class="group rounded-2xl p-6 hover:bg-white/5 transition flex flex-col items-center gap-3">
+                    <span class="w-16 h-16 rounded-2xl bg-taris-gold/15 border border-taris-gold/40 text-taris-gold flex items-center justify-center text-3xl">
+                        <i class="fa-solid fa-file-signature" aria-hidden="true"></i>
+                    </span>
+                    <span class="text-lg font-extrabold text-white">Firma Electrónica</span>
+                    <span class="text-sm text-slate-300">Archivo P12 para personas naturales, válido en todo el Ecuador.</span>
+                    <span class="text-sm font-bold text-taris-gold underline underline-offset-4 group-hover:text-taris-goldLight flex items-center gap-1.5">
+                        Saber más <i class="fa-solid fa-chevron-right text-xs" aria-hidden="true"></i>
+                    </span>
+                </a>
+                <a href="facturacion.html" class="group rounded-2xl p-6 hover:bg-white/5 transition flex flex-col items-center gap-3">
+                    <span class="w-16 h-16 rounded-2xl bg-taris-gold/15 border border-taris-gold/40 text-taris-gold flex items-center justify-center text-3xl">
+                        <i class="fa-solid fa-file-invoice-dollar" aria-hidden="true"></i>
+                    </span>
+                    <span class="text-lg font-extrabold text-white">Facturación Electrónica</span>
+                    <span class="text-sm text-slate-300">Planes de comprobantes SRI para persona natural y jurídica.</span>
+                    <span class="text-sm font-bold text-taris-gold underline underline-offset-4 group-hover:text-taris-goldLight flex items-center gap-1.5">
+                        Saber más <i class="fa-solid fa-chevron-right text-xs" aria-hidden="true"></i>
+                    </span>
+                </a>
+            </div>
         </div>
     </section>
+
     <!-- SECCIÓN: CÓMO FUNCIONA (pasos de compra, FR-001) -->
     <section id="como-funciona" class="scroll-mt-28 py-14 px-4 sm:px-6 lg:px-8">
         <div class="max-w-7xl mx-auto">
@@ -316,329 +379,6 @@
                     <p class="text-xs text-slate-400 mt-1">Te llega el archivo P12 a tu correo, o se activa tu sistema de facturación.</p>
                 </li>
             </ol>
-        </div>
-    </section>
-
-    <!-- SECCIÓN 1: CATÁLOGO INDIVIDUAL DE FIRMA ELECTRÓNICA -->
-    <section id="firma-electronica" class="scroll-mt-28 py-14 px-4 sm:px-6 lg:px-8 bg-[#07101E] border-y border-white/5">
-        <div class="max-w-7xl mx-auto">
-            <div class="rounded-3xl overflow-hidden border border-taris-gold/30 shadow-card bg-[#0C141D]">
-                <div class="bg-[#06101E] py-5 px-6 text-center border-b border-taris-gold/20">
-                    <h2 class="text-2xl sm:text-3xl font-black tracking-wide text-white uppercase">Firma Electrónica</h2>
-                </div>
-                <div class="gold-gradient py-2.5 px-6 text-center">
-                    <span class="text-taris-dark font-black text-sm sm:text-base tracking-widest uppercase">
-                        Planes Individuales • Cliente Final (Archivo P12)
-                    </span>
-                </div>
-
-                <div class="p-6 sm:p-8">
-                    <!-- Acceso para clientes que renuevan (FR-028) -->
-                    <div class="mb-6 flex flex-col sm:flex-row items-center justify-between gap-3 bg-[#081018] border border-white/10 rounded-2xl p-4">
-                        <p class="text-sm text-slate-300 text-center sm:text-left"><strong class="text-white">¿Tu firma está por vencer?</strong> Renuévala con el mismo proceso y elige una nueva vigencia.</p>
-                        <button type="button" data-open-advisor="renovacion"
-                                class="shrink-0 px-5 py-2.5 rounded-xl border border-taris-gold/60 text-taris-gold hover:bg-taris-gold hover:text-taris-dark font-extrabold text-sm transition flex items-center gap-2 cursor-pointer">
-                            <i class="fa-solid fa-rotate"></i>
-                            <span>Renovar mi firma</span>
-                        </button>
-                    </div>
-
-                    <!-- Contenedor donde script.js inyecta los planes de firma -->
-                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5" id="firma-cards-container"></div>
-
-                    <!-- Aviso FR-002a: alcance de la firma -->
-                    <p class="mt-6 flex items-start gap-2.5 text-sm text-sky-200 bg-sky-500/10 border border-sky-400/30 rounded-2xl p-4">
-                        <i class="fa-solid fa-circle-info text-sky-400 mt-0.5"></i>
-                        <span><strong>La firma electrónica se emite solo a personas naturales.</strong> No emitimos firmas a nombre de empresas ni de representantes legales.</span>
-                    </p>
-
-                    <div class="mt-8 grid md:grid-cols-2 gap-4">
-                        <div class="bg-[#081018] border border-white/10 rounded-2xl p-4 flex items-center gap-4">
-                            <div class="w-11 h-11 rounded-full border-2 border-taris-gold/70 flex items-center justify-center text-taris-gold shrink-0">
-                                <i class="fa-solid fa-tag text-lg"></i>
-                            </div>
-                            <span class="font-extrabold text-sm sm:text-base text-white tracking-wide uppercase">
-                                Todos los precios incluyen IVA
-                            </span>
-                        </div>
-                        <div class="bg-[#081018] border border-white/10 rounded-2xl p-4 flex items-center gap-4">
-                            <div class="w-11 h-11 rounded-full border-2 border-taris-gold/70 flex items-center justify-center text-taris-gold shrink-0">
-                                <i class="fa-regular fa-calendar-days text-lg"></i>
-                            </div>
-                            <span class="font-extrabold text-sm sm:text-base text-white tracking-wide uppercase">
-                                Vigencia garantizada según el tiempo elegido
-                            </span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- SECCIÓN 2: PLAN DE COMPROBANTES (FACTURACIÓN ELECTRÓNICA) -->
-    <section id="facturacion" class="scroll-mt-28 py-16 px-4 sm:px-6 lg:px-8">
-        <div class="max-w-7xl mx-auto">
-            <div class="rounded-3xl overflow-hidden border border-taris-gold/30 shadow-card bg-[#0C141D]">
-                <div class="bg-[#06101E] py-5 px-6 text-center border-b border-taris-gold/20">
-                    <h2 class="text-2xl sm:text-3xl font-black tracking-wide text-white uppercase">Plan de Comprobantes (Un Año)</h2>
-                </div>
-                <div class="gold-gradient py-2.5 px-6 text-center">
-                    <span class="text-taris-dark font-black text-sm sm:text-base tracking-widest uppercase">
-                        Facturación Electrónica • Precio Cliente Final
-                    </span>
-                </div>
-
-                <div class="p-6 sm:p-8">
-                    <!-- Selector Rápido de Tipo de Contribuyente -->
-                    <div class="flex flex-col sm:flex-row items-center justify-between gap-4 mb-8 bg-[#081018] p-4 rounded-2xl border border-white/10">
-                        <div class="text-center sm:text-left">
-                            <h3 class="font-bold text-white text-base sm:text-lg">Selecciona tu tipo de RUC para comprar individualmente:</h3>
-                            <p class="text-xs sm:text-sm text-slate-400">Cada plan tiene vigencia de 1 año tiempo calendario desde su activación.</p>
-                        </div>
-                        <div class="inline-flex rounded-xl bg-[#040911] p-1.5 border border-white/10 w-full sm:w-auto">
-                            <button id="btn-natural" type="button" data-taxpayer="natural" aria-pressed="true"
-                                    class="flex-1 sm:flex-initial px-5 py-2.5 rounded-lg text-xs sm:text-sm font-extrabold transition flex items-center justify-center gap-2 bg-taris-emerald text-white shadow cursor-pointer">
-                                <i class="fa-regular fa-user"></i> Persona Natural
-                            </button>
-                            <button id="btn-juridica" type="button" data-taxpayer="juridica" aria-pressed="false"
-                                    class="flex-1 sm:flex-initial px-5 py-2.5 rounded-lg text-xs sm:text-sm font-extrabold transition flex items-center justify-center gap-2 text-slate-400 hover:text-white cursor-pointer">
-                                <i class="fa-solid fa-briefcase"></i> Persona Jurídica
-                            </button>
-                        </div>
-                    </div>
-
-                    <!-- Avisos según el tipo de contribuyente (setTaxpayerType muestra solo el activo) -->
-                    <p data-taxpayer-note="natural" class="mb-6 flex items-start gap-2.5 text-sm text-emerald-200 bg-emerald-500/10 border border-emerald-400/30 rounded-2xl p-4">
-                        <i class="fa-solid fa-circle-info text-emerald-400 mt-0.5"></i>
-                        <span>Para facturar como persona natural necesitas tu RUC activo y una firma electrónica vigente.</span>
-                    </p>
-                    <div data-taxpayer-note="juridica" class="hidden mb-6 flex flex-col sm:flex-row sm:items-center gap-3 text-sm text-sky-200 bg-sky-500/10 border border-sky-400/30 rounded-2xl p-4">
-                        <p class="flex items-start gap-2.5 flex-1">
-                            <i class="fa-solid fa-circle-info text-sky-400 mt-0.5"></i>
-                            <span>Las empresas pueden contratar el plan de comprobantes, pero <strong>la firma electrónica para empresas o representantes legales no se emite en este sitio</strong>. Consulta a un asesor cómo continuar.</span>
-                        </p>
-                        <button type="button" data-open-advisor="general"
-                                class="shrink-0 px-4 py-2.5 rounded-xl bg-taris-royal hover:bg-[#264D8F] text-white font-extrabold text-xs transition flex items-center justify-center gap-2 cursor-pointer">
-                            <i class="fa-brands fa-whatsapp text-base"></i>
-                            <span>Consultar a un asesor</span>
-                        </button>
-                    </div>
-
-                    <!-- Contenedor donde script.js inyecta los planes de comprobantes -->
-                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6" id="comprobantes-cards-container"></div>
-
-                    <!-- Qué incluye el plan y requisito de firma (FR-023).
-                         Texto confirmado por el responsable del negocio el 2026-11-26 (FR-038). -->
-                    <div class="mt-8 grid md:grid-cols-2 gap-4">
-                        <div class="bg-[#081018] border border-white/10 rounded-2xl p-5">
-                            <h3 class="font-bold text-white text-base">¿Qué comprobantes puedo emitir?</h3>
-                            <ul class="mt-3 grid grid-cols-2 gap-2 text-xs text-slate-300">
-                                <li class="flex items-center gap-2"><i class="fa-solid fa-check text-taris-gold"></i> Facturas</li>
-                                <li class="flex items-center gap-2"><i class="fa-solid fa-check text-taris-gold"></i> Notas de crédito</li>
-                                <li class="flex items-center gap-2"><i class="fa-solid fa-check text-taris-gold"></i> Notas de débito</li>
-                                <li class="flex items-center gap-2"><i class="fa-solid fa-check text-taris-gold"></i> Comprobantes de retención</li>
-                                <li class="flex items-center gap-2"><i class="fa-solid fa-check text-taris-gold"></i> Guías de remisión</li>
-                                <li class="flex items-center gap-2"><i class="fa-solid fa-check text-taris-gold"></i> Liquidaciones de compra</li>
-                            </ul>
-                            <p class="text-xs text-slate-400 mt-3">Cada documento emitido usa una unidad de tu plan.</p>
-                        </div>
-                        <div class="bg-[#081018] border border-taris-gold/30 rounded-2xl p-5 flex flex-col justify-between gap-3">
-                            <div>
-                                <h3 class="font-bold text-white text-base flex items-center gap-2"><i class="fa-solid fa-file-signature text-taris-gold"></i> Necesitas una firma electrónica vigente</h3>
-                                <p class="text-xs text-slate-300 mt-2">El SRI exige firmar cada comprobante electrónico. Si aún no tienes firma o está por vencer, puedes contratarla aquí mismo.</p>
-                            </div>
-                            <a href="#firma-electronica" class="self-start text-sm font-bold text-taris-gold hover:text-taris-goldLight transition flex items-center gap-2">
-                                Ver planes de firma electrónica <i class="fa-solid fa-arrow-up"></i>
-                            </a>
-                        </div>
-                    </div>
-
-                    <div class="mt-8 grid md:grid-cols-2 gap-4">
-                        <div class="bg-[#081018] border border-white/10 rounded-2xl p-4 flex items-center gap-4">
-                            <div class="w-11 h-11 rounded-full border-2 border-taris-gold/70 flex items-center justify-center text-taris-gold shrink-0">
-                                <i class="fa-solid fa-tag text-lg"></i>
-                            </div>
-                            <span class="font-extrabold text-sm sm:text-base text-white tracking-wide uppercase">
-                                Todos los precios incluyen IVA
-                            </span>
-                        </div>
-                        <div class="bg-[#081018] border border-white/10 rounded-2xl p-4 flex items-center gap-4">
-                            <div class="w-11 h-11 rounded-full border-2 border-taris-gold/70 flex items-center justify-center text-taris-gold shrink-0">
-                                <i class="fa-regular fa-calendar-check text-lg"></i>
-                            </div>
-                            <span class="font-extrabold text-sm sm:text-base text-white tracking-wide uppercase">
-                                Sistema de facturación dura un año, tiempo calendario
-                            </span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- SECCIÓN 3: REQUISITOS Y FORMAS DE PAGO -->
-    <section id="requisitos" class="scroll-mt-28 py-16 px-4 sm:px-6 lg:px-8 bg-[#07101E] border-t border-white/5">
-        <div class="max-w-7xl mx-auto">
-            <div class="text-center max-w-2xl mx-auto mb-12">
-                <span class="text-taris-gold font-bold text-xs uppercase tracking-widest">Proceso 100% Ágil</span>
-                <h2 class="text-3xl sm:text-4xl font-black text-white mt-1">Requisitos y Formas de Pago</h2>
-                <p class="text-slate-400 text-sm sm:text-base mt-2">Prepara estos documentos para emitir tu firma electrónica o activar tu sistema de facturación sin demoras.</p>
-            </div>
-
-            <div class="grid lg:grid-cols-12 gap-8">
-                <!-- Columna Requisitos -->
-                <div class="lg:col-span-7 bg-[#0C141D] border border-white/10 rounded-3xl p-6 sm:p-8 shadow-card">
-                    <div class="flex items-center gap-3 mb-6 pb-4 border-b border-white/10">
-                        <div class="w-12 h-12 rounded-2xl bg-taris-gold/15 border border-taris-gold/40 flex items-center justify-center text-taris-gold text-xl">
-                            <i class="fa-solid fa-folder-open"></i>
-                        </div>
-                        <div>
-                            <h3 class="text-xl font-extrabold text-white">Requisitos del Cliente</h3>
-                            <p class="text-xs text-slate-400">Envíalos directamente por WhatsApp a tu asesor</p>
-                        </div>
-                    </div>
-
-                    <!-- Bloque 1: requisitos de la firma electrónica (FR-002, FR-002a) -->
-                    <h4 class="text-base font-extrabold text-white mb-1">Firma electrónica (personas naturales)</h4>
-                    <p class="text-xs text-sky-200 mb-4"><i class="fa-solid fa-circle-info text-sky-400 mr-1"></i> La firma electrónica se emite solo a personas naturales.</p>
-
-                    <div class="grid sm:grid-cols-2 gap-4">
-                        <div class="bg-[#081018] p-4 rounded-2xl border border-white/5 flex items-start gap-3.5">
-                            <div class="w-9 h-9 rounded-xl bg-sky-500/15 text-sky-400 flex items-center justify-center shrink-0 mt-0.5">
-                                <i class="fa-solid fa-mobile-screen-button"></i>
-                            </div>
-                            <div>
-                                <h4 class="font-bold text-white text-sm">Número de celular</h4>
-                                <p class="text-xs text-slate-400 mt-0.5">Línea activa para notificaciones y verificación.</p>
-                            </div>
-                        </div>
-
-                        <div class="bg-[#081018] p-4 rounded-2xl border border-white/5 flex items-start gap-3.5">
-                            <div class="w-9 h-9 rounded-xl bg-emerald-500/15 text-emerald-400 flex items-center justify-center shrink-0 mt-0.5">
-                                <i class="fa-solid fa-id-card"></i>
-                            </div>
-                            <div>
-                                <h4 class="font-bold text-white text-sm">Cédula ambos lados</h4>
-                                <p class="text-xs text-slate-400 mt-0.5">Foto clara y legible de la parte frontal y posterior.</p>
-                            </div>
-                        </div>
-
-                        <div class="bg-[#081018] p-4 rounded-2xl border border-white/5 flex items-start gap-3.5">
-                            <div class="w-9 h-9 rounded-xl bg-amber-500/15 text-amber-400 flex items-center justify-center shrink-0 mt-0.5">
-                                <i class="fa-solid fa-camera-retro"></i>
-                            </div>
-                            <div>
-                                <h4 class="font-bold text-white text-sm">Foto selfie portando la cédula</h4>
-                                <p class="text-xs text-slate-400 mt-0.5">Rostro despejado sosteniendo tu cédula legible.</p>
-                            </div>
-                        </div>
-
-                        <div class="bg-[#081018] p-4 rounded-2xl border border-white/5 flex items-start gap-3.5">
-                            <div class="w-9 h-9 rounded-xl bg-purple-500/15 text-purple-400 flex items-center justify-center shrink-0 mt-0.5">
-                                <i class="fa-solid fa-envelope-circle-check"></i>
-                            </div>
-                            <div>
-                                <h4 class="font-bold text-white text-sm">Correo electrónico habilitado</h4>
-                                <p class="text-xs text-slate-400 mt-0.5">Donde recibirás tu certificado digital P12 y accesos.</p>
-                            </div>
-                        </div>
-
-                        <div class="sm:col-span-2 bg-[#081018] p-4 rounded-2xl border border-taris-gold/25 flex items-start gap-3.5">
-                            <div class="w-9 h-9 rounded-xl bg-taris-gold/20 text-taris-gold flex items-center justify-center shrink-0 mt-0.5">
-                                <i class="fa-solid fa-file-invoice"></i>
-                            </div>
-                            <div>
-                                <h4 class="font-bold text-white text-sm flex flex-wrap items-center gap-2">
-                                    Certificado de RUC actualizado
-                                    <span class="text-xs font-bold uppercase text-taris-gold bg-taris-gold/15 border border-taris-gold/30 px-2 py-0.5 rounded-md">Solo si tienes RUC</span>
-                                </h4>
-                                <p class="text-xs text-slate-300 mt-0.5">Descargado directamente desde el portal oficial del <strong>SRI</strong> (en formato PDF). Si no tienes RUC, no lo necesitas para tu firma.</p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Bloque 2: requisitos de la facturación electrónica (FR-002).
-                         Texto confirmado por el responsable del negocio el 2026-11-26 (FR-038). -->
-                    <h4 class="text-base font-extrabold text-white mt-8 mb-4">Facturación electrónica</h4>
-                    <div class="grid sm:grid-cols-2 gap-4">
-                        <div class="bg-[#081018] p-4 rounded-2xl border border-white/5">
-                            <span class="text-xs font-bold uppercase px-2.5 py-1 rounded-md bg-taris-emerald/40 text-emerald-300">Persona Natural</span>
-                            <ul class="mt-3 space-y-2 text-xs text-slate-300">
-                                <li class="flex items-start gap-2"><i class="fa-solid fa-check text-taris-gold mt-0.5"></i> Certificado de RUC actualizado (PDF del SRI).</li>
-                                <li class="flex items-start gap-2"><i class="fa-solid fa-check text-taris-gold mt-0.5"></i> Firma electrónica vigente (archivo P12).</li>
-                            </ul>
-                        </div>
-                        <div class="bg-[#081018] p-4 rounded-2xl border border-white/5">
-                            <span class="text-xs font-bold uppercase px-2.5 py-1 rounded-md bg-taris-royal/60 text-sky-300">Persona Jurídica</span>
-                            <ul class="mt-3 space-y-2 text-xs text-slate-300">
-                                <li class="flex items-start gap-2"><i class="fa-solid fa-check text-taris-gold mt-0.5"></i> Certificado de RUC de la empresa (PDF del SRI).</li>
-                                <li class="flex items-start gap-2"><i class="fa-solid fa-check text-taris-gold mt-0.5"></i> Firma electrónica vigente de la empresa o de su representante legal, gestionada por su cuenta.</li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Columna Formas de Pago -->
-                <div class="lg:col-span-5 bg-[#0C141D] border border-taris-gold/30 rounded-3xl p-6 sm:p-8 shadow-card flex flex-col justify-between">
-                    <div>
-                        <div class="flex items-center gap-3 mb-6 pb-4 border-b border-white/10">
-                            <div class="w-12 h-12 rounded-2xl bg-emerald-500/15 border border-emerald-500/30 flex items-center justify-center text-emerald-400 text-xl">
-                                <i class="fa-solid fa-building-columns"></i>
-                            </div>
-                            <div>
-                                <h3 class="text-xl font-extrabold text-white">Formas de Pago</h3>
-                                <p class="text-xs text-slate-400">Transferencia bancaria directa y segura</p>
-                            </div>
-                        </div>
-
-                        <p class="text-sm text-slate-300 mb-5">
-                            Aceptamos transferencias interbancarias o directas desde cualquiera de las siguientes instituciones financieras del Ecuador:
-                        </p>
-
-                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
-                            <div class="bg-[#081018] border border-white/10 hover:border-pink-500/50 transition p-4 rounded-2xl flex items-center gap-3">
-                                <div class="w-10 h-10 rounded-xl bg-pink-600/20 text-pink-400 font-black flex items-center justify-center text-sm shrink-0">BG</div>
-                                <div>
-                                    <span class="block font-bold text-white text-sm">Banco Guayaquil</span>
-                                    <span class="block text-xs text-slate-400">Transferencia</span>
-                                </div>
-                            </div>
-
-                            <div class="bg-[#081018] border border-white/10 hover:border-yellow-400/50 transition p-4 rounded-2xl flex items-center gap-3">
-                                <div class="w-10 h-10 rounded-xl bg-yellow-500/20 text-yellow-400 font-black flex items-center justify-center text-sm shrink-0">BP</div>
-                                <div>
-                                    <span class="block font-bold text-white text-sm">Banco Pichincha</span>
-                                    <span class="block text-xs text-slate-400">Transferencia</span>
-                                </div>
-                            </div>
-
-                            <div class="bg-[#081018] border border-white/10 hover:border-teal-400/50 transition p-4 rounded-2xl flex items-center gap-3">
-                                <div class="w-10 h-10 rounded-xl bg-teal-500/20 text-teal-400 font-black flex items-center justify-center text-sm shrink-0">BB</div>
-                                <div>
-                                    <span class="block font-bold text-white text-sm">Banco Bolivariano</span>
-                                    <span class="block text-xs text-slate-400">Transferencia</span>
-                                </div>
-                            </div>
-
-                            <div class="bg-[#081018] border border-white/10 hover:border-emerald-400/50 transition p-4 rounded-2xl flex items-center gap-3">
-                                <div class="w-10 h-10 rounded-xl bg-emerald-500/20 text-emerald-400 font-black flex items-center justify-center text-sm shrink-0">PB</div>
-                                <div>
-                                    <span class="block font-bold text-white text-sm">Produbanco</span>
-                                    <span class="block text-xs text-slate-400">Transferencia</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="mt-6 pt-5 border-t border-white/10">
-                        <button type="button" data-open-advisor="banco"
-                                class="w-full py-3.5 px-5 rounded-2xl bg-emerald-600 hover:bg-emerald-500 text-white font-extrabold text-sm transition flex items-center justify-center gap-2 shadow-lg cursor-pointer">
-                            <i class="fa-brands fa-whatsapp text-lg"></i>
-                            <span>Solicitar número de cuenta a un Asesor</span>
-                        </button>
-                    </div>
-                </div>
-            </div>
         </div>
     </section>
 
@@ -743,6 +483,7 @@
         </div>
     </section>
 
+    <!-- COMPARTIDO: INICIO PIE (footer, botones flotantes y modal; idéntico en todas las páginas) -->
     <!-- FOOTER Y CONTACTO DIRECTO -->
     <footer class="bg-[#030811] border-t border-taris-gold/20 pt-14 pb-24 sm:pb-12 px-4 sm:px-6 lg:px-8">
         <div class="max-w-7xl mx-auto">
@@ -919,6 +660,7 @@
             </div>
         </div>
     </div>
+    <!-- COMPARTIDO: FIN PIE -->
 
     <!-- Archivo JavaScript Externo -->
     <script src="script.js"></script>

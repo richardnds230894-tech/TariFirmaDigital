@@ -4,7 +4,7 @@
  */
 const { test } = require('node:test');
 const assert = require('node:assert/strict');
-const { siteData } = require('../script.js');
+const { siteData, isValidFlyerPage } = require('../script.js');
 
 const FECHA = /^\d{4}-\d{2}-\d{2}$/;
 const tieneMaxDosDecimales = (n) => Math.round(n * 100) === n * 100;
@@ -159,4 +159,79 @@ test('Promoción: fechas válidas, inicio ≤ fin y valores actuales', () => {
             { pagaAnios: 3, recibeAnios: 4 }
         ]
     }]);
+});
+
+test('Banco: sigla, nombre y estilo válidos, y valores actuales (data-model.md → Banco)', () => {
+    const estilos = ['rosa', 'amarillo', 'turquesa', 'esmeralda'];
+    for (const banco of siteData.bancos) {
+        assert.match(banco.sigla, /^[A-Z]{2,3}$/, banco.sigla);
+        assert.ok(banco.nombre.length > 0);
+        assert.ok(estilos.includes(banco.estilo), `estilo desconocido: ${banco.estilo}`);
+    }
+    assert.deepEqual(siteData.bancos.map(b => [b.sigla, b.nombre, b.estilo]), [
+        ['BG', 'Banco Guayaquil', 'rosa'],
+        ['BP', 'Banco Pichincha', 'amarillo'],
+        ['BB', 'Banco Bolivariano', 'turquesa'],
+        ['PB', 'Produbanco', 'esmeralda']
+    ]);
+});
+
+test('Entidad certificadora: Uanataca (data-model.md → Datos del negocio.negocio.legal.entidadCertificadora)', () => {
+    assert.equal(siteData.negocio.legal.entidadCertificadora, 'Uanataca');
+});
+
+/**
+ * Valida un flyer contra data-model.md (003) → Flyer y Destino de flyer.
+ * @returns {Array<string>} Problemas encontrados, cada uno con el id y el campo.
+ */
+function problemasDeFlyer(flyer, ids) {
+    const p = [];
+    const id = flyer.id || '(sin id)';
+    const ruta = /^img\/flyers\/[a-z0-9-]+\.(webp|avif|svg)$/;
+    if (!/^[a-z0-9-]+$/.test(flyer.id || '')) p.push(`${id}: id con caracteres no permitidos`);
+    if (ids.filter(x => x === flyer.id).length > 1) p.push(`${id}: id repetido`);
+    if (!['promocion', 'informativo'].includes(flyer.tipo)) p.push(`${id}: tipo debe ser 'promocion' o 'informativo'`);
+    if (!ruta.test(flyer.imagen || '')) p.push(`${id}: imagen debe estar en img/flyers/ y ser .webp, .avif o .svg`);
+    if (flyer.imagenMovil !== undefined && !ruta.test(flyer.imagenMovil)) p.push(`${id}: imagenMovil inválida`);
+    if (typeof flyer.alt !== 'string' || flyer.alt.length < 10 || flyer.alt.length > 200) p.push(`${id}: alt de 10 a 200 caracteres`);
+    for (const campo of ['inicio', 'fin']) {
+        if (flyer[campo] !== undefined && !FECHA.test(flyer[campo])) p.push(`${id}: ${campo} debe ser AAAA-MM-DD`);
+    }
+    if (flyer.tipo === 'promocion' && (!flyer.inicio || !flyer.fin)) p.push(`${id}: un flyer de promoción necesita inicio y fin`);
+    if (flyer.inicio && flyer.fin && flyer.inicio > flyer.fin) p.push(`${id}: fin anterior a inicio`);
+    const destino = flyer.destino;
+    if (destino !== undefined) {
+        if (destino.tipo === 'contacto') {
+            if (typeof destino.mensaje !== 'string' || destino.mensaje.length < 5 || destino.mensaje.length > 200) {
+                p.push(`${id}: destino.mensaje de 5 a 200 caracteres`);
+            }
+        } else if (destino.tipo === 'pagina') {
+            if (!isValidFlyerPage(destino.pagina)) p.push(`${id}: destino.pagina no está en la lista blanca`);
+        } else {
+            p.push(`${id}: destino.tipo debe ser 'contacto' o 'pagina'`);
+        }
+    }
+    return p;
+}
+
+test('Flyer: cada flyer cumple data-model.md → Flyer y Destino de flyer (003)', () => {
+    const ids = siteData.flyers.map(f => f.id);
+    const problemas = siteData.flyers.flatMap(f => problemasDeFlyer(f, ids));
+    assert.deepEqual(problemas, []);
+});
+
+test('Flyer: el validador detecta los errores típicos de un flyer mal cargado', () => {
+    const malos = [
+        { id: 'Mal Id', tipo: 'otro', imagen: 'flyer.jpg', alt: 'corto' },
+        { id: 'promo-sin-fechas', tipo: 'promocion', imagen: 'img/flyers/a.webp', alt: 'Promoción sin fechas de prueba' },
+        { id: 'fechas-al-reves', tipo: 'informativo', imagen: 'img/flyers/a.webp', alt: 'Fechas invertidas de prueba',
+            inicio: '2026-12-31', fin: '2026-12-01' },
+        { id: 'destino-externo', tipo: 'informativo', imagen: 'img/flyers/a.webp', alt: 'Destino externo de prueba',
+            destino: { tipo: 'pagina', pagina: 'https://otro.sitio' } }
+    ];
+    const problemas = malos.flatMap(f => problemasDeFlyer(f, malos.map(x => x.id)));
+    for (const esperado of ['id con caracteres', 'tipo debe ser', 'imagen debe estar', 'alt de 10',
+        'necesita inicio y fin', 'fin anterior a inicio', 'lista blanca']) {
+        assert.ok(problemas.some(texto => texto.includes(esperado)), `no se detectó: ${esperado}`);
+    }
 });

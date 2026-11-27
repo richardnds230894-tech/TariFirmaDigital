@@ -82,9 +82,16 @@ for (const { nombre, html: pagina } of paginas) {
     });
 }
 
-/** Devuelve el HTML de la sección con ese id (hasta su cierre </section>). */
-function seccion(id) {
-    const encontrada = html.match(new RegExp(`<section\\b[^>]*id="${id}"[\\s\\S]*?</section>`));
+/** Devuelve el HTML de una página de la raíz por su nombre. */
+function pagina(nombre) {
+    const encontrada = paginas.find(p => p.nombre === nombre);
+    assert.ok(encontrada, `no existe ${nombre}`);
+    return encontrada.html;
+}
+
+/** Devuelve el HTML de la sección con ese id (hasta su cierre </section>) en una página. */
+function seccion(id, texto = html) {
+    const encontrada = texto.match(new RegExp(`<section\\b[^>]*id="${id}"[\\s\\S]*?</section>`));
     assert.ok(encontrada, `no existe section#${id}`);
     return encontrada[0];
 }
@@ -97,17 +104,19 @@ test('index.html · US1: #como-funciona tiene un <ol> con 5 pasos (FR-001)', () 
     assert.equal((lista[0].match(/<li\b/g) || []).length, 5);
 });
 
-test('index.html · US1: data-taxpayer-note solo usa natural o juridica, y el jurídico empieza oculto', () => {
-    const notas = valoresDe('data-taxpayer-note');
+test('facturacion.html · data-taxpayer-note solo usa natural o juridica, y el jurídico empieza oculto', () => {
+    const facturacion = pagina('facturacion.html');
+    const notas = valoresDe('data-taxpayer-note', facturacion);
     assert.deepEqual([...new Set(notas)].sort(), ['juridica', 'natural']);
-    for (const etiqueta of etiquetas('[a-z]+', html).filter(e => e.includes('data-taxpayer-note="juridica"'))) {
+    for (const etiqueta of etiquetas('[a-z]+', facturacion).filter(e => e.includes('data-taxpayer-note="juridica"'))) {
         assert.match(etiqueta, /class="[^"]*\bhidden\b/, etiqueta);
     }
 });
 
-test('index.html · US1: el aviso de "solo personas naturales" está en firma y en requisitos (FR-002a)', () => {
-    assert.ok(seccion('firma-electronica').includes(AVISO_NATURALES), 'falta en #firma-electronica');
-    assert.ok(seccion('requisitos').includes(AVISO_NATURALES), 'falta en #requisitos');
+test('firma.html · el aviso de "solo personas naturales" está en los planes y en los requisitos (FR-002a, FR-020)', () => {
+    const firma = pagina('firma.html');
+    assert.ok(seccion('firma-electronica', firma).includes(AVISO_NATURALES), 'falta en #firma-electronica');
+    assert.ok(seccion('requisitos', firma).includes(AVISO_NATURALES), 'falta en #requisitos');
 });
 
 test('index.html · US1: la entrega del mismo día sale de los datos (FR-003)', () => {
@@ -162,7 +171,7 @@ test('index.html · invariante 5: existe un aviso <noscript>', () => {
 });
 
 test('index.html · todo data-open-advisor es una clave válida', () => {
-    const validas = ['general', 'flotante', 'banco', 'renovacion'];
+    const validas = ['general', 'flotante', 'banco', 'renovacion', 'facturacion:natural', 'facturacion:juridica'];
     const usadas = valoresDe('data-open-advisor');
     assert.ok(usadas.length > 0);
     for (const clave of usadas) {
@@ -179,12 +188,8 @@ test('index.html · el modal es un diálogo accesible con su título', () => {
     assert.match(html, /id="advisor-modal-title"/);
 });
 
-test('index.html · invariante 4 (002): promociones genéricas, ocultas y sin datos escritos a mano', () => {
-    const apertura = html.match(/<section\b[^>]*id="promociones"[^>]*>/);
-    assert.ok(apertura, 'no existe section#promociones');
-    assert.match(apertura[0], /\sdata-promo-any[\s>]/);
-    assert.match(apertura[0], /class="[^"]*\bhidden\b/);
-    assert.match(seccion('promociones'), /id="promociones-container"/);
+test('index.html · invariante 4 (003): sin promociones-container; el menú "Promociones" depende de la vigencia', () => {
+    assert.ok(!html.includes('promociones-container'), 'queda promociones-container');
 
     const enlaces = etiquetas('a', html).filter(a => /\sdata-promo-any[\s>]/.test(a));
     assert.equal(enlaces.length, 2, 'se esperaban 2 enlaces de menú (escritorio y móvil)');
@@ -200,8 +205,18 @@ test('index.html · invariante 4 (002): promociones genéricas, ocultas y sin da
     assert.ok(!/Del \d+ de [a-z]+ al \d+ de [a-z]+/.test(html), 'hay una vigencia escrita a mano');
 });
 
-test('index.html · US8: hay un botón de renovación en la sección de firma (FR-028)', () => {
-    assert.ok(seccion('firma-electronica').includes('data-open-advisor="renovacion"'), 'falta el botón en #firma-electronica');
+test('firma.html · hay un botón de renovación (FR-028 de 002, FR-016 de 003)', () => {
+    assert.ok(pagina('firma.html').includes('data-open-advisor="renovacion"'), 'falta el botón de renovación');
+});
+
+test('firma.html · invariante 16: planes, requisitos y formas de pago, sin selector de tipo ni token', () => {
+    const firma = pagina('firma.html');
+    assert.match(firma, /id="firma-cards-container"/);
+    seccion('requisitos', firma);
+    assert.match(seccion('formas-de-pago', firma), /data-bancos/);
+    assert.ok(!firma.includes('data-taxpayer'), 'no debe haber selector de tipo de cliente');
+    assert.ok(!/token/i.test(firma), 'no debe mencionar token');
+    assert.match(firma, /data-open-advisor="banco"/);
 });
 
 test('invariante 7: sin texto de 10 u 11 px en las páginas ni en script.js (FR-033)', () => {
@@ -216,25 +231,46 @@ test('index.html · invariante 11: menú móvil y selector con estado accesible 
     assert.ok(boton.includes('aria-controls="mobile-menu"'), 'falta aria-controls');
     assert.match(boton, /aria-expanded="false"/);
     for (const id of ['btn-natural', 'btn-juridica']) {
-        const selector = etiquetas('button', html).find(b => b.includes(`id="${id}"`));
+        const selector = etiquetas('button', pagina('facturacion.html')).find(b => b.includes(`id="${id}"`));
+        assert.ok(selector, `falta #${id} en facturacion.html`);
         assert.match(selector, /aria-pressed="(true|false)"/, id);
     }
 });
 
-test('index.html · cada section con id deja su título visible bajo la cabecera fija (FR-029)', () => {
-    for (const apertura of etiquetas('section', html).filter(s => /\sid="/.test(s))) {
-        assert.match(apertura, /class="[^"]*\bscroll-mt-28\b/, apertura);
+test('facturacion.html · invariante 17: planes, dos tarjetas de requisitos y formas de pago, sin "Miembro de Empresa"', () => {
+    const facturacion = pagina('facturacion.html');
+    for (const id of ['comprobantes-cards-container', 'btn-natural', 'btn-juridica']) {
+        assert.match(facturacion, new RegExp(`id="${id}"`), id);
     }
+    const requisitos = seccion('requisitos', facturacion);
+    const tarjetas = [...requisitos.matchAll(/<h3\b[^>]*>([^<]+)<\/h3>/g)].map(m => m[1].trim());
+    assert.deepEqual(tarjetas, ['Persona Natural', 'Persona Jurídica (Representante Legal)']);
+    for (const clave of ['facturacion:natural', 'facturacion:juridica']) {
+        assert.ok(requisitos.includes(`data-open-advisor="${clave}"`), `falta el botón ${clave}`);
+    }
+    assert.ok(requisitos.includes(AVISO_NATURALES), 'falta el aviso de "solo personas naturales"');
+    assert.ok(!/Miembro de Empresa/i.test(facturacion), 'no debe aparecer "Miembro de Empresa"');
+    assert.match(seccion('formas-de-pago', facturacion), /data-bancos/);
+    assert.match(facturacion, /Necesitas una firma electrónica vigente/);
 });
 
-test('index.html · los títulos no saltan de nivel y no hay <h3> antes del primer <h2> (FR-033)', () => {
-    const niveles = [...html.matchAll(/<h([1-6])\b/g)].map(m => Number(m[1]));
-    assert.equal(niveles[0], 1, 'el primer título debe ser h1');
-    assert.ok(niveles.indexOf(3) === -1 || niveles.indexOf(2) < niveles.indexOf(3), 'hay un h3 antes del primer h2');
-    for (let i = 1; i < niveles.length; i += 1) {
-        assert.ok(niveles[i] <= niveles[i - 1] + 1, `salto de h${niveles[i - 1]} a h${niveles[i]}`);
-    }
-});
+for (const nombre of ['index.html', 'firma.html', 'facturacion.html']) {
+    test(`${nombre} · cada section con id deja su título visible bajo la cabecera fija (FR-029)`, () => {
+        for (const apertura of etiquetas('section', pagina(nombre)).filter(s => /\sid="/.test(s))) {
+            assert.match(apertura, /class="[^"]*\bscroll-mt-28\b/, apertura);
+        }
+    });
+
+    test(`${nombre} · los títulos no saltan de nivel y no hay <h3> antes del primer <h2> (FR-033)`, () => {
+        const principal = pagina(nombre).split('<!-- COMPARTIDO: INICIO PIE')[0];
+        const niveles = [...principal.matchAll(/<h([1-6])\b/g)].map(m => Number(m[1]));
+        assert.equal(niveles[0], 1, 'el primer título debe ser h1');
+        assert.ok(niveles.indexOf(3) === -1 || niveles.indexOf(2) < niveles.indexOf(3), 'hay un h3 antes del primer h2');
+        for (let i = 1; i < niveles.length; i += 1) {
+            assert.ok(niveles[i] <= niveles[i - 1] + 1, `salto de h${niveles[i - 1]} a h${niveles[i]}`);
+        }
+    });
+}
 
 test('styles.css detiene el pulso de la promoción con "reducir movimiento" (FR-032)', () => {
     const css = readFileSync(join(raiz, 'styles.css'), 'utf8');
@@ -260,4 +296,69 @@ test('US10: el aviso de privacidad describe la medición sin cookies (FR-014)', 
     const privacidad = paginas.find(p => p.nombre === 'privacidad.html').html;
     assert.match(privacidad, /sin cookies/i);
     assert.match(privacidad, /No rastrear/);
+});
+
+test('index.html · invariante 19 (003): el carrusel es accesible y sus botones tienen nombre', () => {
+    const apertura = html.match(/<section\b[^>]*id="promociones"[^>]*>/);
+    assert.ok(apertura, 'no existe section#promociones');
+    assert.match(apertura[0], /aria-roledescription="carrusel"/);
+    assert.match(apertura[0], /aria-label="[^"]+"/);
+    assert.match(apertura[0], /\sdata-carousel[\s>]/);
+    const carrusel = seccion('promociones');
+    for (const control of ['data-carousel-prev', 'data-carousel-next', 'data-carousel-pause']) {
+        const boton = etiquetas('button', carrusel).find(b => b.includes(control));
+        assert.ok(boton, `falta el botón ${control}`);
+        assert.match(boton, /aria-label="[^"]+"/, control);
+    }
+    assert.match(carrusel, /data-carousel-dots/);
+    assert.match(carrusel, /data-carousel-live/);
+});
+
+test('index.html · US1: el carrusel es la primera sección y su respaldo coincide con el primer flyer informativo (F3)', () => {
+    const primera = html.slice(html.indexOf('<!-- COMPARTIDO: FIN CABECERA -->')).match(/<section\b[^>]*>/);
+    assert.match(primera[0], /id="promociones"/, 'la primera sección no es el carrusel');
+    const respaldo = siteData.flyers.find(f => f.tipo === 'informativo' && !f.inicio && !f.fin);
+    const carrusel = seccion('promociones');
+    assert.ok(carrusel.includes(`src="${respaldo.imagen}"`), 'el respaldo no usa la imagen del primer flyer informativo');
+    assert.ok(carrusel.includes(`alt="${respaldo.alt}"`), 'el respaldo no usa el alt del primer flyer informativo');
+});
+
+test('index.html · US1: justo debajo del carrusel está la barra "Preguntas frecuentes" (FR-010)', () => {
+    const despues = html.slice(html.indexOf('</section>', html.indexOf('id="promociones"')));
+    const siguiente = despues.match(/<a\b[^>]*>[\s\S]*?<\/a>/);
+    assert.ok(siguiente, 'no hay un enlace después del carrusel');
+    assert.match(siguiente[0], /href="(index\.html)?#preguntas"/);
+    assert.match(siguiente[0], /Preguntas frecuentes/);
+    assert.ok(despues.indexOf(siguiente[0]) < despues.indexOf('<section'), 'la barra debe ir antes de la siguiente sección');
+});
+
+test('index.html · invariante 15 (003): orden de secciones y sin los catálogos trasladados (FR-011, FR-013)', () => {
+    const principal = html.slice(html.indexOf('<!-- COMPARTIDO: FIN CABECERA -->'), html.indexOf('<!-- COMPARTIDO: INICIO PIE'));
+    const ids = [...principal.matchAll(/<section\b[^>]*\bid="([^"]+)"/g)].map(m => m[1]);
+    assert.deepEqual(ids, ['promociones', 'servicios', 'como-funciona', 'preguntas']);
+    const hero = principal.indexOf('<!-- HERO SECTION -->');
+    assert.ok(principal.indexOf('id="promociones"') < hero && hero < principal.indexOf('id="servicios"'),
+        'el hero debe ir entre el carrusel y los servicios');
+    for (const trasladado of ['firma-cards-container', 'comprobantes-cards-container', 'id="requisitos"',
+        'id="firma-electronica"', 'id="facturacion"', 'data-taxpayer']) {
+        assert.ok(!html.includes(trasladado), `index.html todavía contiene ${trasladado}`);
+    }
+});
+
+test('index.html · US3: "Nuestros servicios" con Firma y Facturación y su "Saber más" (FR-012)', () => {
+    const servicios = seccion('servicios');
+    assert.match(servicios, /Nuestros servicios/);
+    assert.match(servicios, /Conoce lo que ofrecemos para ti/);
+    const enlaces = [...servicios.matchAll(/<a\b[^>]*href="([^"]+)"[^>]*>[\s\S]*?Saber más[\s\S]*?<\/a>/g)].map(m => m[1]);
+    assert.deepEqual(enlaces, ['firma.html', 'facturacion.html']);
+});
+
+test('invariante 18 (003): ninguna página usa textos ni cifras de los sitios de referencia (FR-031)', () => {
+    const prohibidos = [/Security Data/i, /millones de firmas/i, /App m[oó]vil/i, /usuarios activos/i,
+        /Miembro de Empresa/i, /Security Factura/i];
+    for (const { nombre, html: texto } of paginas) {
+        for (const patron of prohibidos) {
+            assert.ok(!patron.test(texto), `${nombre} contiene ${patron}`);
+        }
+    }
 });

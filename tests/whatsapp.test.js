@@ -61,3 +61,12 @@ test('ninguna plantilla de mensaje usa el rótulo interno del asesor (FR-026)', 
 test('buildWhatsAppUrl devuelve null para un asesor inexistente', () => {
     assert.equal(buildWhatsAppUrl('asesor9', 'hola'), null);
 });
+
+test('contrato 003: asesor1 con facturacion:natural', () => {
+    const mensaje = fillTemplate(siteData.negocio.mensajes.producto, {
+        negocio: siteData.negocio.nombre,
+        producto: buildProductDescription('facturacion:natural', 'natural')
+    });
+    assert.equal(new URL(buildWhatsAppUrl('asesor1', mensaje)).searchParams.get('text'),
+        "Hola, equipo de Tari's Firma Digital, estoy interesado en adquirir:\n*Sistema de Facturación Electrónica (Persona Natural) - Consulta de requisitos*\n\nPor favor ayúdeme con el proceso.");
+});

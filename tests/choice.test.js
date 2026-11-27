@@ -5,7 +5,7 @@ const { test } = require('node:test');
 const assert = require('node:assert/strict');
 const {
     siteData, calculateYearlyCost, calculateSavings, formatYearlyCostText,
-    calculateMonthlyVouchers, formatVoucherLabel
+    calculateMonthlyVouchers, formatVoucherLabel, formatValidityLabel
 } = require('../script.js');
 
 const planAnual = siteData.firmaPlans.find(plan => plan.anios === 1);
@@ -47,4 +47,12 @@ test('comprobantes por mes, redondeados (50 → 4 … 600 → 50)', () => {
 test('formatVoucherLabel mantiene el texto actual de las tarjetas y del modal', () => {
     assert.equal(formatVoucherLabel(50), '50 COMPROBANTES');
     assert.equal(formatVoucherLabel(600), '600 COMPROBANTES');
+});
+
+test('formatValidityLabel describe la vigencia de cada plan de firma (R9 de 003)', () => {
+    const etiqueta = (duracion) => formatValidityLabel(siteData.firmaPlans.find(p => p.duracion === duracion));
+    assert.equal(etiqueta('10 DÍAS'), 'Vigencia 10 días');
+    assert.equal(etiqueta('30 DÍAS'), 'Vigencia 30 días');
+    assert.equal(etiqueta('1 AÑO'), 'Vigencia 1 año');
+    assert.equal(etiqueta('5 AÑOS'), 'Vigencia 5 años');
 });
