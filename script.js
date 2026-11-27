@@ -42,7 +42,7 @@ const siteData = {
             razonSocial: 'Richard Nixon Dueñas Salvatierra',
             ruc: '0950463232001',
             ciudad: 'Guayaquil',
-            entidadCertificadora: 'Uanataca'
+            entidadCertificadora: 'CORPNEWBEST CIA. LTDA.'
         },
         mensajes: {
             info: 'Hola {negocio}, deseo información sobre Firma y Facturación Electrónica.',
@@ -103,12 +103,30 @@ const siteData = {
     // - destino (opcional): { tipo: 'contacto', mensaje } o { tipo: 'pagina', pagina: 'firma.html' }.
     flyers: [
         {
-            id: 'recomendacion-clave',
+            id: 'firma-hoy-mismo',
             tipo: 'informativo',
-            imagen: 'img/flyers/recomendacion-clave.webp',
-            imagenMovil: 'img/flyers/recomendacion-clave-movil.webp',
-            alt: 'Tu firma es personal: nunca compartas tu archivo P12 ni tu contraseña. Guárdalos en un lugar seguro. Tari’s Firma Digital.',
-            destino: { tipo: 'pagina', pagina: 'firma.html' }
+            imagen: 'img/flyers/firma-hoy-mismo.webp',
+            imagenMovil: 'img/flyers/firma-hoy-mismo-movil.webp',
+            alt: 'Tu firma electrónica, 100% online y sin filas. Válida para firmar tus documentos y Facturación Electrónica. Tari’s Firma Digital.',
+            destino: { tipo: 'contacto', mensaje: 'Quiero sacar mi firma electrónica hoy mismo' }
+        },
+        {
+            id: 'firma-p12',
+            tipo: 'informativo',
+            imagen: 'img/flyers/firma-p12.webp',
+            imagenTablet: 'img/flyers/firma-p12-tablet.webp',
+            imagenMovil: 'img/flyers/firma-p12-movil.webp',
+            alt: 'Firma electrónica en archivo P12. Úsala para facturar, firmar documentos y hacer trámites en el SRI, Quipux y FirmaEC. Distribuidor autorizado.',
+            destino: { tipo: 'pagina', pagina: 'firma.html#firma-electronica' }
+        },
+        {
+            id: 'factureec-facturacion',
+            tipo: 'informativo',
+            imagen: 'img/flyers/factureec-facturacion.webp',
+            imagenTablet: 'img/flyers/factureec-facturacion-tablet.webp',
+            imagenMovil: 'img/flyers/factureec-facturacion-movil.webp',
+            alt: 'Facturación electrónica conectada al SRI con Factureec: facturas, notas de crédito, retenciones y guías de remisión. Distribuidor autorizado.',
+            destino: { tipo: 'pagina', pagina: 'facturacion.html#facturacion' }
         }
     ],
 
@@ -1245,12 +1263,16 @@ function renderPromotionSlide({ promo, variantes }) {
  */
 function renderFlyerSlide({ flyer }, esPrimera) {
     const carga = esPrimera ? 'fetchpriority="high"' : 'loading="lazy"';
+    // El navegador usa la primera <source> que cumple: móvil (≤ 640 px), luego tablet (≤ 1024 px)
     const movil = flyer.imagenMovil
         ? `<source media="(max-width: 640px)" srcset="${escapeHtml(flyer.imagenMovil)}">`
         : '';
+    const tablet = flyer.imagenTablet
+        ? `<source media="(max-width: 1024px)" srcset="${escapeHtml(flyer.imagenTablet)}">`
+        : '';
     const imagen = `
             <picture>
-                ${movil}
+                ${movil}${tablet}
                 <img src="${escapeHtml(flyer.imagen)}" alt="${escapeHtml(flyer.alt)}" width="1920" height="600" ${carga} class="block w-full h-auto">
             </picture>`;
     const destino = flyer.destino;
@@ -1590,6 +1612,7 @@ if (typeof module !== 'undefined' && module.exports) {
         getActiveVariants,
         getActiveFlyers,
         isValidFlyerPage,
+        renderFlyerSlide,
         buildCarouselSlides,
         getNextIndex,
         formatSlideLabel,
