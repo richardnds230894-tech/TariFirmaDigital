@@ -280,8 +280,8 @@ Natural y Representante Legal, y formas de pago.
 - [X] T047 [P] Actualizar `README.md`: las páginas del sitio (`index`, `firma`, `facturacion` y las legales), el campo `bancos` y la nota de que el marcado compartido debe quedar idéntico en todas (con `tests/layout.test.js` vigilándolo)
 - [X] T048 Pasar `index.html`, `firma.html`, `facturacion.html`, `privacidad.html` y `terminos.html` por el validador W3C (vnu, en local), con 0 errores (quickstart §7.1)
 - [ ] T049 Validar `quickstart.md` §7 de punta a punta en Chrome y Edge: consola sin errores por `file://` capturas en 375 px y 1280 px de las tres páginas de venta, y Lighthouse en móvil "Slow 4G" sobre `index.html` con el valor de LCP anotado en el PR (SC-001, E1 del análisis). Dejar Firefox y Safari para que los confirme el responsable en el PR. **Avance 2026-11-26**: consola sin errores en las 5 páginas en Chrome y Edge por `file://`, y capturas revisadas a 375 px (con iframe, porque Chrome headless no baja de 482 px) y 1300 px. Falta Lighthouse, que necesita un servidor local; lo hace el responsable
-- [ ] T050 Ejecutar `node --test` sobre `tests/` (0 fail) y anotar en el PR la casilla "Confirmo que ninguna imagen de flyer lleva precios" (FR-009a), los pendientes del responsable (horas de entrega y `websiteId`) y los textos para confirmar (beneficios de firma y de facturación, y texto del flyer inicial, FR-033)
-- [ ] T051 Abrir el PR desde `003-flyers-plan-pages`, siguiendo `specs/003-flyers-plan-pages/quickstart.md`, con la descripción, la verificación del Principio IV y las confirmaciones pendientes
+- [X] T050 Ejecutar `node --test` sobre `tests/` (0 fail) y anotar en el PR la casilla "Confirmo que ninguna imagen de flyer lleva precios" (FR-009a), los pendientes del responsable (horas de entrega y `websiteId`) y los textos para confirmar (beneficios de firma y de facturación, y texto del flyer inicial, FR-033)
+- [X] T051 Abrir el PR desde `003-flyers-plan-pages`, siguiendo `specs/003-flyers-plan-pages/quickstart.md`, con la descripción, la verificación del Principio IV y las confirmaciones pendientes
 
 ---
 
