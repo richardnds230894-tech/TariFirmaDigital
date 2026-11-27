@@ -157,6 +157,8 @@ escapados.
     `sharp` (`npx sharp-cli`, solo en desarrollo).
   - **A verificar al implementar**: si `sharp-cli` no funciona en el equipo, la conversión se hace
     exportando con `canvas.toDataURL('image/webp')` en Chrome headless.
+    **Verificado el 2026-11-26**: `npx -y sharp-cli` 6.1.0 convierte PNG a WebP en el equipo
+    (`-f webp -q 80`); no hace falta la alternativa con `canvas`.
 - **Imágenes del responsable**: el README explica cómo convertirlas a WebP (por ejemplo, con
   squoosh.app) y con qué tamaño.
 
