@@ -109,14 +109,6 @@ const siteData = {
             imagenMovil: 'img/flyers/firma-hoy-mismo-movil.webp',
             alt: 'Tu firma electrónica, 100% online y sin filas. Válida para firmar tus documentos y Facturación Electrónica. Tari’s Firma Digital.',
             destino: { tipo: 'contacto', mensaje: 'Quiero sacar mi firma electrónica hoy mismo' }
-        },
-        {
-            id: 'recomendacion-clave',
-            tipo: 'informativo',
-            imagen: 'img/flyers/recomendacion-clave.webp',
-            imagenMovil: 'img/flyers/recomendacion-clave-movil.webp',
-            alt: 'Tu firma es personal: nunca compartas tu archivo P12 ni tu contraseña. Guárdalos en un lugar seguro. Tari’s Firma Digital.',
-            destino: { tipo: 'pagina', pagina: 'firma.html' }
         }
     ],
 
