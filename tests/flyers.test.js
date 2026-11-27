@@ -16,8 +16,8 @@ test('hay al menos un flyer informativo permanente (respaldo del carrusel sin Ja
 
 for (const flyer of siteData.flyers) {
     test(`flyer ${flyer.id}: imágenes WebP/AVIF/SVG existentes de ≤ 250 KB`, () => {
-        for (const campo of ['imagen', 'imagenMovil']) {
-            if (campo === 'imagenMovil' && flyer.imagenMovil === undefined) continue;
+        for (const campo of ['imagen', 'imagenTablet', 'imagenMovil']) {
+            if (campo !== 'imagen' && flyer[campo] === undefined) continue;
             const ruta = flyer[campo];
             assert.match(ruta, /^img\/flyers\/[a-z0-9-]+\.(webp|avif|svg)$/, `${campo}: ${ruta}`);
             const archivo = join(raiz, ruta);

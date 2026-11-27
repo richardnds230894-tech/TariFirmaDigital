@@ -193,6 +193,7 @@ function problemasDeFlyer(flyer, ids) {
     if (!['promocion', 'informativo'].includes(flyer.tipo)) p.push(`${id}: tipo debe ser 'promocion' o 'informativo'`);
     if (!ruta.test(flyer.imagen || '')) p.push(`${id}: imagen debe estar en img/flyers/ y ser .webp, .avif o .svg`);
     if (flyer.imagenMovil !== undefined && !ruta.test(flyer.imagenMovil)) p.push(`${id}: imagenMovil inválida`);
+    if (flyer.imagenTablet !== undefined && !ruta.test(flyer.imagenTablet)) p.push(`${id}: imagenTablet inválida`);
     if (typeof flyer.alt !== 'string' || flyer.alt.length < 10 || flyer.alt.length > 200) p.push(`${id}: alt de 10 a 200 caracteres`);
     for (const campo of ['inicio', 'fin']) {
         if (flyer[campo] !== undefined && !FECHA.test(flyer[campo])) p.push(`${id}: ${campo} debe ser AAAA-MM-DD`);

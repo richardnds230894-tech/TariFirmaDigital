@@ -63,8 +63,9 @@ renderAttentionStatus(new Date('2026-11-28T14:30:00-05:00')); // otra hora para 
 El carrusel de la página principal muestra primero las promociones vigentes y después los
 flyers de `siteData.flyers`. Para publicar uno no hace falta tocar el HTML:
 
-1. **Prepara la imagen**: 1920×600 px para escritorio (y, si quieres, 1080×1080 px para móvil),
-   en **WebP** y de **250 KB como máximo**. Puedes convertirla con, por ejemplo, squoosh.app.
+1. **Prepara la imagen**: 1920×600 px para escritorio (y, si quieres, una versión para tablet,
+   de 641 a 1024 px de ancho, y otra para móvil, de hasta 640 px; pueden tener cualquier
+   proporción, por ejemplo 1080×1080 px), en **WebP** y de **250 KB como máximo**. Puedes convertirla con, por ejemplo, squoosh.app.
    **La imagen no puede llevar precios ni montos**: si la promoción tiene precio, agrégala en
    `siteData.promociones`, que genera su propia diapositiva con los precios del sitio.
 2. **Copia la imagen** a `img/flyers/`, con un nombre en minúsculas y guiones
@@ -76,6 +77,7 @@ flyers de `siteData.flyers`. Para publicar uno no hace falta tocar el HTML:
        id: 'feriado-diciembre',
        tipo: 'promocion',          // 'promocion' (inicio y fin obligatorios) o 'informativo'
        imagen: 'img/flyers/feriado-diciembre.webp',
+       imagenTablet: 'img/flyers/feriado-diciembre-tablet.webp', // opcional
        imagenMovil: 'img/flyers/feriado-diciembre-movil.webp',   // opcional
        alt: 'Atención especial en feriados de diciembre: escríbenos por WhatsApp',
        destino: { tipo: 'contacto', mensaje: 'Consulta por el flyer de feriados de diciembre' },  // opcional

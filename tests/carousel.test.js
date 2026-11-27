@@ -4,7 +4,7 @@
 const { test } = require('node:test');
 const assert = require('node:assert/strict');
 const {
-    siteData, buildCarouselSlides, getActiveFlyers, isValidFlyerPage, getNextIndex, formatSlideLabel
+    siteData, buildCarouselSlides, getActiveFlyers, isValidFlyerPage, getNextIndex, formatSlideLabel, renderFlyerSlide
 } = require('../script.js');
 
 const promo = siteData.promociones[0]; // 2026-11-09 → 2026-11-30
@@ -36,6 +36,22 @@ test('buildCarouselSlides: un destino fuera de la lista blanca se descarta y el 
     const externo = buildCarouselSlides([], flyers, vigente).find(d => d.flyer.id === 'externo');
     assert.equal(externo.flyer.destino, undefined);
     assert.equal(flyers[2].destino.pagina, 'https://otro.sitio', 'no modifica los datos originales');
+});
+
+test('renderFlyerSlide: usa la imagen móvil hasta 640 px, la de tablet hasta 1024 px y la de escritorio en lo demás', () => {
+    const flyer = { id: 'x', tipo: 'informativo', imagen: 'img/flyers/d.webp', imagenTablet: 'img/flyers/t.webp',
+        imagenMovil: 'img/flyers/m.webp', alt: 'Flyer de prueba con tres tamaños' };
+    const html = renderFlyerSlide({ flyer }, false);
+    const movil = html.indexOf('(max-width: 640px)" srcset="img/flyers/m.webp"');
+    const tablet = html.indexOf('(max-width: 1024px)" srcset="img/flyers/t.webp"');
+    assert.ok(movil !== -1 && tablet !== -1, 'faltan las fuentes móvil o tablet');
+    assert.ok(movil < tablet, 'la fuente móvil debe ir antes que la de tablet (el navegador usa la primera que cumple)');
+    assert.ok(html.includes('<img src="img/flyers/d.webp"'), 'la imagen de escritorio es el src');
+});
+
+test('renderFlyerSlide: sin imagenTablet no agrega la fuente de tablet', () => {
+    const flyer = { id: 'y', tipo: 'informativo', imagen: 'img/flyers/d.webp', imagenMovil: 'img/flyers/m.webp', alt: 'Flyer de prueba sin tablet' };
+    assert.ok(!renderFlyerSlide({ flyer }, false).includes('1024px'));
 });
 
 test('getActiveFlyers respeta inicio y fin en hora de Ecuador (data-model.md → Flyer.inicio, Flyer.fin)', () => {
