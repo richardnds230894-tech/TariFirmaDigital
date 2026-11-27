@@ -42,7 +42,7 @@ const siteData = {
             razonSocial: 'Richard Nixon Dueñas Salvatierra',
             ruc: '0950463232001',
             ciudad: 'Guayaquil',
-            entidadCertificadora: null
+            entidadCertificadora: 'Uanataca'
         },
         mensajes: {
             info: 'Hola {negocio}, deseo información sobre Firma y Facturación Electrónica.',
@@ -96,6 +96,31 @@ const siteData = {
 
     // Medición sin cookies (contracts/analytics-events.md). null = pendiente del responsable;
     // sin websiteId o fuera de "dominio" no se envía nada.
+    // Flyers del carrusel (contracts/flyers.md de 003). Para publicar uno: copia la imagen WebP a
+    // img/flyers/ y agrega un objeto aquí, en la posición en que quieres verlo. Reglas:
+    // - tipo: 'promocion' (inicio y fin obligatorios) o 'informativo' (fechas opcionales).
+    // - La imagen NO puede llevar precios ni montos (las promociones con precio van en "promociones").
+    // - destino (opcional): { tipo: 'contacto', mensaje } o { tipo: 'pagina', pagina: 'firma.html' }.
+    flyers: [
+        {
+            id: 'recomendacion-clave',
+            tipo: 'informativo',
+            imagen: 'img/flyers/recomendacion-clave.webp',
+            imagenMovil: 'img/flyers/recomendacion-clave-movil.webp',
+            alt: 'Tu firma es personal: nunca compartas tu archivo P12 ni tu contraseña. Guárdalos en un lugar seguro. Tari’s Firma Digital.',
+            destino: { tipo: 'pagina', pagina: 'firma.html' }
+        }
+    ],
+
+    // Bancos para el pago por transferencia: se muestran en firma.html y facturacion.html.
+    // "estilo" es una clave cerrada (rosa, amarillo, turquesa, esmeralda); ver ESTILOS_BANCO.
+    bancos: [
+        { sigla: 'BG', nombre: 'Banco Guayaquil', estilo: 'rosa' },
+        { sigla: 'BP', nombre: 'Banco Pichincha', estilo: 'amarillo' },
+        { sigla: 'BB', nombre: 'Banco Bolivariano', estilo: 'turquesa' },
+        { sigla: 'PB', nombre: 'Produbanco', estilo: 'esmeralda' }
+    ],
+
     medicion: {
         websiteId: null,
         endpoint: 'https://gateway.umami.is/api/send',
@@ -371,6 +396,20 @@ function calculateMonthlyVouchers(total) {
 }
 
 /**
+ * Texto de la vigencia de un plan de firma (ej. "Vigencia 1 año", "Vigencia 10 días"), a
+ * partir de anios o, si es por días, de duracion (research R9 de 003).
+ * @param {{duracion: string, anios: ?number}} plan - Plan de firma.
+ * @returns {string} Vigencia legible.
+ */
+function formatValidityLabel(plan) {
+    if (plan.anios !== null && plan.anios !== undefined) {
+        return `Vigencia ${formatYears(plan.anios)}`;
+    }
+    const dias = plan.duracion.match(/^(\d+)/);
+    return dias ? `Vigencia ${dias[1]} días` : `Vigencia ${plan.duracion.toLowerCase()}`;
+}
+
+/**
  * Etiqueta visible de un plan de comprobantes (ej. 50 → "50 COMPROBANTES").
  * @param {number} total - Comprobantes del año.
  * @returns {string} Etiqueta.
@@ -404,6 +443,77 @@ function getActiveVariants(promo, firmaPlans) {
             return { pagaAnios: variante.pagaAnios, recibeAnios: variante.recibeAnios, precio };
         })
         .filter(variante => typeof variante.precio === 'number');
+}
+
+/**
+ * Devuelve los flyers vigentes en un instante, en su orden (data-model.md 003 → Flyer).
+ * Sin fechas, un flyer es permanente; "fin" cuenta completo, en hora de Ecuador.
+ * @param {Array<Object>} flyers - siteData.flyers.
+ * @param {Date} ahora - Instante a evaluar.
+ * @returns {Array<Object>} Flyers vigentes.
+ */
+function getActiveFlyers(flyers, ahora) {
+    const hoy = getEcuadorDateString(ahora);
+    return flyers.filter(flyer => (!flyer.inicio || flyer.inicio <= hoy) && (!flyer.fin || hoy <= flyer.fin));
+}
+
+const PAGINAS_DE_FLYER = ['index.html', 'firma.html', 'facturacion.html'];
+const ANCLAS_DE_FLYER = ['firma-electronica', 'facturacion', 'requisitos', 'preguntas', 'como-funciona'];
+
+/**
+ * Indica si el destino de página de un flyer está en la lista blanca (research R5 de 003).
+ * @param {*} pagina - Valor de destino.pagina (ej. "firma.html#requisitos").
+ * @returns {boolean} true si es una página del sitio permitida, con o sin ancla válida.
+ */
+function isValidFlyerPage(pagina) {
+    if (typeof pagina !== 'string') return false;
+    const [archivo, ancla, ...resto] = pagina.split('#');
+    if (resto.length > 0 || !PAGINAS_DE_FLYER.includes(archivo)) return false;
+    return ancla === undefined || ANCLAS_DE_FLYER.includes(ancla);
+}
+
+/**
+ * Arma las diapositivas del carrusel: primero una por cada promoción vigente y después los
+ * flyers vigentes en su orden. Un destino de página fuera de la lista blanca se descarta.
+ * @param {Array<Object>} promociones - siteData.promociones.
+ * @param {Array<Object>} flyers - siteData.flyers.
+ * @param {Date} ahora - Instante a evaluar.
+ * @returns {Array<Object>} Diapositivas { tipo: 'promocion', promo, variantes } o { tipo: 'flyer', flyer }.
+ */
+function buildCarouselSlides(promociones, flyers, ahora) {
+    const deVenta = getActivePromotions(promociones, ahora)
+        .map(promo => ({ tipo: 'promocion', promo, variantes: getActiveVariants(promo, siteData.firmaPlans) }))
+        .filter(diapositiva => diapositiva.variantes.length > 0);
+    const informativas = getActiveFlyers(flyers, ahora).map(flyer => {
+        const destino = flyer.destino;
+        const valido = destino && (
+            (destino.tipo === 'contacto' && typeof destino.mensaje === 'string' && destino.mensaje.length > 0)
+            || (destino.tipo === 'pagina' && isValidFlyerPage(destino.pagina)));
+        return { tipo: 'flyer', flyer: { ...flyer, destino: valido ? destino : undefined } };
+    });
+    return [...deVenta, ...informativas];
+}
+
+/**
+ * Calcula el índice de la diapositiva siguiente o anterior, dando la vuelta en los extremos.
+ * @param {number} actual - Índice actual.
+ * @param {number} total - Cantidad de diapositivas.
+ * @param {number} paso - +1 para avanzar, -1 para retroceder.
+ * @returns {number} Nuevo índice.
+ */
+function getNextIndex(actual, total, paso) {
+    if (total <= 0) return 0;
+    return ((actual + paso) % total + total) % total;
+}
+
+/**
+ * Texto de posición de una diapositiva para lectores de pantalla (ej. "2 de 3").
+ * @param {number} indice - Índice desde 0.
+ * @param {number} total - Cantidad de diapositivas.
+ * @returns {string} Posición legible.
+ */
+function formatSlideLabel(indice, total) {
+    return `${indice + 1} de ${total}`;
 }
 
 /**
@@ -536,6 +646,33 @@ function buildEventOrigin(clave, tipoContribuyente) {
     return clave;
 }
 
+const PAGINAS_DEL_MENU = ['index', 'firma', 'facturacion', 'privacidad', 'terminos'];
+
+/**
+ * Identifica la página actual a partir de su ruta (data-model.md 003 → Páginas).
+ * @param {string} pathname - location.pathname (también funciona con rutas file://).
+ * @returns {string} "index", "firma", "facturacion", "privacidad" o "terminos".
+ */
+function getCurrentNavPage(pathname) {
+    const archivo = (pathname.split('/').pop() || 'index.html').replace(/\.html$/, '');
+    return PAGINAS_DEL_MENU.includes(archivo) ? archivo : 'index';
+}
+
+const ANCLAS_ANTIGUAS = {
+    '#firma-electronica': 'firma.html#firma-electronica',
+    '#facturacion': 'facturacion.html#facturacion',
+    '#requisitos': 'firma.html#requisitos'
+};
+
+/**
+ * Traduce un ancla antigua de la página principal a su página nueva (FR-027, research R2 de 003).
+ * @param {string} hash - location.hash (ej. "#firma-electronica").
+ * @returns {?string} URL relativa nueva, o null si el ancla sigue en la página principal.
+ */
+function mapLegacyHash(hash) {
+    return Object.prototype.hasOwnProperty.call(ANCLAS_ANTIGUAS, hash) ? ANCLAS_ANTIGUAS[hash] : null;
+}
+
 /**
  * Devuelve el año en hora de Ecuador, para el copyright (FR-036).
  * @param {Date} ahora - Instante a evaluar.
@@ -584,6 +721,16 @@ function buildProductDescription(clave, tipoContribuyente) {
     }
     if (clave === 'flotante') {
         return `Consulta general desde la web de ${siteData.negocio.nombre}`;
+    }
+    if (tipo === 'flyer') {
+        // Solo flyers vigentes con destino de contacto; el mensaje viene de los datos, sin datos del visitante
+        const flyer = getActiveFlyers(siteData.flyers, new Date()).find(f => f.id === valor);
+        const destino = flyer && flyer.destino;
+        return destino && destino.tipo === 'contacto' && destino.mensaje ? destino.mensaje : null;
+    }
+    if (tipo === 'facturacion' && (valor === 'natural' || valor === 'juridica')) {
+        const etiqueta = valor === 'natural' ? 'Persona Natural' : 'Persona Jurídica';
+        return `Sistema de Facturación Electrónica (${etiqueta}) - Consulta de requisitos`;
     }
     if (clave === 'renovacion') {
         return 'Renovación de Firma Electrónica';
@@ -636,35 +783,33 @@ function renderFirmaCards(vigentes = []) {
     };
 
     container.innerHTML = siteData.firmaPlans.map((plan, indice) => `
-        <div class="bg-[#081018] rounded-2xl border ${plan.popular ? 'border-taris-gold shadow-gold' : 'border-white/10 hover:border-taris-gold/50'} p-5 flex flex-col justify-between transition group relative">
-            ${plan.popular ? `<span class="absolute -top-3 right-4 gold-gradient text-taris-dark text-xs font-black uppercase px-3 py-0.5 rounded-full shadow">Popular</span>` : ''}
-            <div>
-                <div class="flex items-center justify-between mb-3">
-                    <span class="w-10 h-10 rounded-xl bg-taris-emerald/40 border border-emerald-500/30 text-emerald-400 flex items-center justify-center">
-                        <i class="fa-regular fa-calendar-check text-lg"></i>
-                    </span>
-                    <span class="text-xs font-semibold text-slate-400 bg-white/5 px-2.5 py-1 rounded-md">${escapeHtml(plan.etiqueta)}</span>
+        <div class="rounded-3xl border-2 ${plan.popular ? 'border-taris-gold shadow-gold bg-[#0C1624]' : 'border-taris-gold/30 hover:border-taris-gold/70 bg-[#081018]'} flex flex-col overflow-hidden transition">
+            ${plan.popular
+                ? '<span class="gold-gradient text-taris-dark text-sm font-black text-center py-2">Más popular</span>'
+                : '<span class="py-2 text-sm text-transparent select-none" aria-hidden="true">·</span>'}
+            <div class="flex-1 flex flex-col p-6 text-center">
+                <span class="text-xs font-bold uppercase tracking-wider text-taris-gold">Persona Natural</span>
+                <h3 class="mt-3 mx-auto px-5 py-1.5 rounded-full border border-white/15 bg-white/5 text-base font-black text-white">${escapeHtml(formatValidityLabel(plan))}</h3>
+                <div class="mt-4 flex items-start justify-center font-black leading-none text-white">
+                    <span class="text-xl mt-1 mr-0.5 text-emerald-400">$</span>
+                    <span class="text-4xl tracking-tight">${escapeHtml(formatPrice(plan.precio))}</span>
                 </div>
-                <h3 class="text-xl font-black text-white tracking-tight">${escapeHtml(plan.duracion)}</h3>
-                <p class="text-xs text-slate-400 mt-0.5">Firma Electrónica Archivo P12</p>
-                ${formatYearlyCostText(plan, planAnual) ? `<p class="text-xs font-bold text-emerald-300 mt-2">${escapeHtml(formatYearlyCostText(plan, planAnual))}</p>` : ''}
-                ${avisoDe(plan)}
+                <span class="block text-xs text-emerald-400 font-semibold mt-1">IVA incluido</span>
+                <span class="block text-xs text-slate-400 mt-1">${escapeHtml(plan.etiqueta)}</span>
+                ${formatYearlyCostText(plan, planAnual) ? `<p class="text-xs font-bold text-emerald-300 mt-3">${escapeHtml(formatYearlyCostText(plan, planAnual))}</p>` : ''}
+                <div class="flex justify-center">${avisoDe(plan)}</div>
 
-                <div class="my-5 pt-4 border-t border-white/10 flex items-baseline justify-between">
-                    <span class="text-xs font-bold text-slate-400 uppercase">Cliente Final</span>
-                    <div class="text-right">
-                        <span class="text-emerald-400 font-black text-xl mr-0.5">$</span>
-                        <span class="text-3xl font-black text-white">${escapeHtml(formatPrice(plan.precio))}</span>
-                        <span class="block text-xs text-emerald-400 font-semibold">IVA incluido</span>
-                    </div>
-                </div>
+                <div class="grow min-h-5" aria-hidden="true"></div>
+                <a href="#requisitos" class="pt-4 border-t border-white/10 flex items-center justify-between text-sm text-slate-300 hover:text-taris-gold transition">
+                    <span>Ver requisitos</span>
+                    <i class="fa-solid fa-chevron-right text-xs" aria-hidden="true"></i>
+                </a>
+                <button type="button" data-plan="firma:${indice}"
+                        class="mt-4 w-full py-3 px-4 rounded-2xl font-extrabold text-sm transition flex items-center justify-center gap-2 cursor-pointer ${plan.popular ? 'gold-gradient text-taris-dark shadow-gold hover:brightness-110' : 'border-2 border-taris-gold/60 text-taris-gold hover:bg-taris-gold hover:text-taris-dark'}">
+                    <i class="fa-brands fa-whatsapp text-base"></i>
+                    <span>Comprar ahora</span>
+                </button>
             </div>
-
-            <button type="button" data-plan="firma:${indice}"
-                    class="w-full py-3 px-4 rounded-xl bg-taris-emerald hover:bg-taris-emeraldHover text-white font-extrabold text-sm transition flex items-center justify-center gap-2 cursor-pointer border border-emerald-400/20">
-                <i class="fa-brands fa-whatsapp text-base"></i>
-                <span>Comprar Plan</span>
-            </button>
         </div>
     `).join('');
 }
@@ -922,6 +1067,12 @@ function handleDocumentClick(evento) {
         return;
     }
 
+    // Clic en un flyer o en un botón de la diapositiva de promoción (contracts/analytics-events.md de 003)
+    const flyer = evento.target.closest('[data-flyer]');
+    if (flyer && evento.target.closest('a, button')) {
+        trackEvent('clic-flyer', { flyer: flyer.dataset.flyer });
+    }
+
     const haciaPromocion = evento.target.closest('[data-ver-promocion]');
     if (haciaPromocion) {
         trackEvent('ver-promocion', { desde: haciaPromocion.dataset.verPromocion });
@@ -1009,85 +1160,252 @@ function hydrateContactData() {
 }
 
 /**
- * Muestra u oculta cada promoción y sus enlaces de menú según su vigencia,
- * y escribe su texto de vigencia. Se puede llamar desde la consola con otra
- * fecha para probar, por ejemplo: applyPromotions(new Date('2026-12-01T00:00:00-05:00')).
+ * Aplica la vigencia de las promociones y los flyers: vuelve a dibujar el carrusel, muestra u
+ * oculta los enlaces "Promociones" del menú y dibuja las tarjetas de firma con sus avisos.
+ * Se puede llamar desde la consola con otra fecha para probar, por ejemplo:
+ * applyPromotions(new Date('2026-12-01T00:00:00-05:00')).
  * @param {Date} [ahora=new Date()] - Instante a evaluar.
  */
 function applyPromotions(ahora = new Date()) {
     const vigentes = getActivePromotions(siteData.promociones, ahora);
-    renderPromotions(vigentes);
+    renderCarousel(buildCarouselSlides(siteData.promociones, siteData.flyers, ahora));
     document.querySelectorAll('[data-promo-any]')
         .forEach(elemento => elemento.classList.toggle('hidden', vigentes.length === 0));
     renderFirmaCards(vigentes);
 }
 
 /**
- * Genera una tarjeta por promoción vigente en #promociones-container, con un botón por
- * variante (data-plan="promo:<id>:<v>"). Todos los textos pasan por escapeHtml.
- * @param {Array<Object>} vigentes - Promociones vigentes (ver getActivePromotions).
+ * Genera el HTML de la diapositiva de una promoción vigente, con un botón por variante
+ * (data-plan="promo:<id>:<v>") y sus precios del dato único. Todo pasa por escapeHtml.
+ * @param {{promo: Object, variantes: Array<Object>}} diapositiva - Ver buildCarouselSlides.
+ * @returns {string} Contenido de la diapositiva.
  */
-function renderPromotions(vigentes) {
-    const contenedor = document.getElementById('promociones-container');
-    if (!contenedor) return;
-
-    contenedor.innerHTML = vigentes.map(promo => {
-        const variantes = getActiveVariants(promo, siteData.firmaPlans);
-        const destacada = variantes[0];
-        if (!destacada) return '';
-        const resto = promo.titulo.startsWith(promo.producto) ? promo.titulo.slice(promo.producto.length) : '';
-        const titular = resto
-            ? `${escapeHtml(promo.producto)} <span class="text-[#FACC15]">${escapeHtml(resto.trim())}</span>`
-            : escapeHtml(promo.titulo);
-        const botones = variantes.map((variante, indice) => `
-            <button type="button" data-plan="promo:${escapeHtml(promo.id)}:${indice}"
-                    class="bg-white/10 hover:bg-white/20 backdrop-blur-sm border border-white/20 hover:border-[#FACC15] rounded-2xl p-3.5 text-center transition cursor-pointer">
-                <span class="block text-xs text-sky-200 font-semibold">Pagas ${escapeHtml(formatYears(variante.pagaAnios))}</span>
-                <span class="block text-lg font-black text-white mt-0.5">
-                    <i class="fa-solid fa-arrow-right text-[#FACC15] text-xs mr-1"></i> Te damos <span class="text-[#FACC15] text-xl">${escapeHtml(variante.recibeAnios)}</span>
-                </span>
-                <span class="block text-sm font-extrabold text-white mt-1">$${escapeHtml(formatPrice(variante.precio))}</span>
-                <span class="block text-xs text-emerald-300 font-semibold">IVA incluido</span>
-            </button>`).join('');
-
-        return `
-        <div class="promo-banner-bg rounded-3xl border-2 border-taris-gold shadow-card overflow-hidden animate-pulse-gold">
-            <div class="grid lg:grid-cols-12 items-center">
-                <div class="lg:col-span-7 p-6 sm:p-10 space-y-5">
-                    <div class="flex flex-wrap items-center gap-3">
-                        <span class="bg-red-600 text-white font-black text-xs sm:text-sm px-4 py-1.5 rounded-lg uppercase tracking-wide shadow-md transform -rotate-1">¡Solo por tiempo limitado!</span>
-                        <span class="bg-[#FACC15] text-taris-dark font-extrabold text-xs sm:text-sm px-4 py-1.5 rounded-lg flex items-center gap-2 shadow-md">
-                            <i class="fa-regular fa-calendar-check"></i>
-                            <span>Vigencia: ${escapeHtml(formatDateRange(promo.inicio, promo.fin))}</span>
+function renderPromotionSlide({ promo, variantes }) {
+    const destacada = variantes[0];
+    const resto = promo.titulo.startsWith(promo.producto) ? promo.titulo.slice(promo.producto.length) : '';
+    const titular = resto
+        ? `${escapeHtml(promo.producto)} <span class="text-[#FACC15]">${escapeHtml(resto.trim())}</span>`
+        : escapeHtml(promo.titulo);
+    const botones = variantes.map((variante, indice) => `
+                    <button type="button" data-plan="promo:${escapeHtml(promo.id)}:${indice}"
+                            class="bg-white/10 hover:bg-white/20 backdrop-blur-sm border border-white/20 hover:border-[#FACC15] rounded-2xl p-3.5 text-center transition cursor-pointer">
+                        <span class="block text-xs text-sky-200 font-semibold">Pagas ${escapeHtml(formatYears(variante.pagaAnios))}</span>
+                        <span class="block text-lg font-black text-white mt-0.5">
+                            <i class="fa-solid fa-arrow-right text-[#FACC15] text-xs mr-1"></i> Te damos <span class="text-[#FACC15] text-xl">${escapeHtml(variante.recibeAnios)}</span>
                         </span>
-                    </div>
-                    <div>
-                        <h3 class="text-3xl sm:text-4xl lg:text-5xl font-black text-white uppercase leading-tight">${titular}</h3>
-                        <p class="text-sky-200 text-sm sm:text-base mt-1 font-medium">Elige tu opción y recibe más años de vigencia por el mismo pago.</p>
-                    </div>
-                    <div class="grid sm:grid-cols-3 gap-3 pt-1">${botones}</div>
-                </div>
+                        <span class="block text-sm font-extrabold text-white mt-1">$${escapeHtml(formatPrice(variante.precio))}</span>
+                        <span class="block text-xs text-emerald-300 font-semibold">IVA incluido</span>
+                    </button>`).join('');
 
-                <div class="lg:col-span-5 bg-[#041229]/80 border-t lg:border-t-0 lg:border-l border-taris-gold/30 p-6 sm:p-10 flex flex-col items-center justify-center text-center h-full">
-                    <span class="text-xs uppercase tracking-widest text-taris-gold font-bold mb-2">Precio Especial Promo</span>
-                    <div class="bg-[#061A3A] border-2 border-taris-gold rounded-3xl px-8 py-5 shadow-gold mb-5 w-full max-w-xs">
-                        <div class="flex items-start justify-center text-[#FACC15] font-black leading-none">
-                            <span class="text-3xl sm:text-4xl mt-1 mr-1">$</span>
-                            <span class="text-6xl sm:text-7xl tracking-tighter">${escapeHtml(formatPrice(destacada.precio))}</span>
+    return `
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-8 pb-14 sm:pt-10">
+            <div class="promo-banner-bg rounded-3xl border-2 border-taris-gold shadow-card overflow-hidden">
+                <div class="grid lg:grid-cols-12 items-center">
+                    <div class="lg:col-span-7 p-6 sm:p-10 space-y-5">
+                        <div class="flex flex-wrap items-center gap-3">
+                            <span class="bg-red-600 text-white font-black text-xs sm:text-sm px-4 py-1.5 rounded-lg uppercase tracking-wide shadow-md transform -rotate-1">¡Solo por tiempo limitado!</span>
+                            <span class="bg-[#FACC15] text-taris-dark font-extrabold text-xs sm:text-sm px-4 py-1.5 rounded-lg flex items-center gap-2 shadow-md">
+                                <i class="fa-regular fa-calendar-check"></i>
+                                <span>Vigencia: ${escapeHtml(formatDateRange(promo.inicio, promo.fin))}</span>
+                            </span>
                         </div>
-                        <span class="block text-white font-extrabold text-lg mt-1">por ${escapeHtml(formatYears(destacada.recibeAnios))}</span>
-                        <span class="block text-xs text-emerald-400 font-semibold mt-1">IVA incluido</span>
+                        <div>
+                            <p class="text-3xl sm:text-4xl lg:text-5xl font-black text-white uppercase leading-tight">${titular}</p>
+                            <p class="text-sky-200 text-sm sm:text-base mt-1 font-medium">Elige tu opción y recibe más años de vigencia por el mismo pago.</p>
+                        </div>
+                        <div class="grid sm:grid-cols-3 gap-3 pt-1">${botones}</div>
                     </div>
-                    <button type="button" data-plan="promo:${escapeHtml(promo.id)}:0"
-                            class="w-full max-w-xs gold-gradient text-taris-dark font-black text-base py-4 px-6 rounded-2xl shadow-gold hover:brightness-110 transition flex items-center justify-center gap-2.5 cursor-pointer">
-                        <i class="fa-brands fa-whatsapp text-xl text-emerald-950"></i>
-                        <span>¡Aprovechar Promoción!</span>
-                    </button>
-                    <p class="text-xs text-slate-400 mt-3">Elige tu asesor preferido al hacer clic</p>
+                    <div class="lg:col-span-5 bg-[#041229]/80 border-t lg:border-t-0 lg:border-l border-taris-gold/30 p-6 sm:p-10 flex flex-col items-center justify-center text-center h-full">
+                        <span class="text-xs uppercase tracking-widest text-taris-gold font-bold mb-2">Precio Especial Promo</span>
+                        <div class="bg-[#061A3A] border-2 border-taris-gold rounded-3xl px-8 py-5 shadow-gold mb-5 w-full max-w-xs">
+                            <div class="flex items-start justify-center text-[#FACC15] font-black leading-none">
+                                <span class="text-3xl sm:text-4xl mt-1 mr-1">$</span>
+                                <span class="text-6xl sm:text-7xl tracking-tighter">${escapeHtml(formatPrice(destacada.precio))}</span>
+                            </div>
+                            <span class="block text-white font-extrabold text-lg mt-1">por ${escapeHtml(formatYears(destacada.recibeAnios))}</span>
+                            <span class="block text-xs text-emerald-400 font-semibold mt-1">IVA incluido</span>
+                        </div>
+                        <button type="button" data-plan="promo:${escapeHtml(promo.id)}:0"
+                                class="w-full max-w-xs gold-gradient text-taris-dark font-black text-base py-4 px-6 rounded-2xl shadow-gold hover:brightness-110 transition flex items-center justify-center gap-2.5 cursor-pointer">
+                            <i class="fa-brands fa-whatsapp text-xl text-emerald-950"></i>
+                            <span>¡Aprovechar Promoción!</span>
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>`;
+}
+
+/**
+ * Genera el HTML de la diapositiva de un flyer de imagen, con su destino opcional:
+ * contacto (botón data-open-advisor="flyer:<id>") o página del sitio (enlace).
+ * @param {{flyer: Object}} diapositiva - Ver buildCarouselSlides.
+ * @param {boolean} esPrimera - true si está en la primera pantalla (carga prioritaria).
+ * @returns {string} Contenido de la diapositiva.
+ */
+function renderFlyerSlide({ flyer }, esPrimera) {
+    const carga = esPrimera ? 'fetchpriority="high"' : 'loading="lazy"';
+    const movil = flyer.imagenMovil
+        ? `<source media="(max-width: 640px)" srcset="${escapeHtml(flyer.imagenMovil)}">`
+        : '';
+    const imagen = `
+            <picture>
+                ${movil}
+                <img src="${escapeHtml(flyer.imagen)}" alt="${escapeHtml(flyer.alt)}" width="1920" height="600" ${carga} class="block w-full h-auto">
+            </picture>`;
+    const destino = flyer.destino;
+    if (destino && destino.tipo === 'contacto') {
+        return `<button type="button" data-open-advisor="flyer:${escapeHtml(flyer.id)}" class="block w-full cursor-pointer">${imagen}</button>`;
+    }
+    if (destino && destino.tipo === 'pagina') {
+        return `<a href="${escapeHtml(destino.pagina)}" class="block">${imagen}</a>`;
+    }
+    return imagen;
+}
+
+// Estado del carrusel de la página principal (solo vive en memoria)
+const carrusel = {
+    indice: 0,
+    total: 0,
+    temporizador: null,
+    pausadoPorUsuario: false,
+    punteroEncima: false,
+    focoDentro: false
+};
+
+const PAUSA_CARRUSEL_MS = 6000;
+
+/**
+ * Dibuja las diapositivas y los indicadores del carrusel. Oculta la sección si no hay
+ * diapositivas y los controles si hay una sola (US1, escenarios 5 y 6).
+ * @param {Array<Object>} diapositivas - Ver buildCarouselSlides.
+ */
+function renderCarousel(diapositivas) {
+    const seccion = document.querySelector('[data-carousel]');
+    if (!seccion) return;
+    const pista = seccion.querySelector('[data-carousel-track]');
+    const total = diapositivas.length;
+
+    pista.innerHTML = diapositivas.map((diapositiva, indice) => {
+        const contenido = diapositiva.tipo === 'promocion'
+            ? renderPromotionSlide(diapositiva)
+            : renderFlyerSlide(diapositiva, indice === 0);
+        const id = diapositiva.tipo === 'promocion' ? `promo:${diapositiva.promo.id}` : diapositiva.flyer.id;
+        return `
+        <div role="group" aria-roledescription="diapositiva" aria-label="${escapeHtml(formatSlideLabel(indice, total))}"
+             data-slide data-flyer="${escapeHtml(id)}"
+             class="[grid-area:1/1] min-w-0 flex items-center transition-opacity duration-500 motion-reduce:transition-none">
+            <div class="w-full">${contenido}</div>
+        </div>`;
     }).join('');
+
+    seccion.querySelector('[data-carousel-dots]').innerHTML = diapositivas.map((_, indice) => `
+        <button type="button" data-carousel-dot="${indice}" aria-label="Ir a la diapositiva ${indice + 1}"
+                class="w-2.5 h-2.5 rounded-full bg-white/50 hover:bg-white transition-all aria-[current=true]:w-6 aria-[current=true]:bg-taris-gold cursor-pointer"></button>`).join('');
+
+    seccion.classList.toggle('hidden', total === 0);
+    const conControles = total > 1;
+    const sinAvance = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    seccion.querySelectorAll('[data-carousel-prev], [data-carousel-next], [data-carousel-dots]').forEach(control => {
+        control.classList.toggle('hidden', !conControles);
+        control.classList.toggle('flex', conControles);
+    });
+    const pausa = seccion.querySelector('[data-carousel-pause]');
+    pausa.classList.toggle('hidden', !conControles || sinAvance);
+    pausa.classList.toggle('flex', conControles && !sinAvance);
+
+    carrusel.total = total;
+    showSlide(0, false);
+}
+
+/**
+ * Muestra una diapositiva y actualiza indicadores y anuncio. Al navegar a mano, la región viva
+ * pasa a "polite"; durante el avance automático queda en "off" (patrón APG).
+ * @param {number} indice - Diapositiva a mostrar.
+ * @param {boolean} manual - true si la pidió el visitante.
+ */
+function showSlide(indice, manual) {
+    const seccion = document.querySelector('[data-carousel]');
+    if (!seccion || carrusel.total === 0) return;
+    carrusel.indice = indice;
+    seccion.querySelectorAll('[data-slide]').forEach((diapositiva, i) => {
+        const activa = i === indice;
+        diapositiva.classList.toggle('opacity-100', activa);
+        diapositiva.classList.toggle('opacity-0', !activa);
+        diapositiva.classList.toggle('invisible', !activa);
+    });
+    seccion.querySelectorAll('[data-carousel-dot]').forEach((punto, i) => {
+        punto.setAttribute('aria-current', String(i === indice));
+    });
+    const vivo = seccion.querySelector('[data-carousel-live]');
+    vivo.setAttribute('aria-live', manual ? 'polite' : 'off');
+    vivo.textContent = `Diapositiva ${formatSlideLabel(indice, carrusel.total)}`;
+}
+
+/**
+ * Avanza o retrocede una diapositiva.
+ * @param {number} paso - +1 o -1.
+ * @param {boolean} manual - true si la pidió el visitante.
+ */
+function moveSlide(paso, manual) {
+    showSlide(getNextIndex(carrusel.indice, carrusel.total, paso), manual);
+}
+
+/**
+ * Conecta los controles del carrusel (flechas, indicadores, pausa, teclado y deslizar) y el
+ * avance automático cada 6 s, que se detiene con el puntero encima, el foco dentro, la pestaña
+ * oculta o el botón de pausa, y que no arranca si el visitante pidió reducir el movimiento.
+ */
+function initCarousel() {
+    const seccion = document.querySelector('[data-carousel]');
+    if (!seccion) return;
+
+    seccion.querySelector('[data-carousel-prev]').addEventListener('click', () => moveSlide(-1, true));
+    seccion.querySelector('[data-carousel-next]').addEventListener('click', () => moveSlide(1, true));
+    seccion.querySelector('[data-carousel-dots]').addEventListener('click', (evento) => {
+        const punto = evento.target.closest('[data-carousel-dot]');
+        if (punto) showSlide(Number(punto.dataset.carouselDot), true);
+    });
+
+    const pausa = seccion.querySelector('[data-carousel-pause]');
+    pausa.addEventListener('click', () => {
+        carrusel.pausadoPorUsuario = !carrusel.pausadoPorUsuario;
+        pausa.setAttribute('aria-pressed', String(carrusel.pausadoPorUsuario));
+        pausa.setAttribute('aria-label', carrusel.pausadoPorUsuario ? 'Reanudar el carrusel' : 'Pausar el carrusel');
+        const icono = pausa.querySelector('i');
+        icono.classList.toggle('fa-pause', !carrusel.pausadoPorUsuario);
+        icono.classList.toggle('fa-play', carrusel.pausadoPorUsuario);
+    });
+
+    seccion.addEventListener('keydown', (evento) => {
+        if (carrusel.total < 2) return;
+        if (evento.key === 'ArrowLeft') moveSlide(-1, true);
+        if (evento.key === 'ArrowRight') moveSlide(1, true);
+    });
+
+    let inicioX = null;
+    seccion.addEventListener('pointerdown', (evento) => { inicioX = evento.clientX; });
+    seccion.addEventListener('pointerup', (evento) => {
+        if (inicioX === null || carrusel.total < 2) return;
+        const distancia = evento.clientX - inicioX;
+        inicioX = null;
+        if (Math.abs(distancia) >= 40) moveSlide(distancia < 0 ? 1 : -1, true);
+    });
+
+    seccion.addEventListener('mouseenter', () => { carrusel.punteroEncima = true; });
+    seccion.addEventListener('mouseleave', () => { carrusel.punteroEncima = false; });
+    seccion.addEventListener('focusin', () => { carrusel.focoDentro = true; });
+    seccion.addEventListener('focusout', (evento) => {
+        carrusel.focoDentro = seccion.contains(evento.relatedTarget);
+    });
+
+    const sinAvance = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (!sinAvance) {
+        carrusel.temporizador = window.setInterval(() => {
+            const detenido = carrusel.pausadoPorUsuario || carrusel.punteroEncima || carrusel.focoDentro || document.hidden;
+            if (!detenido && carrusel.total > 1) moveSlide(1, false);
+        }, PAUSA_CARRUSEL_MS);
+    }
 }
 
 /**
@@ -1128,6 +1446,67 @@ function renderAttentionStatus(ahora = new Date()) {
     });
 }
 
+// Clases fijas de cada estilo de banco (research R7 de 003): los datos solo eligen una clave
+const ESTILOS_BANCO = {
+    rosa: { borde: 'hover:border-pink-500/50', sigla: 'bg-pink-600/20 text-pink-400' },
+    amarillo: { borde: 'hover:border-yellow-400/50', sigla: 'bg-yellow-500/20 text-yellow-400' },
+    turquesa: { borde: 'hover:border-teal-400/50', sigla: 'bg-teal-500/20 text-teal-400' },
+    esmeralda: { borde: 'hover:border-emerald-400/50', sigla: 'bg-emerald-500/20 text-emerald-400' }
+};
+
+/**
+ * Dibuja los bancos de siteData.bancos en cada [data-bancos] (formas de pago, FR-014 de 003).
+ */
+function renderBanks() {
+    document.querySelectorAll('[data-bancos]').forEach(contenedor => {
+        contenedor.innerHTML = siteData.bancos.map(banco => {
+            const estilo = ESTILOS_BANCO[banco.estilo] || ESTILOS_BANCO.esmeralda;
+            return `
+            <div class="bg-[#081018] border border-white/10 ${estilo.borde} transition p-4 rounded-2xl flex items-center gap-3">
+                <div class="w-10 h-10 rounded-xl ${estilo.sigla} font-black flex items-center justify-center text-sm shrink-0">${escapeHtml(banco.sigla)}</div>
+                <div>
+                    <span class="block font-bold text-white text-sm">${escapeHtml(banco.nombre)}</span>
+                    <span class="block text-xs text-slate-400">Transferencia</span>
+                </div>
+            </div>`;
+        }).join('');
+    });
+}
+
+/**
+ * Marca con aria-current el enlace del menú de la página actual. En la página principal,
+ * convierte los enlaces "index.html#…" en "#…" para no recargar la página.
+ */
+function markCurrentNav() {
+    const pagina = getCurrentNavPage(window.location.pathname);
+    document.querySelectorAll('[data-nav]').forEach(enlace => {
+        if (enlace.dataset.nav === pagina) {
+            enlace.setAttribute('aria-current', 'page');
+        } else {
+            enlace.removeAttribute('aria-current');
+        }
+    });
+    if (pagina === 'index') {
+        document.querySelectorAll('a[href^="index.html#"]').forEach(enlace => {
+            enlace.setAttribute('href', enlace.getAttribute('href').slice('index.html'.length));
+        });
+    }
+}
+
+/**
+ * En la página principal, lleva las anclas antiguas (#firma-electronica, #facturacion,
+ * #requisitos) a su página nueva sin dejar la URL antigua en el historial.
+ * @returns {boolean} true si se inició una redirección.
+ */
+function redirectLegacyHash() {
+    if (getCurrentNavPage(window.location.pathname) !== 'index') return false;
+    const destino = mapLegacyHash(window.location.hash);
+    // Solo si la sección ya no está en la página principal (se mudó a su página propia)
+    if (!destino || document.getElementById(window.location.hash.slice(1))) return false;
+    window.location.replace(destino);
+    return true;
+}
+
 /**
  * Escribe los datos estructurados en el <script type="application/ld+json"> de la página.
  * Usa textContent: el JSON nunca se interpreta como HTML.
@@ -1145,8 +1524,12 @@ function renderStructuredData() {
 
 if (typeof window !== 'undefined') {
     window.addEventListener('DOMContentLoaded', () => {
+        if (redirectLegacyHash()) return;
+        markCurrentNav();
+        renderBanks();
         renderComprobantesCards();
         applyPromotions(); // también dibuja las tarjetas de firma con sus avisos de promoción
+        initCarousel();
         hydrateContactData();
         hydrateLegalData();
         renderStructuredData();
@@ -1205,12 +1588,18 @@ if (typeof module !== 'undefined' && module.exports) {
         isPromotionActive,
         getActivePromotions,
         getActiveVariants,
+        getActiveFlyers,
+        isValidFlyerPage,
+        buildCarouselSlides,
+        getNextIndex,
+        formatSlideLabel,
         formatYears,
         calculateYearlyCost,
         calculateSavings,
         formatYearlyCostText,
         calculateMonthlyVouchers,
         formatVoucherLabel,
+        formatValidityLabel,
         getAttentionStatus,
         formatAttentionStatus,
         pickSuggestedAdvisor,
@@ -1218,6 +1607,8 @@ if (typeof module !== 'undefined' && module.exports) {
         buildAnalyticsPayload,
         buildEventOrigin,
         getEcuadorYear,
+        getCurrentNavPage,
+        mapLegacyHash,
         formatDateRange
     };
 }

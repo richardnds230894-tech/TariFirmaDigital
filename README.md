@@ -6,8 +6,21 @@ Facturación Electrónica en Ecuador. La venta se cierra por WhatsApp con los as
 No necesita compilación para abrirse ni publicarse: basta con abrir `index.html` en el
 navegador o subir los archivos a cualquier hosting estático.
 
-Páginas: `index.html` (venta), `privacidad.html` (aviso de privacidad) y `terminos.html`
-(términos del servicio). Todas usan `tailwind.css`, `styles.css` y `script.js`.
+Páginas (todas usan `tailwind.css`, `styles.css` y `script.js`):
+
+| Página | Contenido |
+|--------|-----------|
+| `index.html` | carrusel de flyers y promociones, barra de preguntas, hero, "Nuestros servicios", "Cómo funciona" y preguntas frecuentes |
+| `firma.html` | firma electrónica: beneficios, planes por vigencia, requisitos y formas de pago |
+| `facturacion.html` | facturación electrónica: beneficios, planes de comprobantes, requisitos por tipo de cliente y formas de pago |
+| `privacidad.html`, `terminos.html` | aviso de privacidad y términos del servicio |
+
+**Marcado compartido**: la cabecera (con el menú) y el pie (footer, botones flotantes y modal de
+asesores) son **idénticos** en todas las páginas, entre los comentarios
+`<!-- COMPARTIDO: INICIO … -->` y `<!-- COMPARTIDO: FIN … -->`. Si cambias uno, copia el mismo
+bloque en las demás páginas: `tests/layout.test.js` falla si alguna queda distinta. Los enlaces
+antiguos a `index.html#firma-electronica`, `#facturacion` o `#requisitos` se redirigen solos a la
+página nueva.
 
 ## Cómo editar precios, asesores, horarios y promociones
 
@@ -26,6 +39,8 @@ Todo está en **un solo lugar**: el objeto `siteData`, al inicio de `script.js`
 | Mensajes de WhatsApp | `negocio.mensajes` (`{negocio}` y `{producto}`; sin datos del cliente) |
 | Promoción | `promociones[…]`: `titulo`, `producto`, `inicio`, `fin` (`AAAA-MM-DD`) y `variantes` |
 | Medición (Umami) | `medicion.websiteId` y `medicion.dominio` (`null` = no se mide) |
+| Flyers del carrusel | `flyers[…]` (ver "Publicar un flyer") |
+| Bancos para transferencias | `bancos[…]`: `sigla`, `nombre` y `estilo` (`rosa`, `amarillo`, `turquesa` o `esmeralda`); se muestran en `firma.html` y `facturacion.html` |
 
 - Los precios se muestran siempre como `$NN,NN` con IVA incluido.
 - **Promociones**: cada variante es `{ pagaAnios, recibeAnios, precio? }`. Si no lleva `precio`,
@@ -42,6 +57,48 @@ Todo está en **un solo lugar**: el objeto `siteData`, al inicio de `script.js`
 applyPromotions(new Date('2026-12-01T00:00:00-05:00'));       // otra fecha para las promociones
 renderAttentionStatus(new Date('2026-11-28T14:30:00-05:00')); // otra hora para "Atendiendo ahora"
 ```
+
+## Publicar un flyer
+
+El carrusel de la página principal muestra primero las promociones vigentes y después los
+flyers de `siteData.flyers`. Para publicar uno no hace falta tocar el HTML:
+
+1. **Prepara la imagen**: 1920×600 px para escritorio (y, si quieres, 1080×1080 px para móvil),
+   en **WebP** y de **250 KB como máximo**. Puedes convertirla con, por ejemplo, squoosh.app.
+   **La imagen no puede llevar precios ni montos**: si la promoción tiene precio, agrégala en
+   `siteData.promociones`, que genera su propia diapositiva con los precios del sitio.
+2. **Copia la imagen** a `img/flyers/`, con un nombre en minúsculas y guiones
+   (por ejemplo `img/flyers/feriado-diciembre.webp`).
+3. **Agrega sus datos** en `script.js` → `siteData.flyers`, en la posición donde quieras verlo:
+
+   ```js
+   {
+       id: 'feriado-diciembre',
+       tipo: 'promocion',          // 'promocion' (inicio y fin obligatorios) o 'informativo'
+       imagen: 'img/flyers/feriado-diciembre.webp',
+       imagenMovil: 'img/flyers/feriado-diciembre-movil.webp',   // opcional
+       alt: 'Atención especial en feriados de diciembre: escríbenos por WhatsApp',
+       destino: { tipo: 'contacto', mensaje: 'Consulta por el flyer de feriados de diciembre' },  // opcional
+       inicio: '2026-12-01',
+       fin: '2026-12-31'
+   }
+   ```
+
+   - `alt` describe lo que dice la imagen (10 a 200 caracteres): es lo que lee un lector de
+     pantalla.
+   - `destino` es opcional: `{ tipo: 'contacto', mensaje: '…' }` abre WhatsApp con ese mensaje, y
+     `{ tipo: 'pagina', pagina: 'firma.html' }` lleva a una página del sitio (`index.html`,
+     `firma.html` o `facturacion.html`, con o sin `#ancla`).
+   - El flyer aparece desde el día `inicio` y desaparece al terminar el día `fin`, en hora de
+     Ecuador. Un flyer `informativo` sin fechas queda siempre.
+4. **Ejecuta `node --test`**: si algo está mal (imagen inexistente o muy pesada, promoción sin
+   fechas, fecha de fin anterior a la de inicio o destino no permitido), la prueba indica qué
+   flyer y qué campo corregir.
+5. **Sube el cambio a `main`**: Vercel lo publica solo.
+
+Para retirar un flyer, borra su objeto de `siteData.flyers` (y su imagen de `img/flyers/`). Si
+retiras el primer flyer `informativo` permanente, actualiza también el respaldo sin JavaScript
+de `section#promociones` en `index.html` (la prueba lo avisa).
 
 ## Regenerar estilos
 

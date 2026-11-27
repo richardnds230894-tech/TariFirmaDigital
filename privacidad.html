@@ -22,21 +22,114 @@
 </head>
 <body class="bg-[#050C17] text-white font-sans antialiased selection:bg-taris-gold selection:text-taris-dark">
 
-    <!-- SECCIÓN: CABECERA SIMPLIFICADA -->
-    <header class="bg-[#061A3A] border-b border-taris-gold/20">
-        <div class="max-w-3xl mx-auto px-4 sm:px-6 h-20 flex items-center justify-between">
-            <a href="index.html" class="flex items-center gap-3">
-                <img src="favicon.svg" alt="" class="w-10 h-10">
-                <span>
-                    <span class="block text-xl font-extrabold leading-none">Tari’s</span>
-                    <span class="block text-xs font-bold text-taris-gold uppercase tracking-wider">Firma Digital</span>
+    <!-- COMPARTIDO: INICIO CABECERA (idéntico en todas las páginas; lo vigila tests/layout.test.js) -->
+    <!-- AVISO SIN JAVASCRIPT (los planes y los botones de WhatsApp los genera script.js) -->
+    <noscript>
+        <div class="aviso-sin-js">
+            Para ver nuestros planes y contactar a un asesor por WhatsApp, activa JavaScript en tu navegador.
+        </div>
+    </noscript>
+
+    <!-- BARRA SUPERIOR DE INFORMACIÓN Y HORARIOS -->
+    <div class="bg-[#030811] border-b border-white/10 text-xs sm:text-sm py-2.5 px-4">
+        <div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-2 text-slate-300">
+            <div class="flex flex-wrap items-center justify-center gap-4">
+                <span class="flex items-center gap-1.5 text-taris-gold font-medium">
+                    <i class="fa-solid fa-location-dot"></i> Cobertura en todo Ecuador
                 </span>
+                <span class="hidden sm:inline text-white/20">|</span>
+                <span class="flex items-center gap-1.5">
+                    <i class="fa-regular fa-clock text-taris-gold"></i>
+                    <span>Lun - Vie: <strong data-horario="semana"></strong> | Sáb: <strong data-horario="sabado"></strong></span>
+                    <span class="hidden sm:inline text-white/20">|</span>
+                    <span class="font-semibold text-amber-300" data-atencion role="status"></span>
+                </span>
+            </div>
+            <div class="flex items-center gap-4">
+                <a href="#" data-facebook target="_blank" rel="noopener noreferrer"
+                   class="flex items-center gap-1.5 text-sky-400 hover:text-sky-300 transition font-medium">
+                    <i class="fa-brands fa-facebook text-base"></i> Síguenos en Facebook
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- NAVEGACIÓN PRINCIPAL -->
+    <header class="sticky top-0 z-40 bg-[#061A3A]/95 backdrop-blur-md border-b border-taris-gold/20 shadow-lg">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-20">
+                <!-- Logo Tari's Recreación Vectorial -->
+                <a href="index.html" class="flex items-center gap-3 group" aria-label="Tari’s Firma Digital, ir al inicio">
+                    <div class="w-12 h-12 rounded-xl bg-[#040F22] border border-taris-gold/30 flex items-center justify-center p-1.5 shadow-inner group-hover:border-taris-gold transition">
+                        <svg viewBox="0 0 100 100" class="w-full h-full" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                            <path d="M18 20 C35 16, 68 18, 86 24 L76 38 C60 33, 35 32, 14 35 Z" fill="url(#skyGrad)"/>
+                            <path d="M44 28 L60 29 C55 50, 48 68, 36 82 L22 76 C32 62, 39 45, 44 28 Z" fill="#FFFFFF"/>
+                            <path d="M44 28 L53 28.5 C48 48, 41 65, 30 79 L22 76 C32 62, 39 45, 44 28 Z" fill="url(#blueGrad)"/>
+                            <path d="M18 85 C38 82, 58 70, 74 52" stroke="#E5B94C" stroke-width="4.5" stroke-linecap="round"/>
+                            <rect x="70" y="42" width="12" height="14" rx="2" transform="rotate(38 70 42)" fill="#E5B94C"/>
+                            <rect x="78" y="37" width="6" height="8" rx="1" transform="rotate(38 78 37)" fill="#FFF2C2"/>
+                            <defs>
+                                <linearGradient id="skyGrad" x1="14" y1="20" x2="86" y2="35" gradientUnits="userSpaceOnUse">
+                                    <stop stop-color="#E0F2FE"/>
+                                    <stop offset="0.5" stop-color="#38BDF8"/>
+                                    <stop offset="1" stop-color="#0284C7"/>
+                                </linearGradient>
+                                <linearGradient id="blueGrad" x1="22" y1="28" x2="53" y2="79" gradientUnits="userSpaceOnUse">
+                                    <stop stop-color="#7DD3FC"/>
+                                    <stop offset="1" stop-color="#0369A1"/>
+                                </linearGradient>
+                            </defs>
+                        </svg>
+                    </div>
+                    <div>
+                        <span class="block text-2xl font-extrabold tracking-tight text-white leading-none">Tari’s</span>
+                        <span class="block text-xs font-semibold tracking-wider text-taris-gold uppercase mt-0.5">Firma Digital</span>
+                    </div>
+                </a>
+
+                <!-- Menú Desktop (el enlace de la página actual recibe aria-current desde script.js) -->
+                <nav class="hidden xl:flex items-center gap-6 whitespace-nowrap text-sm font-semibold text-slate-200" aria-label="Menú principal">
+                    <a href="index.html#promociones" data-promo-any data-ver-promocion="menu" class="hidden text-taris-gold hover:text-taris-goldLight transition flex items-center gap-1.5">
+                        <i class="fa-solid fa-fire text-red-500"></i> Promociones
+                    </a>
+                    <a href="index.html" data-nav="index" class="hover:text-taris-gold transition aria-[current=page]:text-taris-gold">Inicio</a>
+                    <a href="firma.html" data-nav="firma" class="hover:text-taris-gold transition aria-[current=page]:text-taris-gold">Firma Electrónica</a>
+                    <a href="facturacion.html" data-nav="facturacion" class="hover:text-taris-gold transition aria-[current=page]:text-taris-gold">Facturación Electrónica</a>
+                    <a href="index.html#como-funciona" class="hover:text-taris-gold transition">Cómo funciona</a>
+                    <a href="index.html#preguntas" class="hover:text-taris-gold transition">Preguntas</a>
+                </nav>
+
+                <!-- Botón Directo Asesores + Menú Móvil -->
+                <div class="flex items-center gap-2 sm:gap-3">
+                    <button type="button" data-open-advisor="general"
+                            class="gold-gradient text-taris-dark font-extrabold text-xs sm:text-sm px-4 py-2.5 rounded-xl shadow-gold hover:brightness-110 transition flex items-center gap-2 cursor-pointer">
+                        <i class="fa-brands fa-whatsapp text-lg text-emerald-950"></i>
+                        <span>Contáctanos</span>
+                    </button>
+                    <button id="mobile-menu-btn" type="button" aria-controls="mobile-menu" aria-expanded="false" class="xl:hidden p-2.5 rounded-xl bg-white/10 text-white hover:bg-white/20 transition" aria-label="Abrir menú">
+                        <i class="fa-solid fa-bars text-lg"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Menú Móvil Desplegable -->
+        <div id="mobile-menu" class="hidden xl:hidden bg-[#040F22] border-t border-white/10 px-4 pt-3 pb-5 space-y-2">
+            <a href="index.html#promociones" data-promo-any data-ver-promocion="menu" class="hidden block px-3 py-2.5 rounded-lg text-taris-gold font-bold bg-white/5">
+                <i class="fa-solid fa-fire text-red-500 mr-2"></i> Promociones Vigentes
             </a>
-            <a href="index.html" class="text-sm font-bold text-slate-200 hover:text-taris-gold transition flex items-center gap-2">
-                <i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Volver al inicio
+            <a href="index.html" data-nav="index" class="block px-3 py-2.5 rounded-lg text-slate-200 hover:bg-white/5 font-medium aria-[current=page]:text-taris-gold">Inicio</a>
+            <a href="firma.html" data-nav="firma" class="block px-3 py-2.5 rounded-lg text-slate-200 hover:bg-white/5 font-medium aria-[current=page]:text-taris-gold">Firma Electrónica (P12)</a>
+            <a href="facturacion.html" data-nav="facturacion" class="block px-3 py-2.5 rounded-lg text-slate-200 hover:bg-white/5 font-medium aria-[current=page]:text-taris-gold">Facturación Electrónica</a>
+            <a href="index.html#como-funciona" class="block px-3 py-2.5 rounded-lg text-slate-200 hover:bg-white/5 font-medium">Cómo funciona</a>
+            <a href="index.html#preguntas" class="block px-3 py-2.5 rounded-lg text-slate-200 hover:bg-white/5 font-medium">Preguntas frecuentes</a>
+            <a href="#" data-facebook target="_blank" rel="noopener noreferrer"
+               class="block px-3 py-2.5 rounded-lg text-sky-400 hover:bg-white/5 font-medium">
+                <i class="fa-brands fa-facebook mr-2"></i> Página Oficial en Facebook
             </a>
         </div>
     </header>
+    <!-- COMPARTIDO: FIN CABECERA -->
 
     <!-- SECCIÓN: AVISO DE PRIVACIDAD (FR-014, research R11).
          Texto confirmado por el responsable del negocio el 2026-11-26 (FR-038). -->
@@ -89,21 +182,189 @@
 
         <section class="space-y-2">
             <h2 class="text-xl font-extrabold text-white">8. Medición de uso del sitio</h2>
-            <p>Contamos de forma anónima las visitas y los clics en los botones de planes, promociones, renovación y contacto, para saber qué planes interesan más. Usamos Umami, una herramienta <strong class="text-white">sin cookies</strong> que no te identifica ni guarda tu dirección IP, y no cargamos código de terceros en la página.</p>
+            <p>Contamos de forma anónima las visitas y los clics en los botones de planes, promociones, flyers, renovación y contacto, para saber qué planes interesan más. Usamos Umami, una herramienta <strong class="text-white">sin cookies</strong> que no te identifica ni guarda tu dirección IP, y no cargamos código de terceros en la página.</p>
             <p>Nunca medimos lo que escribes en WhatsApp ni tus datos personales. Si activas la opción "No rastrear" de tu navegador, no contamos nada de tu visita.</p>
         </section>
     </main>
 
-    <!-- SECCIÓN: PIE DE PÁGINA -->
-    <footer class="border-t border-taris-gold/20 bg-[#030811] px-4 sm:px-6 py-8 text-xs text-slate-500">
-        <div class="max-w-3xl mx-auto flex flex-col sm:flex-row justify-between items-center gap-3">
-            <p>© <span data-anio>2026</span> Tari’s Firma Digital. Todos los derechos reservados.</p>
-            <nav class="flex gap-4" aria-label="Información legal">
-                <a href="privacidad.html" class="hover:text-taris-gold transition">Aviso de privacidad</a>
-                <a href="terminos.html" class="hover:text-taris-gold transition">Términos del servicio</a>
-            </nav>
+    <!-- COMPARTIDO: INICIO PIE (footer, botones flotantes y modal; idéntico en todas las páginas) -->
+    <!-- FOOTER Y CONTACTO DIRECTO -->
+    <footer class="bg-[#030811] border-t border-taris-gold/20 pt-14 pb-24 sm:pb-12 px-4 sm:px-6 lg:px-8">
+        <div class="max-w-7xl mx-auto">
+            <div class="grid md:grid-cols-3 gap-10 pb-10 border-b border-white/10">
+                <div class="space-y-4">
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-xl bg-[#061A3A] border border-taris-gold/40 flex items-center justify-center p-1">
+                            <svg viewBox="0 0 100 100" class="w-full h-full" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M18 20 C35 16, 68 18, 86 24 L76 38 C60 33, 35 32, 14 35 Z" fill="#38BDF8"/>
+                                <path d="M44 28 L60 29 C55 50, 48 68, 36 82 L22 76 C32 62, 39 45, 44 28 Z" fill="#FFFFFF"/>
+                                <path d="M18 85 C38 82, 58 70, 74 52" stroke="#E5B94C" stroke-width="5" stroke-linecap="round"/>
+                            </svg>
+                        </div>
+                        <div>
+                            <span class="block text-xl font-extrabold text-white leading-none">Tari’s</span>
+                            <span class="block text-xs font-bold text-taris-gold uppercase tracking-wider">Firma Digital</span>
+                        </div>
+                    </div>
+                    <p class="text-slate-400 text-sm leading-relaxed">
+                        Soluciones ágiles y seguras en Firma Electrónica (archivo P12) y Sistemas de Facturación Electrónica para todo el Ecuador.
+                    </p>
+                    <a href="#" data-facebook target="_blank" rel="noopener noreferrer"
+                       class="inline-flex items-center gap-2.5 px-4 py-2.5 rounded-xl bg-[#1877F2]/15 border border-[#1877F2]/40 text-sky-400 hover:bg-[#1877F2] hover:text-white transition text-sm font-bold">
+                        <i class="fa-brands fa-facebook text-lg"></i>
+                        <span>Visitar Página de Facebook</span>
+                    </a>
+                </div>
+
+                <div class="space-y-4">
+                    <h2 class="text-base font-extrabold text-white uppercase tracking-wider">Horarios de Atención</h2>
+                    <ul class="space-y-3 text-sm text-slate-300">
+                        <li class="flex items-start gap-3">
+                            <i class="fa-regular fa-clock text-taris-gold mt-1"></i>
+                            <div>
+                                <strong class="block text-white">Lunes a Viernes</strong>
+                                <span data-horario="semana"></span>
+                            </div>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <i class="fa-regular fa-clock text-taris-gold mt-1"></i>
+                            <div>
+                                <strong class="block text-white">Sábados</strong>
+                                <span data-horario="sabado"></span>
+                            </div>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <i class="fa-solid fa-earth-americas text-taris-gold mt-1"></i>
+                            <div>
+                                <strong class="block text-white">Cobertura Nacional</strong>
+                                <span>Atención 100% digital en todo Ecuador</span>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="space-y-4">
+                    <h2 class="text-base font-extrabold text-white uppercase tracking-wider">Líneas Directas WhatsApp</h2>
+                    <div class="space-y-3">
+                        <a href="#" data-whatsapp="asesor1" data-mensaje="ayuda"
+                           target="_blank" rel="noopener noreferrer"
+                           class="flex items-center justify-between p-3.5 rounded-2xl bg-[#0C141D] border border-white/10 hover:border-emerald-500/50 transition group">
+                            <div class="flex items-center gap-3">
+                                <span class="w-10 h-10 rounded-full bg-emerald-500/20 text-emerald-400 flex items-center justify-center text-lg group-hover:bg-emerald-500 group-hover:text-white transition">
+                                    <i class="fa-brands fa-whatsapp"></i>
+                                </span>
+                                <div>
+                                    <span class="block text-xs font-bold text-taris-gold uppercase">Asesor 1</span>
+                                    <span class="block text-sm font-extrabold text-white" data-phone="asesor1"></span>
+                                </div>
+                            </div>
+                            <i class="fa-solid fa-arrow-up-right-from-square text-slate-500 group-hover:text-white text-xs"></i>
+                        </a>
+
+                        <a href="#" data-whatsapp="asesor2" data-mensaje="ayuda"
+                           target="_blank" rel="noopener noreferrer"
+                           class="flex items-center justify-between p-3.5 rounded-2xl bg-[#0C141D] border border-white/10 hover:border-emerald-500/50 transition group">
+                            <div class="flex items-center gap-3">
+                                <span class="w-10 h-10 rounded-full bg-emerald-500/20 text-emerald-400 flex items-center justify-center text-lg group-hover:bg-emerald-500 group-hover:text-white transition">
+                                    <i class="fa-brands fa-whatsapp"></i>
+                                </span>
+                                <div>
+                                    <span class="block text-xs font-bold text-taris-gold uppercase">Asesor 2</span>
+                                    <span class="block text-sm font-extrabold text-white" data-phone="asesor2"></span>
+                                </div>
+                            </div>
+                            <i class="fa-solid fa-arrow-up-right-from-square text-slate-500 group-hover:text-white text-xs"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pt-6 flex flex-col sm:flex-row justify-between items-center gap-4 text-xs text-slate-500">
+                <div class="text-center sm:text-left space-y-1">
+                    <p>© <span data-anio>2026</span> Tari’s Firma Digital. Todos los derechos reservados.</p>
+                    <!-- Identidad legal (FR-012): visible cuando el responsable entregue los datos -->
+                    <p data-legal-group class="hidden">
+                        <span data-legal="razonSocial"></span> · RUC <span data-legal="ruc"></span> · <span data-legal="ciudad"></span>, Ecuador
+                    </p>
+                </div>
+                <div class="flex flex-col sm:items-end items-center gap-1">
+                    <nav class="flex gap-4" aria-label="Información legal">
+                        <a href="privacidad.html" class="hover:text-taris-gold transition underline-offset-4 hover:underline">Aviso de privacidad</a>
+                        <a href="terminos.html" class="hover:text-taris-gold transition underline-offset-4 hover:underline">Términos del servicio</a>
+                    </nav>
+                    <p>Todos los precios publicados incluyen IVA.</p>
+                </div>
+            </div>
         </div>
     </footer>
+
+    <!-- BOTÓN FLOTANTE DE WHATSAPP Y FACEBOOK -->
+    <div class="fixed bottom-5 right-5 z-40 flex items-center gap-2.5">
+        <a href="#" data-facebook target="_blank" rel="noopener noreferrer"
+           aria-label="Facebook Tari's"
+           class="w-12 h-12 rounded-full bg-[#1877F2] text-white shadow-lg hover:scale-110 transition flex items-center justify-center text-xl">
+            <i class="fa-brands fa-facebook-f"></i>
+        </a>
+        <button type="button" data-open-advisor="flotante"
+                class="bg-[#16A34A] hover:bg-[#15803D] text-white font-extrabold px-5 py-3.5 rounded-full shadow-2xl hover:scale-105 transition flex items-center gap-2.5 cursor-pointer">
+            <i class="fa-brands fa-whatsapp text-2xl"></i>
+            <span class="text-sm">WhatsApp</span>
+        </button>
+    </div>
+
+    <!-- MODAL SELECTOR DE ASESOR (ASESOR 1 O ASESOR 2) -->
+    <div id="advisor-modal" role="dialog" aria-modal="true" aria-labelledby="advisor-modal-title" class="fixed inset-0 z-50 hidden items-center justify-center p-4 bg-black/80 backdrop-blur-sm">
+        <div class="bg-[#0C1624] border-2 border-taris-gold/60 rounded-3xl max-w-md w-full p-6 sm:p-7 shadow-2xl transform transition-all relative">
+            <button type="button" data-modal-close aria-label="Cerrar ventana"
+                    class="absolute top-4 right-4 w-9 h-9 rounded-full bg-white/10 hover:bg-white/20 text-slate-300 flex items-center justify-center transition cursor-pointer">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+
+            <div class="text-center mb-5">
+                <div class="w-14 h-14 rounded-2xl bg-emerald-500/20 border border-emerald-500/40 text-emerald-400 flex items-center justify-center text-3xl mx-auto mb-3">
+                    <i class="fa-brands fa-whatsapp"></i>
+                </div>
+                <h3 id="advisor-modal-title" class="text-xl font-black text-white">Elige tu Asesor en Línea</h3>
+                <p class="text-xs font-semibold mt-2 text-amber-300" data-atencion></p>
+                <p class="text-xs text-slate-400 mt-1">Se enviará automáticamente el detalle de tu selección:</p>
+            </div>
+
+            <div class="bg-[#060D17] border border-taris-gold/30 rounded-2xl p-3.5 mb-5 text-center">
+                <span id="modal-product-text" class="text-sm font-bold text-taris-gold"></span>
+            </div>
+
+            <div class="space-y-3">
+                <a id="link-asesor-1" href="#" target="_blank" rel="noopener noreferrer"
+                   class="w-full gold-gradient text-taris-dark font-extrabold p-4 rounded-2xl shadow-gold hover:brightness-110 transition flex items-center justify-between">
+                    <div class="flex items-center gap-3">
+                        <span class="w-10 h-10 rounded-full bg-[#16A34A] text-white flex items-center justify-center text-xl shadow">
+                            <i class="fa-brands fa-whatsapp"></i>
+                        </span>
+                        <div class="text-left">
+                            <span data-advisor-label class="block text-xs uppercase font-black tracking-wider text-taris-navy">Asesor 1 <span data-suggested-badge class="hidden ml-1 text-xs font-black uppercase bg-taris-dark text-taris-goldLight px-2 py-0.5 rounded-md">Sugerido</span></span>
+                            <span class="block text-base font-black" data-phone="asesor1"></span>
+                        </div>
+                    </div>
+                    <span data-advisor-chip class="text-xs font-extrabold bg-taris-dark/15 px-3 py-1.5 rounded-lg">Enviar →</span>
+                </a>
+
+                <a id="link-asesor-2" href="#" target="_blank" rel="noopener noreferrer"
+                   class="w-full bg-[#112442] border border-taris-gold/50 hover:bg-[#173159] text-white font-extrabold p-4 rounded-2xl transition flex items-center justify-between">
+                    <div class="flex items-center gap-3">
+                        <span class="w-10 h-10 rounded-full bg-[#16A34A] text-white flex items-center justify-center text-xl shadow">
+                            <i class="fa-brands fa-whatsapp"></i>
+                        </span>
+                        <div class="text-left">
+                            <span data-advisor-label class="block text-xs uppercase font-black tracking-wider text-taris-gold">Asesor 2 <span data-suggested-badge class="hidden ml-1 text-xs font-black uppercase bg-taris-dark text-taris-goldLight px-2 py-0.5 rounded-md">Sugerido</span></span>
+                            <span class="block text-base font-black" data-phone="asesor2"></span>
+                        </div>
+                    </div>
+                    <span data-advisor-chip class="text-xs font-extrabold bg-white/10 px-3 py-1.5 rounded-lg">Enviar →</span>
+                </a>
+            </div>
+        </div>
+    </div>
+    <!-- COMPARTIDO: FIN PIE -->
 
     <script src="script.js"></script>
 </body>
