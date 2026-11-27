@@ -115,7 +115,7 @@ const siteData = {
             tipo: 'informativo',
             imagen: 'img/flyers/firma-p12.webp',
             imagenMovil: 'img/flyers/firma-p12-movil.webp',
-            alt: 'Firma electrónica en archivo P12. Úsala para facturar, firmar documentos y hacer trámites en el SRI, Quipux y FirmaEC. Distribuidor DigitalCert.',
+            alt: 'Firma electrónica en archivo P12. Úsala para facturar, firmar documentos y hacer trámites en el SRI, Quipux y FirmaEC. Distribuidor autorizado.',
             destino: { tipo: 'pagina', pagina: 'firma.html#firma-electronica' }
         },
         {
