@@ -176,8 +176,8 @@ test('Banco: sigla, nombre y estilo válidos, y valores actuales (data-model.md 
     ]);
 });
 
-test('Entidad certificadora: Uanataca (data-model.md → Datos del negocio.negocio.legal.entidadCertificadora)', () => {
-    assert.equal(siteData.negocio.legal.entidadCertificadora, 'Uanataca');
+test('Entidad certificadora: CORPNEWBEST CIA. LTDA. (data-model.md → Datos del negocio.negocio.legal.entidadCertificadora)', () => {
+    assert.equal(siteData.negocio.legal.entidadCertificadora, 'CORPNEWBEST CIA. LTDA.');
 });
 
 /**

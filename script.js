@@ -42,7 +42,7 @@ const siteData = {
             razonSocial: 'Richard Nixon Dueñas Salvatierra',
             ruc: '0950463232001',
             ciudad: 'Guayaquil',
-            entidadCertificadora: 'Uanataca'
+            entidadCertificadora: 'CORPNEWBEST CIA. LTDA.'
         },
         mensajes: {
             info: 'Hola {negocio}, deseo información sobre Firma y Facturación Electrónica.',
@@ -109,6 +109,22 @@ const siteData = {
             imagenMovil: 'img/flyers/firma-hoy-mismo-movil.webp',
             alt: 'Tu firma electrónica, 100% online y sin filas. Válida para firmar tus documentos y Facturación Electrónica. Tari’s Firma Digital.',
             destino: { tipo: 'contacto', mensaje: 'Quiero sacar mi firma electrónica hoy mismo' }
+        },
+        {
+            id: 'firma-p12',
+            tipo: 'informativo',
+            imagen: 'img/flyers/firma-p12.webp',
+            imagenMovil: 'img/flyers/firma-p12-movil.webp',
+            alt: 'Firma electrónica en archivo P12. Úsala para facturar, firmar documentos y hacer trámites en el SRI, Quipux y FirmaEC. Distribuidor DigitalCert.',
+            destino: { tipo: 'pagina', pagina: 'firma.html#firma-electronica' }
+        },
+        {
+            id: 'factureec-facturacion',
+            tipo: 'informativo',
+            imagen: 'img/flyers/factureec-facturacion.webp',
+            imagenMovil: 'img/flyers/factureec-facturacion-movil.webp',
+            alt: 'Facturación electrónica conectada al SRI con Factureec: facturas, notas de crédito, retenciones y guías de remisión. Distribuidor autorizado.',
+            destino: { tipo: 'pagina', pagina: 'facturacion.html#facturacion' }
         }
     ],
 
