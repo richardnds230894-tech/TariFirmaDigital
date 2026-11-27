@@ -103,6 +103,14 @@ const siteData = {
     // - destino (opcional): { tipo: 'contacto', mensaje } o { tipo: 'pagina', pagina: 'firma.html' }.
     flyers: [
         {
+            id: 'firma-hoy-mismo',
+            tipo: 'informativo',
+            imagen: 'img/flyers/firma-hoy-mismo.webp',
+            imagenMovil: 'img/flyers/firma-hoy-mismo-movil.webp',
+            alt: 'Tu firma electrónica, 100% online y sin filas. Válida para el SRI y todos tus trámites. Tari’s Firma Digital.',
+            destino: { tipo: 'contacto', mensaje: 'Quiero sacar mi firma electrónica hoy mismo' }
+        },
+        {
             id: 'recomendacion-clave',
             tipo: 'informativo',
             imagen: 'img/flyers/recomendacion-clave.webp',
